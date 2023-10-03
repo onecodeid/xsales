@@ -1,0 +1,113 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <title>Doughnut Chart</title>
+    <script src="../../../assets/js/jquery-3.5.0.min.js"></script>
+	<script src="../../../assets/js/chart.min.js"></script>
+    <script src="utils.js"></script>
+    
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+</head>
+
+<body>
+	<div id="canvas-holder" style="width:100%">
+		<canvas id="chart-area"></canvas>
+	</div>
+	<script>
+        var offset = 0
+        var limit = 15
+        import('../../assets/js/global.min.js')
+                .then(module => {
+
+                    // var colorNames = Object.keys(window.chartColors);
+                    $.getJSON(module.URL+'dashboard/dashboard/get_omzet_total_by_product?sdate=2020-01-01&edate=2020-06-30', {
+                        token:module.one_token()
+                    }, function(a) {
+                        
+                        let labels = []
+                        let datas = []
+
+                        for (i in a.data) {
+                            if (i >= offset && i < (offset+limit)) {
+                                labels.push(a.data[i].item_name)
+                                datas.push(a.data[i].omzet)
+                            }
+                        }
+
+                        var barChartData = {
+                            labels: labels,
+                            datasets: [{
+                                label: false,
+                                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                                borderColor: window.chartColors.red,
+                                borderWidth: 1,
+                                data: datas
+                            }]
+                        };
+
+                        var ctx = document.getElementById('chart-area').getContext('2d');
+                        window.myBar = new Chart(ctx, {
+                            type: 'bar',
+                            data: barChartData,
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    display: false,
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: false,
+                                    text: 'Chart.js Bar Chart'
+                                }
+                            }
+                        });
+                    })
+            })
+
+		var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var color = Chart.helpers.color;
+		var barChartData = {
+			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+			datasets: [{
+				label: 'Dataset 1',
+				backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.red,
+				borderWidth: 1,
+				data: [
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor()
+				]
+			}, {
+				label: 'Dataset 2',
+				backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.blue,
+				borderWidth: 1,
+				data: [
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor()
+				]
+			}]
+
+		};		
+	</script>
+</body>
+
+</html>

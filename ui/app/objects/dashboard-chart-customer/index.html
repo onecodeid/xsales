@@ -1,0 +1,117 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <title>Doughnut Chart</title>
+    <script src="../../../assets/js/jquery-3.5.0.min.js"></script>
+	<script src="../../../assets/js/chart.min.js"></script>
+    <script src="utils.js"></script>
+    
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+</head>
+
+<body>
+	<div id="canvas-holder" style="width:100%">
+		<canvas id="chart-area"></canvas>
+	</div>
+	<script>
+		var randomScalingFactor = function() {
+			return Math.round(Math.random() * 100);
+		};
+
+		var config = {
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+					],
+					backgroundColor: [
+						window.chartColors.red,
+						window.chartColors.orange,
+						window.chartColors.yellow,
+						window.chartColors.green,
+						window.chartColors.blue,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'Red',
+					'Orange',
+					'Yellow',
+					'Green',
+					'Blue'
+				]
+			},
+			options: {
+				responsive: true,
+				legend: {
+                    position: 'right',
+                    // display: false
+				},
+				title: {
+					display: true,
+					text: 'Jumlah Customer saat ini'
+				},
+				animation: {
+					animateScale: true,
+					animateRotate: true
+                }
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('chart-area').getContext('2d');
+            window.myDoughnut = new Chart(ctx, config);
+            
+            config.data.datasets.splice(0, 1);
+			window.myDoughnut.update();
+            import('../../assets/js/global.min.js')
+                .then(module => {
+
+                    var colorNames = Object.keys(window.chartColors);
+                    $.getJSON(module.URL+'dashboard/dashboard/get_customer_total_by_admin', {
+                        token:module.one_token()
+                    }, function(a) {
+                        
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + config.data.datasets.length,
+                            labels: []
+                        }
+
+                        let n = 0
+                        for (let i in a.data) {
+                            newDataset.data.push(a.data[i])
+                            newDataset.labels.push(`${i} (${a.data[i]})`)
+                            
+                            let colorName = colorNames[n % colorNames.length];
+                            n++
+                            
+				            let newColor = window.chartColors[colorName];
+                            newDataset.backgroundColor.push(newColor)
+                        }
+                        
+                        config.data.datasets.push(newDataset);
+                        config.data.labels = newDataset.labels
+			            window.myDoughnut.update();
+                    })
+            })
+		};
+        var colorNames = Object.keys(window.chartColors);
+	</script>
+</body>
+
+</html>

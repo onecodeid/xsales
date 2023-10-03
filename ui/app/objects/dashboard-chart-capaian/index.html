@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>area > boundaries | Chart.js sample</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../../style.css"> -->
+	<script src="../../../assets/js/jquery-3.5.0.min.js"></script>
+	<script src="../../../assets/js/chart.min.js"></script>
+	<script src="utils.js"></script>
+	<script src="analyser.js"></script>
+</head>
+<body>
+	<div class="content">
+		<div class="wrapper col-2"><canvas id="chart-2"></canvas></div>
+
+		<!-- <div class="toolbar">
+			<button onclick="toggleSmooth(this)">Smooth</button>
+			<button onclick="randomize(this)">Randomize</button>
+		</div> -->
+	</div>
+
+	<script>
+		var presets = window.chartColors;
+		var utils = Samples.utils;
+		var inputs = {
+			min: -100,
+			max: 100,
+			count: 8,
+			decimals: 2,
+			continuity: 1
+		};
+
+		function generateData(config) {
+			return utils.numbers(Chart.helpers.merge(inputs, config || {}));
+		}
+
+		function generateLabels(config) {
+			return utils.months(Chart.helpers.merge({
+				count: inputs.count,
+				section: 3
+			}, config || {}));
+		}
+
+		var options = {
+			maintainAspectRatio: false,
+			spanGaps: false,
+			elements: {
+				line: {
+					tension: 0.000001
+				}
+			},
+			plugins: {
+				filler: {
+					propagate: false
+				}
+			},
+			scales: {
+				xAxes: [{
+					ticks: {
+						autoSkip: false,
+						maxRotation: 0
+					}
+				}]
+			}
+		};
+
+		// [false, 'origin', 'start', 'end'].forEach(function(boundary, index) {
+
+		// 	// reset the random seed to generate the same data for all charts
+		// 	utils.srand(8);
+
+        //     let x = ["Ahad", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+        //     let y = [0, 15000000, 21450000, 17600000, 0, 0, 0]
+        //     console.log(x)
+        //     console.log(y)
+		// 	new Chart('chart-' + index, {
+		// 		type: 'line',
+		// 		data: {
+		// 			labels: x,
+		// 			datasets: [{
+		// 				backgroundColor: utils.transparentize(presets.red),
+		// 				borderColor: presets.red,
+		// 				data: y,
+		// 				label: 'Dataset',
+		// 				fill: boundary
+		// 			}]
+		// 		},
+		// 		options: Chart.helpers.merge(options, {
+		// 			title: {
+		// 				text: 'fill: ' + boundary,
+		// 				display: false
+        //             },
+        //             legend: {
+        //                 display: false,
+        //                 position: 'top',
+        //             }
+		// 		})
+		// 	});
+		// });
+
+		// eslint-disable-next-line no-unused-vars
+		function toggleSmooth(btn) {
+			var value = btn.classList.toggle('btn-on');
+			Chart.helpers.each(Chart.instances, function(chart) {
+				chart.options.elements.line.tension = value ? 0.4 : 0.000001;
+				chart.update();
+			});
+		}
+
+		// eslint-disable-next-line no-unused-vars
+		function randomize() {
+			var seed = utils.rand();
+			Chart.helpers.each(Chart.instances, function(chart) {
+				utils.srand(seed);
+
+				chart.data.datasets.forEach(function(dataset) {
+					dataset.data = generateData();
+				});
+
+				chart.update();
+			});
+        }
+        
+        jQuery(document).ready(function() {
+            jQuery.getJSON('/api/dashboard/dashboard/get_target_this_week', function(a) {
+                
+                // [false, 'origin', 'start', 'end'].forEach(function(boundary, index) {
+                    let boundary = 'start'
+                    let index = 2
+                    // reset the random seed to generate the same data for all charts
+                    utils.srand(8);
+// console.log(a)
+                    let x = ["Ahad", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                    let y = a.data.total_per_days //
+                    
+                    try {
+                        new Chart('chart-' + index, {
+                            type: 'line',
+                            data: {
+                                labels: x,
+                                datasets: [{
+                                    backgroundColor: utils.transparentize(presets.red),
+                                    borderColor: presets.red,
+                                    data: y,
+                                    label: 'Dataset',
+                                    fill: boundary
+                                }]
+                            },
+                            options: Chart.helpers.merge(options, {
+                                title: {
+                                    text: 'fill: ' + boundary,
+                                    display: false
+                                },
+                                legend: {
+                                    display: false,
+                                    position: 'top',
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            })
+                        });
+                    } catch (error) {
+                        console.log(error.message)
+                    }
+                    
+                    // });
+            })
+        })
+	</script>
+</body>
+</html>

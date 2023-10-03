@@ -1,0 +1,109 @@
+/* fallback */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url(./material-icon.woff2) format("woff2");
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ICONS BY ADHI */
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../../fonts-icon-adhi/icomoon.eot?cea4mb');
+  src:  url('../../fonts-icon-adhi/icomoon.eot?cea4mb#iefix') format('embedded-opentype'),
+    url('../../fonts-icon-adhi/icomoon.ttf?cea4mb') format('truetype'),
+    url('../../fonts-icon-adhi/icomoon.woff?cea4mb') format('woff'),
+    url('../../fonts-icon-adhi/icomoon.svg?cea4mb#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-check:before {
+    content: "\e900";
+  }
+  .icon-note:before {
+    content: "\e901";
+  }
+  .icon-speaker:before {
+    content: "\e902";
+  }
+  .icon-edit:before {
+    content: "\e903";
+  }
+  .icon-add:before {
+    content: "\e904";
+  }
+  .icon-del:before {
+    content: "\e905";
+  }
+  .icon-print:before {
+    content: "\e906";
+  }
+  .icon-save:before {
+    content: "\e907";
+  }
+  .icon-unvalidasi:before {
+    content: "\e908";
+  }
+  .icon-v1:before {
+    content: "\e909";
+  }
+  .icon-v2:before {
+    content: "\e90a";
+  }
+  .icon-skip:before {
+    content: "\e90b";
+  }
+  .icon-process:before {
+    content: "\e90c";
+  }
+  .icon-import:before {
+    content: "\e90d";
+  }
+  .icon-barcode:before {
+    content: "\e937";
+  }
+  .icon-searchh:before {
+    content: "\e985";
+  }
+  .icon-search:before {
+    content: "\e986";
+  }
+  .icon-cargo:before {
+    content: "\e987";
+  }
+
+.one-btn-icon {
+  min-width: 0 !important;
+}

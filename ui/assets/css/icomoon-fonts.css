@@ -1,0 +1,265 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('icomoon.eot?rubct6');
+  src:  url('icomoon.eot?rubct6#iefix') format('embedded-opentype'),
+    url('icomoon.ttf?rubct6') format('truetype'),
+    url('icomoon.woff?rubct6') format('woff'),
+    url('icomoon.svg?rubct6#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'icomoon-search';
+  src:  url('icomoon-search.eot?rubct6');
+  src:  url('icomoon-search.eot?rubct6#iefix') format('embedded-opentype'),
+    url('icomoon-search.ttf?rubct6') format('truetype'),
+    url('icomoon-search.woff?rubct6') format('woff'),
+    url('icomoon-search.svg?rubct6#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Iceland';
+  src:  
+    url('Iceland-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="iconsearch-"], [class*=" iconsearch-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon-search' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-add:before {
+  content: "\e900";
+}
+.icon-delete:before {
+  content: "\e901";
+}
+.icon-print:before {
+  content: "\e902";
+}
+.icon-save:before {
+  content: "\e903";
+}
+
+.icon-unval:before {
+  content: "\e905";
+}
+.icon-v:before {
+  content: "\e906";
+}
+.icon-vv:before {
+  content: "\e907";
+}
+
+
+.iconsearch-searchh:before {
+  content: "\e985";
+}
+.iconsearch-search:before {
+  content: "\e986";
+}
+
+
+.v-input .v-label {
+  height: 20px!important;
+  line-height: 14px!important;
+}
+
+.v-text-field--outline .v-label {
+  top: 15px!important;
+}
+
+.v-text-field--outline input {
+  margin-top: 18px!important;
+}
+
+.v-text-field input {
+  
+   line-height: 25px!important; 
+  padding: 0!important; 
+  
+}
+
+.v-select.v-text-field--enclosed:not(.v-text-field--single-line) .v-select__selections {
+  padding-top: 0px!important; 
+}
+
+.v-select__selection--comma{
+  margin:0px;
+}
+
+.v-text-field.v-text-field--enclosed .v-input__append-inner{
+  margin-top:8px!important;
+}
+
+.mini-select .v-select__selection--comma {
+  margin: 18px 4px 2px 0!important;
+}
+
+
+.v-select__selection--comma {
+  align-items: center;
+  display: inline-flex;
+  margin: 4px 4px 7px 0!important;
+}
+
+.v-text-field--box>.v-input__control>.v-input__slot, .v-text-field--full-width>.v-input__control>.v-input__slot, .v-text-field--outline>.v-input__control>.v-input__slot {
+  align-items: stretch;
+  min-height: 48px!important;
+}
+
+
+.icon-medium{
+  color: #64b5f6;
+  padding: 0 10px;
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 500;
+  justify-content: center;
+  margin: 4px 8px;
+  outline: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: .3s cubic-bezier(.25,.8,.5,1),color 1ms;
+  width: 52px;
+  height: 48px;
+  padding: 2px 8px;
+  cursor: pointer;
+
+}
+
+.icon-medium-outline{
+  color: #64b5f6;
+  padding: 0 10px;
+  align-items: center;
+  border-radius: 2px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 500;
+  justify-content: center;
+  margin: 4px 8px;
+  outline: 0;
+  border: 1px solid #64b5f6;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: .3s cubic-bezier(.25,.8,.5,1),color 1ms;
+  width: 52px;
+  height: 48px;
+  padding: 2px 8px;
+  cursor: pointer;
+
+}
+
+.icon-medium-fill{
+  color: #fff;
+  padding: 0 10px;
+  align-items: center;
+  border-radius: 2px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 300;
+  justify-content: center;
+  margin: 4px 8px;
+  outline: 0;
+  background-color:#64b5f6;
+  border: 1px solid #64b5f6;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: .3s cubic-bezier(.25,.8,.5,1),color 1ms;
+  width: 52px;
+  height: 45px;
+  padding: 2px 8px;
+  cursor: pointer;
+ will-change: box-shadow;
+  /*box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);*/
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.icon-medium-fill-base{
+  padding: 0 10px;
+  align-items: center;
+  border-radius: 2px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 300;
+  justify-content: center;
+  margin: 4px 8px;
+  outline: 0;
+ 
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: .3s cubic-bezier(.25,.8,.5,1),color 1ms;
+  width: 52px;
+  height: 45px;
+  padding: 2px 8px;
+  cursor: pointer;
+ will-change: box-shadow;
+  /*box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);*/
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.icon-medium-fill:hover{
+ filter: alpha(opacity=80);
+/* IE */
+-moz-opacity: 0.8;
+/* Mozilla */
+opacity: 0.8;
+}
+
+.icon-medium-fill:active {
+    background-color: #03A9F4;
+   will-change: box-shadow;
+  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+  
+}
+
+.mono {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 500;
+}
+.input-custom-mini{
+  width:30px;height:30px;text-align:center;
+}
+.input-custom-mini:focus,.input-custom-mini:active{
+  border: 1px solid #fff;
+}
+.v-text-field--outline.v-text-field--single-line input {
+  margin-top: 7px!important;
+}
+

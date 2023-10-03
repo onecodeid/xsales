@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>jQuery Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    </script>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Glegoo);
+        body {
+            background-color: #ddd;
+        }
+        
+        #calcTop,
+        #calcBottom {
+            height: 20px;
+            width: 300px;
+            background-color: #777;
+            box-shadow: 3px 3px 2px #222;
+            margin: auto;
+        }
+        
+        #calcTop {
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
+        }
+        
+        #calcBottom {
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+        }
+        
+        #calcBody {
+            background-color: #777;
+            height: 400px;
+            width: 300px;
+            box-shadow: 3px 3px 2px #222;
+            margin: auto;
+        }
+        
+        h1,
+        h3,
+        #screen {
+            font-family: 'Glegoo', Serif;
+        }
+        
+        h1 {
+            margin: 0px 40px 0px 40px;
+            color: #ddd;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        
+        h3 {
+            margin: 0px 40px 10px 40px;
+            color: #ddd;
+            font-size: 0.8em;
+            font-weight: 300;
+            text-align: center;
+        }
+        
+        #screen {
+            margin: 20px 40px 20px 40px;
+            height: 35px;
+            background: #8EB095;
+            border-radius: 3px;
+            box-shadow: 2px 2px 1px #555 inset;
+        }
+        
+        #screen p {
+            position: relative;
+            top: -3px;
+            margin: 7px;
+            text-align: right;
+            font-size: 1.4em;
+            overflow: hidden;
+        }
+        
+        #buttonPad {
+            -webkit-column-count: 4;
+            -moz-column-count: 4;
+            column-count: 4;
+            width: 240px;
+            margin: auto;
+        }
+        
+        button {
+            height: 35px;
+            width: 50px;
+            margin: 5px 0 5px 0;
+            border-radius: 3px;
+            font-size: 1.1em;
+        }
+        
+        #plus {
+            height: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="calculator">
+        <div id="calcTop"></div>
+        <div id="calcBody">
+            <div id="branding">
+                <h3>CALCULATOR</h3>
+            </div>
+            <div id="screen">
+                <p>0</p>
+            </div>
+            <div id="buttonPad">
+                <button id="ca">CA</button>
+                <button id="7">7</button>
+                <button id="4">4</button>
+                <button id="1">1</button>
+                <button id="0">0</button>
+                <button id="ce">CE</button>
+                <button id="8">8</button>
+                <button id="5">5</button>
+                <button id="2">2</button>
+                <button id="decimal">.</button>
+                <button id="percent">%</button>
+                <button id="9">9</button>
+                <button id="6">6</button>
+                <button id="3">3</button>
+                <button id="equals">=</button>
+                <button id="divide">/</button>
+                <button id="times">x</button>
+                <button id="minus">-</button>
+                <button id="plus">+</button>
+            </div>
+        </div>
+        <div id="calcBottom"></div>
+    </div>
+</body>
+
+<script>
+    $(document).ready(function() {
+
+        var currentNum = '';
+        var total = 0;
+        var operation = '';
+        console.log(typeof(total));
+
+        function updateDisplay(disp) {
+            console.log('Display updating: ' + disp);
+            $('p').text(disp);
+        }
+
+        function opPush(op) {
+            console.log('Operand pushed');
+            if (op === 'percent') {
+                var currentNumInt = Number(currentNum);
+                currentNumInt = currentNumInt / 100;
+                currentNum = currentNumInt;
+                updateDisplay(currentNumInt);
+            } else {
+                console.log('else run');
+                if (op !== 'ce') {
+                    var currentNumInt = Number(currentNum);
+                    if (currentNumInt) {
+                        switch (operation) {
+                            case '':
+                                total = currentNumInt;
+                                break;
+                            case 'divide':
+                                total = total / currentNumInt;
+                                break;
+                            case 'times':
+                                total = total * currentNumInt;
+                                break;
+                            case 'minus':
+                                total = total - currentNumInt;
+                                break;
+                            case 'plus':
+                                total = total + currentNumInt;
+                                break;
+                            case 'equals':
+                                break;
+                        }
+                    }
+                    if (op === 'ca') {
+                        console.log('CA');
+                        total = 0;
+                        op = '';
+                    }
+                    console.log('Total = ' + total);
+                    operation = op;
+                }
+                updateDisplay(total);
+                currentNum = '';
+            }
+        }
+
+        function numPush(num) {
+            console.log('Number pushed: ' + num);
+            currentNum += num;
+            if (currentNum === '.') {
+                currentNum = '0.';
+            }
+            updateDisplay(currentNum);
+        }
+
+        function buttonPush(btn) {
+            console.log('btn = ' + btn);
+            if (btn === 'decimal') {
+                numPush('.');
+            } else if (isNaN(btn)) {
+                opPush(btn);
+            } else {
+                numPush(btn);
+            }
+        }
+
+        // superfluous?
+        function updateTotal(op, num) {}
+
+
+        $('button').click(function() {
+            var btn = $(this).attr("id");
+            console.log('Button pushed: ' + btn);
+            buttonPush(btn);
+        });
+
+        // SHIFT DOESNT CHANGE CHARACTER CODES ??? //
+        /*document.addEventListener('keydown', function(event) {
+          var keyPress = event.keyCode;
+          console.log('Key pressed: '+keyPress);
+          var keyChar = String.fromCharCode(keyPress);
+          console.log('Key Char: '+keyChar);
+          buttonPush(keyChar);
+        });*/
+    })
+</script>
+
+</html>

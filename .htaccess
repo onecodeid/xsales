@@ -1,0 +1,3 @@
+<IfModule mod_rewrite.c>
+    # rewrite to site subfolder RewriteRule ^(.*)$ sites/ui/$1 [NC,QSD,DPI] # if file doesn't exists in subfolder, just pass it to index.php RewriteCond %{REQUEST_FILENAME} !-f RewriteRule . index.php [END] # prevent another go-around RewriteRule .* - [END]
+</IfModule>

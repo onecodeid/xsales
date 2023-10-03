@@ -1,0 +1,40 @@
+.btn-icon {
+    min-width: 0px;
+    padding: 0 8px;
+}
+
+.btn-icon i.v-icon {
+    font-size: 1.3em
+}
+
+.zalfa-bg-pink-01 {
+    background-color: #F7B03F !important
+}
+
+.zalfa-text-pink {
+    color: #c42183 !important
+}
+
+.zalfa-text-title {
+    color: #F2942F !important
+}
+
+.zalfa-bg-purple {
+    background-color: #FF8D0B !important
+}
+
+.zalfa-text-purple {
+    color: #FF8D0B !important
+}
+
+.zalfa-bg-cyan {
+    background-color: #5AADB7 !important
+}
+
+.zalfa-text-dashed {
+    border-bottom: dashed 1px #1976d2
+}
+
+.zalfa-text-over {
+    text-decoration: line-through;
+}
