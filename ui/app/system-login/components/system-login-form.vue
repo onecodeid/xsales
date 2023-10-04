@@ -12,12 +12,12 @@
           wrap
         >
         <v-flex xs12 sm8 md4>
-            <v-img
+            <!-- <v-img
                         src="../assets/img/logo-mph.png"
                         aspect-ratio="1.4"
                         width="50%"
                         class=""
-                    ></v-img>
+                    ></v-img> -->
         </v-flex>
           <v-flex
             xs12 sm8 md4
