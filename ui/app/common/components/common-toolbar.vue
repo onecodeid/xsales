@@ -2,7 +2,7 @@
   <v-toolbar dark class="zalfa-bg-pink-01">
     <v-toolbar-side-icon @click="drawer=!drawer"></v-toolbar-side-icon>
 
-    <v-toolbar-title class="white--text">ADY WATER</v-toolbar-title>
+    <v-toolbar-title class="white--text">PELITA ACC</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
