@@ -5,7 +5,7 @@
 //
 // Actions
 import vendor from "./modules/vendor.js?t=ad21abc";
-import vendor_new from "./modules/vendor_new.js?t=alkj2bs1dasc";
+import vendor_new from "./modules/vendor_new.js?t=alkj2bsa1dasc";
 import vendor_filter from "./modules/vendor_filter.js?t=aa12sbc";
 import address from "./modules/vendor_address.js?t=alkjbsda12sc";
 import system from "../assets/js/system.js?t=2ds134";

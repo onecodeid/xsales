@@ -182,7 +182,7 @@ class M_vendor extends MY_Model
     function del ($id)
     {
         $this->db->set('M_VendorIsActive', 'N')
-                ->where('M_VendorID', $this->sys_input['id'])
+                ->where('M_VendorID', $this->sys_input['vendor_id'])
                 ->update($this->table_name);
 
         return true;
