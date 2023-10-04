@@ -181,7 +181,7 @@ export default {
                             customer_prospect: context.state.customer_prospect,
                             // customer_auto: context.state.customer_auto,
                             // customer_level_id: context.state.selected_customer_level.M_CustomerLevelID,
-                            customer_city_id: context.state.selected_city.M_CityID,
+                            customer_city_id: context.state.selected_city?context.state.selected_city.M_CityID:0,
                             customer_district_id: context.state.selected_district?context.state.selected_district.M_DistrictID:0,
                             customer_kelurahan_id: context.state.selected_village?context.state.selected_village.M_KelurahanID:0,
                             customer_staff: context.state.selected_staff?context.state.selected_staff.staff_id:0,

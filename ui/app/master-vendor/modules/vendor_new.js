@@ -162,7 +162,7 @@ export default {
                             vendor_prospect: context.state.vendor_prospect,
                             // vendor_auto: context.state.vendor_auto,
                             // vendor_level_id: context.state.selected_vendor_level.M_VendorLevelID,
-                            vendor_city_id: context.state.selected_city.M_CityID,
+                            vendor_city_id: context.state.selected_city?context.state.selected_city.M_CityID:0,
                             vendor_district_id: context.state.selected_district?context.state.selected_district.M_DistrictID:0,
                             vendor_kelurahan_id: context.state.selected_village?context.state.selected_village.M_KelurahanID:0,
                             // vendor_staff: context.state.selected_staff?context.state.selected_staff.staff_id:0,

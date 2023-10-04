@@ -5,7 +5,7 @@
 //
 // Actions
 import customer from "./modules/customer.js?t=ad21abc";
-import customer_new from "./modules/customer_new.js?t=albs1dasc";
+import customer_new from "./modules/customer_new.js?t=albs1sdasc";
 import customer_filter from "./modules/customer_filter.js?t=aa12sbc";
 import address from "./modules/customer_address.js?t=alkjbsda12sc";
 import system from "../assets/js/system.js?t=2ds134";
