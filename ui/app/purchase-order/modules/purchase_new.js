@@ -159,6 +159,7 @@ export default {
 
             let hdata = {
                 p_date: context.state.purchase_date,
+                p_number: context.state.purchase_number,
                 p_total: 0,
                 p_ppn: context.state.purchase_ppn,
                 p_disc: context.state.purchase_disc,
@@ -168,9 +169,9 @@ export default {
                 p_note: context.state.purchase_note,
                 p_memo: context.state.purchase_memo,
                 p_vendor: context.state.selected_vendor.vendor_id,
-                p_staff: context.state.selected_staff.staff_id,
+                p_staff: 0, //context.state.selected_staff.staff_id,
                 // p_payment: context.state.selected_paymentplan.paymentplan_id,
-                p_term: context.state.selected_term.term_id
+                p_term: context.state.selected_term?context.state.selected_term.term_id:0
             }
 
             let prm = {

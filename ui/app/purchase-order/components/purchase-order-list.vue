@@ -99,7 +99,7 @@
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.purchase_debit) }}</td>
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.purchase_credit) }}</td> -->
                     <td class="text-xs-center pa-0" @click="select(props.item)">
-                        <v-btn color="orange" class="btn-icon ma-0" small @click="print_po(props.item)" dark><v-icon>print</v-icon></v-btn>
+                        <!-- <v-btn color="orange" class="btn-icon ma-0" small @click="print_po(props.item)" dark><v-icon>print</v-icon></v-btn> -->
                         <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
                         <v-btn color="red" 
                             :dark="props.item.purchase_done=='N'" 

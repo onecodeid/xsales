@@ -45,7 +45,7 @@
                                     v-model="purchase_number"
                                     :readonly="false"
                                     :disabled="view"
-                                    placeholder="( kosongkan saja )"
+                                    placeholder="Nomor Faktur"
                                 ></v-text-field>
                             </v-flex>
                             <v-flex xs4 pl-4>
@@ -387,7 +387,7 @@
                                                 <!-- END OF SHIPPING -->
 
                                                 <!-- DP -->
-                                                <v-layout row wrap>
+                                                <!-- <v-layout row wrap>
                                                     <v-flex xs4 pa-2 pt-1 pr-4 offset-xs4>
                                                         <span class="subheading">DP</span>
                                                     </v-flex>
@@ -408,7 +408,7 @@
                                                             </template>
                                                         </v-text-field>
                                                     </v-flex>
-                                                </v-layout>
+                                                </v-layout> -->
                                                 <!-- END OF DP -->
 
                                                 <v-layout row wrap>
@@ -773,6 +773,7 @@ module.exports = {
         update_item(idx, v) {
             let d = this.details
             d[idx].item = v
+            d[idx].price = !!v?v.item_price:0
             
             this.$store.commit('purchase_new/set_details', d)
         },

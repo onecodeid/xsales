@@ -22,6 +22,7 @@ DECLARE pdppayid INTEGER;
 DECLARE pstaff INTEGER;
 DECLARE ppayment INTEGER;
 DECLARE pterm INTEGER;
+DECLARE warehouse_id INTEGER DEFAULT 1;
 
 DECLARE tmp VARCHAR(1000);
 DECLARE n INTEGER DEFAULT 0;
@@ -30,6 +31,7 @@ DECLARE l INTEGER DEFAULT 0;
 DECLARE d_item INTEGER;
 DECLARE d_price DOUBLE;
 DECLARE d_qty DOUBLE;
+DECLARE d_oqty DOUBLE;
 DECLARE d_disc DOUBLE;
 DECLARE d_ppn CHAR(1) DEFAULT "N";
 DECLARE d_ppn_amount DOUBLE;
@@ -66,6 +68,7 @@ START TRANSACTION;
 SET xppn = (SELECT fn_conf('ppn')) / 100;
 
 SET pdate = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_date"));
+SET pnumber = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_number"));
 SET ptotal = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_total"));
 SET pppn = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_ppn"));
 SET pnote = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_note"));
@@ -83,7 +86,7 @@ IF pdp IS NULL THEN SET pdp = 0; END IF;
 
 IF pid = 0 THEN
     
-    SET pnumber = (SELECT fn_numbering("PO"));
+    -- SET pnumber = (SELECT fn_numbering("PO"));
     INSERT INTO p_purchase(P_PurchaseDate,
         P_PurchaseNumber,
         P_PurchaseM_VendorID,
@@ -105,7 +108,7 @@ IF pid = 0 THEN
 ELSE
 
     UPDATE p_purchase
-    SET P_PurchaseDate = pdate, P_PurchaseTotal = ptotal, P_PurchaseDisc = pdisc, P_PurchaseDiscRp = pdiscrp, P_PurchaseShipping = pshipping, P_PurchaseDp = pdp, P_PurchaseIncludePPN = pppn, P_PurchaseNote = pnote, P_PurchaseMemo = pmemo,
+    SET P_PurchaseDate = pdate, P_PurchaseNumber = pnumber, P_PurchaseTotal = ptotal, P_PurchaseDisc = pdisc, P_PurchaseDiscRp = pdiscrp, P_PurchaseShipping = pshipping, P_PurchaseDp = pdp, P_PurchaseIncludePPN = pppn, P_PurchaseNote = pnote, P_PurchaseMemo = pmemo,
         P_PurchaseS_StaffID = pstaff, P_PurchaseM_TermID = pterm, P_PurchaseM_VendorID = pvendor
     WHERE P_PurchaseID = pid;
     
@@ -119,8 +122,8 @@ ELSE
     CALL sp_log_activity("MODIFY", "PURCHASE.ORDER", pid, uid);
 END IF;
 
--- DP Section
--- ----------
+
+
 IF pdp > 0 THEN
     IF pdpid = 0 THEN
         INSERT INTO f_pay(F_PayTotal)
@@ -154,8 +157,8 @@ ELSE
 END IF;
 
 UPDATE p_purchase SET P_PurchaseF_BillDPID = pdpid WHERE P_PurchaseID = pid;
--- END OF DP Section
--- -----------------
+
+
 
 SET l = JSON_LENGTH(jdata);
 WHILE n < l DO
@@ -200,11 +203,32 @@ WHILE n < l DO
 
         SET d_id = (SELECT LAST_INSERT_ID());
     ELSE
-        UPDATE p_purchasedetail
-        SET P_PurchaseDetailQty = d_qty, P_PurchaseDetailPrice = d_price, P_PurchaseDetailDisc = d_disc, P_PurchaseDetailSubTotal = d_subtotal, P_PurchaseDetailPPN = d_ppn, P_PurchaseDetailPPNAmount = d_ppn_amount, P_PurchaseDetailTotal = d_total,
-        P_PurchaseDetailIsActive = "Y"
-        WHERE P_PurchaseDetailID = d_id;
+        SET d_oqty = (SELECT P_PurchaseDetailQty FROM p_purchasedetail WHERE P_PurchaseDetailID = d_id);
 
+        IF d_qty <> d_oqty THEN
+            UPDATE p_purchasedetail
+            SET P_PurchaseDetailQty = d_qty, P_PurchaseDetailPrice = d_price, P_PurchaseDetailDisc = d_disc, P_PurchaseDetailSubTotal = d_subtotal, P_PurchaseDetailPPN = d_ppn, P_PurchaseDetailPPNAmount = d_ppn_amount, P_PurchaseDetailTotal = d_total,
+            P_PurchaseDetailIsActive = "Y"
+            WHERE P_PurchaseDetailID = d_id;
+
+            -- UPDATE STOCK
+            UPDATE i_stock
+            JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
+                AND P_PurchaseDetailID = d_id
+                AND P_PurchaseDetailIsActive = "Y"
+            SET I_StockQty = I_StockQty - d_oqty,
+                I_StockLastTransCode = "PURCHASE.MODIFY",
+                I_StockLastTransRefID = P_PurchaseDetailID,
+                I_StockLastTransQty = (0-d_oqty)
+            WHERE I_StockM_WarehouseID = warehouse_id
+            AND I_StockIsActive = "Y";
+            -- END OF UPDATE STOK
+
+        ELSE
+            UPDATE p_purchasedetail
+            SET P_PurchaseDetailIsActive = "Y"
+            WHERE P_PurchaseDetailID = d_id;
+        END IF;
     END IF;
 
     IF d_ids = "" THEN SET d_ids = d_id; ELSE SET d_ids = CONCAT(d_ids, ",", d_id); END IF;
@@ -213,23 +237,31 @@ WHILE n < l DO
         SET ptotal = ptotal - pdiscrp + pshipping;
     SET psubtotal = psubtotal + d_subtotal;
     SET pppntotal = pppntotal + d_ppn_amount;
-
-    -- Log purchase
+    
     CALL sp_master_item_last_purchase_0(d_item);
 END WHILE;
+
+-- HAPUS STOK PENERIMAAN
+UPDATE i_stock
+JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
+    AND P_PurchaseDetailP_PurchaseID = pid
+    AND P_PurchaseDetailIsActive = "O"
+SET I_StockQty = I_StockQty - P_PurchaseDetailQty,
+    I_StockLastTransCode = "PURCHASE.DELETE",
+    I_StockLastTransRefID = P_PurchaseDetailID,
+    I_StockLastTransQty = (0-P_PurchaseDetailQty)
+WHERE I_StockM_WarehouseID = warehouse_id
+    AND I_StockIsActive = "Y";
 
 UPDATE p_purchasedetail
 SET P_PurchaseDetailIsActive = "N"
 WHERE P_PurchaseDetailP_PurchaseID = pid
 AND P_PurchaseDetailIsActive = "O" ;
 
-
--- UPDATE TOTAL PURCHASE
 UPDATE p_purchase SET P_PurchaseSubTotal = psubtotal,
     P_PurchaseTotal = (psubtotal * (100-P_PurchaseDisc) / 100) - P_PurchaseDiscRp 
     WHERE P_PurchaseID = pid;
 
--- UPDATE GRAND TOTAL
 IF d_ppn <> "Y" THEN
     SET xppn = 0; END IF;
 
@@ -237,11 +269,18 @@ UPDATE p_purchase
 SET P_PurchasePPN = P_PurchaseTotal * (xppn), 
     P_PurchaseGrandTotal = (P_PurchaseTotal * (1 + xppn)) + pshipping - pdp
 WHERE P_PurchaseID = pid;
-    -- - pdp;
-
--- UPDATE p_purchase SET P_PurchaseGrandTotal = ptotal, 
---     P_PurchaseTotal = psubtotal, P_PurchasePPN = pppntotal WHERE P_PurchaseID = pid;
-
+    
+-- STOK
+UPDATE i_stock
+JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
+    AND P_PurchaseDetailP_PurchaseID = pid
+    AND P_PurchaseDetailIsActive = "Y"
+SET I_StockQty = I_StockQty + P_PurchaseDetailQty,
+    I_StockLastTransCode = "PURCHASE.RECEIVE",
+    I_StockLastTransRefID = P_PurchaseDetailID,
+    I_StockLastTransQty = P_PurchaseDetailQty
+WHERE I_StockM_WarehouseID = warehouse_id
+    AND I_StockIsActive = "Y";
 
 
 SELECT "OK" as status, JSON_OBJECT("purchase_id", pid) as data;
