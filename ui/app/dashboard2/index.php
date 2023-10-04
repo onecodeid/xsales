@@ -142,7 +142,7 @@ methods : {
         "dashboard-profile" : httpVueLoader("./components/dashboard-profile.vue"),
         "common-dialog-print" : httpVueLoader("../common/components/common-dialog-print.vue"),
 
-        "dashboard-super-admin" : httpVueLoader("./components/dashboard-super-admin.vue<?=$ts;?>"),
+        "dashboard-super-admin" : httpVueLoader("./components/dashboard-blank.vue<?=$ts;?>"),
         "dashboard-admin" : httpVueLoader("./components/dashboard-admin.vue<?=$ts;?>")
       }
     })
