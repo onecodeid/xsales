@@ -86,6 +86,13 @@
                                     item-text="disc_name"
                                     :disabled="!!view"
                                 >
+                                    <template slot="item" slot-scope="data">
+                                        {{data.item.disc_name}} ({{ data.item.disc_amount }}%)
+                                    </template>
+
+                                    <template slot="selection" slot-scope="data">
+                                        {{data.item.disc_name}} ({{ data.item.disc_amount }}%)
+                                    </template>
                                     <!-- <template slot="append-outer">
                                         <v-btn color="success" class="ma-0 ml-2 btn-icon" small @click="add_unit" :disabled="!!view">
                                             <v-icon>add</v-icon>
