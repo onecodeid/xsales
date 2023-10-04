@@ -6,7 +6,7 @@ class M_Disc extends MY_Model
     {
         parent::__construct();
 
-        $this->table_name = "M_Disc";
+        $this->table_name = "m_disc";
         $this->table_key = "M_DiscID";
     }
 

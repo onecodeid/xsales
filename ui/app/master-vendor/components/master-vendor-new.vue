@@ -40,9 +40,9 @@
                                     label="Alamat Vendor"
                                     v-model="vendor_address"
                                     prepend-inner-icon="place"
-                                    :error="vendor_address.length<10"
-                                    :error-count="vendor_address.length<10?1:0"
-                                    :error-messages="vendor_address.length<10?['Wajib diisi, Minimal 10 karakter']:[]"
+                                    :error="false"
+                                    :error-count="0"
+                                    :error-messages="[]"
                                 ></v-text-field>
                             </v-flex>
 
@@ -291,8 +291,7 @@
                 <v-btn color="primary" flat @click="dialog=!dialog">Batal</v-btn>                
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="save" 
-                    :disabled="vendor_name == '' ||
-                                vendor_address.length<10">Simpan</v-btn>                
+                    :disabled="vendor_name == ''">Simpan</v-btn>                
             </v-card-actions>
         </v-card>
         <vendor-mp></vendor-mp>

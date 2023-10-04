@@ -57,9 +57,9 @@
                             label="Alamat Customer"
                             v-model="customer_address"
                             prepend-inner-icon="place"
-                            :error="customer_address.length<10"
-                            :error-count="customer_address.length<10?1:0"
-                            :error-messages="customer_address.length<10?['Wajib diisi, Minimal 10 karakter']:[]"
+                            :error="false"
+                            :error-count="0"
+                            :error-messages="[]"
                         ></v-text-field>
                     </v-flex>
                 </v-layout>
@@ -347,8 +347,7 @@
                 <v-btn color="primary" flat @click="dialog=!dialog">Batal</v-btn>                
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="save" 
-                    :disabled="customer_name == '' ||
-                                customer_address.length<10">Simpan</v-btn>                
+                    :disabled="customer_name == ''">Simpan</v-btn>                
             </v-card-actions>
         </v-card>
         <customer-mp></customer-mp>
