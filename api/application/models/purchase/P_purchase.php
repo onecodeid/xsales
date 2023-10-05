@@ -33,7 +33,7 @@ class P_Purchase extends MY_Model
                 P_PurchaseIncludePPN purchase_ppn, P_PurchasePPN purchase_ppn_amount,
                 M_VendorName vendor_name, M_VendorID vendor_id,
                 P_PurchaseM_PaymentPlanID purchase_payment, P_PurchaseM_TermID term_id, P_PurchaseS_StaffID purchase_staff,
-                CONCAT('[', GROUP_CONCAT(JSON_OBJECT('item', JSON_OBJECT('item_id', M_ItemID,'item_name', M_ItemName), 'price', P_PurchaseDetailPrice, 'qty', P_PurchaseDetailQty, 
+                CONCAT('[', GROUP_CONCAT(JSON_OBJECT('item', JSON_OBJECT('item_id', M_ItemID,'item_code', M_ItemCode,'item_name', M_ItemName), 'price', P_PurchaseDetailPrice, 'qty', P_PurchaseDetailQty, 
                     'received', P_PurchaseDetailReceived, 'unreceived', P_PurchaseDetailUnReceived, 'unit', IFNULL(M_UnitName, ''), 'disc', P_PurchaseDetailDisc, 
                     'discrp', P_PurchaseDetailDiscRp, 'disctype', IF(P_PurchaseDetailDiscRp=0,'P','R'),'ppn', P_PurchaseDetailPPN,'ppn_amount', P_PurchaseDetailPPNAmount, 'subtotal', P_PurchaseDetailSubTotal, 'total', P_PurchaseDetailTotal)), ']') details,
                 IFNULL(M_PaymentPlanName, '') payment_name, IFNULL(M_TermName, '') term_name
