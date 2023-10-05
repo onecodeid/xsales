@@ -165,17 +165,17 @@
                                                     clearable
                                                     :readonly="!!d.item"
                                                     @change="update_item(n, $event)"
-                                                    item-text="item_name"
+                                                    item-text="item_code_name"
                                                     item-value="item_id"
                                                     placeholder="Pilih..."
                                                     v-show="!d.item"
                                                 >
                                                     <template slot="item" slot-scope="data">
-                                                        {{data.item.item_name}}
+                                                        {{data.item.item_code}} - {{data.item.item_name}}
                                                     </template>
 
                                                     <template slot="selection" slot-scope="data">
-                                                        {{data.item.item_name}}
+                                                        {{data.item.item_code}} - {{data.item.item_name}}
                                                     </template>
 
                                                     <template slot="prepend" v-if="!is_sales">
@@ -187,7 +187,7 @@
                                                     <v-flex xs12>
                                                         <v-text-field
                                                             solo
-                                                            :value="d.item.item_name"
+                                                            :value="d.item.item_code + ' - ' + d.item.item_name"
                                                             hide-details
                                                             :clearable="!view"
                                                             readonly

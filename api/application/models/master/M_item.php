@@ -21,7 +21,8 @@ class M_item extends MY_Model
         $l = ['records'=>[], 'total'=>0, 'total_page'=>1];
 
         $r = $this->db->query(
-                "SELECT M_ItemID item_id, M_ItemCode item_code, M_ItemName item_name, M_ItemAlias item_alias, 
+                "SELECT M_ItemID item_id, M_ItemCode item_code, M_ItemName item_name, M_ItemAlias item_alias,
+                CONCAT(M_ItemCode, ' - ', M_ItemName) item_code_name,
                 M_ItemDefaultHPP item_hpp, M_ItemDefaultPrice item_price, M_CategoryID category_id,
                 IFNULL(M_CategoryName, '') category_name, 
                 IFNULL(M_UnitName, '') unit_name, IFNULL(M_UnitID, 0) unit_id,
