@@ -72,7 +72,7 @@
                     <td class="text-xs-center pa-0" @click="select(props.item)">
                         <!-- <v-btn color="orange" dark class="btn-icon ma-0" small @click="print_stock_card(props.item)" title="Cetak Kartu Stok"><v-icon>print</v-icon></v-btn> -->
                         <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
-                        <v-btn color="red" class="btn-icon ma-0" small @click="del(props.item)" :disabled="!!view" :dark="!view"><v-icon>delete</v-icon></v-btn>
+                        <v-btn color="red" class="btn-icon ma-0" small @click="del(props.item)"><v-icon>delete</v-icon></v-btn>
                     </td>
                     </tr>
                     <!-- <td class="text-xs-center pa-2" v-bind:class="{'amber lighten-4':isSelected(props.item)}" @click="selectMe(props.item)">{{ props.item.M_DoctorHP}}</td>
