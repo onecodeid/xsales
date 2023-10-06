@@ -246,7 +246,7 @@ module.exports = {
         },
 
         title() {
-            return "PEMESANAN BARANG (PURCHASING)"
+            return "PEMBELIAN BARANG (PURCHASING)"
         },
 
         is_sales() {

@@ -5,7 +5,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>One :: Penawaran</title>
+      <title>One :: Terima Order</title>
       <link rel="stylesheet" href="../../assets/css/google-fonts.css">
       <link rel="stylesheet" href="../../assets/css/vuetify.min.css">
       <link rel="stylesheet" href="../assets/css/global.min.css">

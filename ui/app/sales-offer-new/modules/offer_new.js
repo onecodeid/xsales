@@ -31,6 +31,7 @@ export default {
         sales_shipping: 0,
         sales_grandtotal: 0,
         sales_stock: '',
+        sales_customer_name: '',
 
         customers: [],
         selected_customer: null,
@@ -213,14 +214,16 @@ export default {
 
             let hdata = {
                 p_date: context.state.sales_date,
+                p_number: context.state.sales_number,
                 p_shipping: context.state.sales_shipping,
                 p_total: 0,
                 p_ppn: context.state.sales_ppn,
                 p_note: context.state.sales_note,
                 p_memo: context.state.sales_memo,
                 p_customer: context.state.selected_customer.customer_id,
-                p_leadtype: context.state.selected_leadtype.leadtype_id,
-                p_staff: context.state.selected_staff.staff_id,
+                p_customer_name: context.state.sales_customer_name,
+                p_leadtype: 0, //context.state.selected_leadtype.leadtype_id,
+                p_staff: 0, //context.state.selected_staff.staff_id,
                 p_franco: context.state.sales_franco,
                 p_stock: context.state.sales_stock,
                 p_delivery: context.state.sales_delivery,
@@ -317,6 +320,21 @@ export default {
                 prm: prm,
                 callback: function(d) {
                     context.commit("set_terms", d.records)
+                }
+            }, { root: true })
+        },
+
+        async getDisc(context, disc_id) {
+            let prm = {
+                customer_id: context.state.selected_customer.customer_id,
+                disc_id: disc_id
+            }
+
+            return context.dispatch("system/postme", {
+                url: "master/customerdisc/get",
+                prm: prm,
+                callback: function(d) {
+                    return
                 }
             }, { root: true })
         }
