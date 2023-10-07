@@ -4,16 +4,16 @@
 //
 //
 // Actions
-import sales from "./modules/sales.js?t=1sdssx";
-import sales_new from "./modules/sales_new.js?t=saax3xx";
-import invoice_new from "../sales-invoice/modules/invoice_new.js?t=1ass1d2423d3";
-import invoice from "../sales-invoice/modules/invoice.js?t=12sas1ds23d3";
-import item_logpurchase from "../master-item/modules/item_logpurchase.js?t=1278ses3";
+import sales from "./modules/sales.js?t=1dfsdssx";
+import sales_new from "./modules/sales_new.js?t=safdax3xx";
+import invoice_new from "../sales-invoice/modules/invoice_new.js?t=1ass1dfd2423d3";
+import invoice from "../sales-invoice/modules/invoice.js?t=12sas1fdds23d3";
+import item_logpurchase from "../master-item/modules/item_logpurchase.js?t=127fd8ses3";
 
 import exp from "../master-expedition/modules/expedition.js";
 import exp_new from "../master-expedition/modules/expedition_new.js";
 // import customer from "../master-customer/modules/customer.js";
-import customer_new from "../master-customer/modules/customer_new.js?akjbc234de";
+import customer_new from "../master-customer/modules/customer_new.js?akjbcfd234de";
 import system from "../assets/js/system.js?t=assssd";
 
 import address from "../master-customer/modules/customer_address.js?t=2sc";
