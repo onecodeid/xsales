@@ -120,8 +120,8 @@
                     <td class="text-xs-left pa-2" v-bind:class="level_color(props.item.customer_type)" @click="select(props.item)">{{ props.item.province_name }}</td>
                     <!-- <td class="text-xs-left pa-2" v-bind:class="level_color(props.item.customer_type)" @click="select(props.item)">{{ props.item.customer_type == 'Y' ? 'BISNIS' : 'PERSONAL' }}</td> -->
                     <td class="text-xs-center pa-0" v-bind:class="level_color(props.item.customer_type)" @click="select(props.item)">
-                        <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
-                        <v-btn color="red" dark class="btn-icon ma-0" small @click="del(props.item)"><v-icon>delete</v-icon></v-btn>
+                        <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)" :disabled="props.item.customer_code=='C.UMUMX'"><v-icon>create</v-icon></v-btn>
+                        <v-btn color="red" dark class="btn-icon ma-0" small @click="del(props.item)" :disabled="props.item.customer_code=='C.UMUM'"><v-icon>delete</v-icon></v-btn>
                     </td>
                     <!-- <td class="text-xs-center pa-2" v-bind:class="{'amber lighten-4':isSelected(props.item)}" @click="selectMe(props.item)">{{ props.item.M_DoctorHP}}</td>
                     <td class="text-xs-left pa-2" v-bind:class="{'amber lighten-4':isSelected(props.item)}" @click="selectMe(props.item)">{{ props.item.status}}</td> -->

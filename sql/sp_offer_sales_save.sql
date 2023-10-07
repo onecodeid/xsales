@@ -1,8 +1,14 @@
+DROP PROCEDURE `sp_offer_sales_save`;
+DELIMITER ;;
+CREATE PROCEDURE `sp_offer_sales_save` (IN `offerid` int)
 BEGIN
 
 DECLARE sales_number VARCHAR(25);
 DECLARE sales_id INTEGER;
 DECLARE used CHAR(1);
+
+DECLARE n INTEGER;
+DECLARE warehouse_id INTEGER DEFAULT 1;
 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
 BEGIN
@@ -30,7 +36,7 @@ IF sales_id IS NOT NULL THEN
     ROLLBACK;
 ELSE
 
-    -- INSERT SALES
+    
     SET sales_number = (SELECT fn_numbering('SO'));
     INSERT INTO l_sales(
         L_SalesDate,
@@ -51,7 +57,6 @@ ELSE
 
     SET sales_id = (SELECT LAST_INSERT_ID());
 
-    -- INSERT DETAIL
     INSERT INTO l_salesdetail(
         L_SalesDetailL_SalesID,
         L_SalesDetailA_ItemID,
@@ -73,14 +78,42 @@ ELSE
     FROM l_offerdetail JOIN m_item ON L_OfferDetailA_ItemID = M_ItemID
     WHERE L_OfferDetailL_OfferID = offerid AND L_OfferDetailIsActive = "Y" AND L_OfferDetailA_ItemID <> 0;
 
-    -- UPDATE OFFER
+    
     UPDATE l_offer SET L_OfferUsed = "Y" WHERE L_OfferID = offerid;
     UPDATE l_offerdetail SET L_OfferDetailDone = "Y"
     WHERE L_OfferDetailL_OfferID = offerid AND L_OfferDetailIsActive = "Y" AND L_OfferDetailA_ItemID <> 0;
 
-    SELECT "OK" status, JSON_OBJECT("sales_id", sales_id, "sales_number", sales_number) data;
-    COMMIT;
+    -- UPDATE STOK
+    UPDATE i_stock
+    JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+        AND L_SalesDetailL_SalesID = sales_id
+        AND L_SalesDetailIsActive = "Y"
+    JOIN l_sales ON L_SalesDetailL_SalesID = L_SalesID
+    SET I_StockQty = I_StockQty - L_SalesDetailQty,
+        I_StockLastTransCode = "SALES.DELIVERY",
+        I_StockLastTransRefID = L_SalesDetailID,
+        I_StockLastTransQty = (0 - L_SalesDetailQty),
+        I_StockLastTransDate = L_SalesDate
+    WHERE I_StockM_WarehouseID = warehouse_id
+        AND I_StockIsActive = "Y";
+
+    SET n = (SELECT COUNT(I_StockID)
+            FROM i_stock
+            JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+                AND L_SalesDetailL_SalesID = sales_id
+                AND L_DeliveryDetailIsActive = "Y"
+            WHERE I_StockIsActive = "Y" AND I_StockM_WarehouseID = warehouse_id AND I_StockQty < 0);
+    IF n > 0 THEN
+        SELECT "ERR" status, "Ada barang yang stoknya tidak mencukupi !" message;
+        ROLLBACK;
+
+    ELSE
+        SELECT "OK" status, JSON_OBJECT("sales_id", sales_id, "sales_number", sales_number) data;
+        COMMIT;
+    END IF;
 END IF;
 
 
 END
+;;
+DELIMITER ;

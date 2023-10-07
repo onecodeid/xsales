@@ -42,7 +42,7 @@
                                 <v-text-field
                                     label="Nomor Faktur"
                                     v-model="sales_number"
-                                    :readonly="true"
+                                    :readonly="false"
                                     :disabled="view"
                                     placeholder="( kosongkan saja )"
                                 ></v-text-field>
@@ -56,7 +56,33 @@
                                     <!-- </v-flex> -->
                             </v-flex>
                             <v-flex xs4>
-                                <v-autocomplete
+                                <v-layout>
+                                    <v-flex :class="[(!!selected_customer&&selected_customer.customer_code=='C.UMUM')?'xs4 pr-3':'xs12']">
+                                        <v-autocomplete
+                                            :items="customers"
+                                            v-model="selected_customer"
+                                            return-object
+                                            item-text="customer_name"
+                                            item-value="customer_id"
+                                            label="Customer"
+                                            :disabled="(details.length>0 && !!details[0].item) || !!selected_offer"
+                                        >
+                                            <!-- <template slot="append-outer">
+                                                <v-btn color="success" class="ma-0 ml-2 btn-icon" @click="add_customer" :disabled="sales_used=='Y'">
+                                                    <v-icon>add</v-icon>
+                                                </v-btn> 
+                                            </template> -->
+                                        </v-autocomplete>
+                                    </v-flex>
+                                    <v-flex v-if="!!selected_customer&&selected_customer.customer_code=='C.UMUM'" xs8>
+                                        <v-text-field
+                                            label="Nama Customer"
+                                            v-model="sales_customer_name"
+                                        ></v-text-field>
+                                    </v-flex>
+                                </v-layout>
+
+                                <!-- <v-autocomplete
                                     :items="customers"
                                     v-model="selected_customer"
                                     return-object
@@ -71,7 +97,7 @@
                                             <v-icon>add</v-icon>
                                         </v-btn> 
                                     </template>
-                                </v-autocomplete>
+                                </v-autocomplete> -->
 
                                 <!-- <v-select
                                     :items="staffs"
@@ -86,7 +112,7 @@
                                 <v-select
                                     :items="offers"
                                     v-model="selected_offer"
-                                    label="Nomor Penawaran"
+                                    label="Nomor Terima Order"
                                     return-object
                                     item-text="sales_number"
                                     item-value="sales_id"
@@ -101,7 +127,7 @@
                                 </v-select>
 
                                 <v-text-field
-                                    label="Nomor Penawaran"
+                                    label="Nomor Terima Order"
                                     :value="selected_offer.sales_date + ' / ' + selected_offer.sales_number"
                                     v-if="!!selected_offer"
                                     :clearable="!view"
@@ -343,17 +369,17 @@
                                                     clearable
                                                     :readonly="!!d.item"
                                                     @change="update_item(n, $event)"
-                                                    item-text="item_name"
+                                                    item-text="item_code_name"
                                                     item-value="item_id"
                                                     placeholder="Pilih..."
                                                     v-show="!d.item"
                                                 >
                                                     <template slot="item" slot-scope="data">
-                                                        {{data.item.item_name}}
+                                                        {{data.item.item_code}} - {{data.item.item_name}}
                                                     </template>
 
                                                     <template slot="selection" slot-scope="data">
-                                                        {{data.item.item_name}}
+                                                        {{data.item.item_code}} - {{data.item.item_name}}
                                                     </template>
 
                                                     <template slot="prepend" v-if="!is_sales">
@@ -365,7 +391,7 @@
                                                     <v-flex xs12>
                                                         <v-text-field
                                                             solo
-                                                            :value="d.item.item_name"
+                                                            :value="d.item.item_code + ' - ' + d.item.item_name"
                                                             hide-details
                                                             :clearable="!view"
                                                             readonly
@@ -700,6 +726,11 @@ module.exports = {
             set (v) { this.$store.commit('sales_new/set_common', ['sales_number', v]) }
         },
 
+        sales_customer_name : {
+            get () { return this.$store.state.sales_new.sales_customer_name },
+            set (v) { this.$store.commit('sales_new/set_common', ['sales_customer_name', v]) }
+        },
+
         sales_ref : {
             get () { return this.$store.state.sales_new.sales_ref },
             set (v) { this.$store.commit('sales_new/set_common', ['sales_ref', v]) }
@@ -776,7 +807,7 @@ module.exports = {
             if (!this.selected_term) return false
             if (!this.selected_address) return false
             if (!this.selected_customer) return false
-            if (!this.selected_staff) return false
+            // if (!this.selected_staff) return false
             if (!this.selected_offer) return false
 
             return true

@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title primary-title class="pt-2 pb-0" v-show="!custom_title">
             <v-layout row wrap>
-                <v-flex xs4>
+                <v-flex xs8>
                     <h3 class="display-1 font-weight-light zalfa-text-title">{{title}}</h3>
                 </v-flex>
                 <v-flex xs1 pr-1>
@@ -29,7 +29,7 @@
                         :solo="true"
                     ></common-datepicker>
                 </v-flex>
-                <v-flex xs2 pl-2>
+                <!-- <v-flex xs2 pl-2>
                     <v-select
                         :items="staffs"
                         v-model="selected_staff"
@@ -57,11 +57,8 @@
                         solo
                         clearable
                     >
-                        <!-- <template slot="selection" slot-scope="data">
-                            <span class="red white--text">{{data.item.leadtype_name}}</span>
-                        </template> -->
                     </v-select>
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs2 class="text-xs-right" pl-2>
                     <!-- <v-btn color="success" class="ma-0 btn-icon" @click="add">
                         <v-icon>add</v-icon>
@@ -105,7 +102,7 @@
                     <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.sales_date }}</td>
                     <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.sales_number }}</td>
                     <td class="text-xs-left pa-2" @click="select(props.item)" v-show="!is_sales">
-                        {{ props.item.customer_name }}
+                        {{ props.item.customer_name }} <span v-show="props.item.customer_code=='C.UMUM'">— {{ props.item.sales_customer_name }}</span>
                     </td> 
                     <td class="text-xs-left pa-2" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.staff_name }}
@@ -113,9 +110,9 @@
                     <td class="text-xs-right pa-2" @click="select(props.item)" v-show="!is_sales">
                         <span class="caption grey--text">Rp</span> <b>{{ one_money(props.item.sales_grandtotal) }}</b>
                     </td>
-                    <td class="text-xs-left pa-2" @click="select(props.item)" v-show="!is_sales">
+                    <!-- <td class="text-xs-left pa-2" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.sales_note }}
-                    </td>
+                    </td> -->
                     <td class="text-xs-left pa-2" @click="select(props.item)" v-show="props.item.so_number!=''">
                         {{ props.item.so_number }}
                     </td>
@@ -142,7 +139,7 @@
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_debit) }}</td>
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_credit) }}</td> -->
                     <td class="text-xs-center pa-0" @click="select(props.item)">
-                        <v-btn color="orange" dark class="btn-icon ma-0" small @click="printMe(props.item)"><v-icon>print</v-icon></v-btn>
+                        <!-- <v-btn color="orange" dark class="btn-icon ma-0" small @click="printMe(props.item)"><v-icon>print</v-icon></v-btn> -->
                         <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
                         <v-btn color="red" 
                             :dark="props.item.sales_done=='N'" 
@@ -214,16 +211,16 @@ module.exports = {
                     text: "NAMA PROSPEK",
                     align: "left",
                     sortable: false,
-                    width: "19%",
+                    width: "27%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
-                {
-                    text: "SALES",
-                    align: "left",
-                    sortable: false,
-                    width: "8%",
-                    class: "pa-2 zalfa-bg-purple lighten-3 white--text"
-                },
+                // {
+                //     text: "SALES",
+                //     align: "left",
+                //     sortable: false,
+                //     width: "8%",
+                //     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
+                // },
                 {
                     text: "TOTAL",
                     align: "right",
@@ -303,7 +300,7 @@ module.exports = {
         },
 
         title() {
-            return "PENAWARAN BARANG"
+            return "TERIMA ORDER"
         },
 
         is_sales() {
@@ -357,6 +354,7 @@ module.exports = {
             this.$store.commit('offer_new/set_common', ['edit', false])
             this.$store.commit('offer_new/set_common', ['sales_date', this.$store.state.offer_new.current_date.split('-').reverse().join('-')])
             this.$store.commit('offer_new/set_common', ['sales_note', ''])
+            this.$store.commit('offer_new/set_common', ['sales_customer_name', ''])
             this.$store.commit('offer_new/set_common', ['sales_memo', ''])
             this.$store.commit('offer_new/set_common', ['sales_receipt', ''])
             this.$store.commit('offer_new/set_common', ['sales_franco', ''])
@@ -382,6 +380,7 @@ module.exports = {
             this.$store.commit('offer_new/set_common', ['sales_id', sc.sales_id])
             this.$store.commit('offer_new/set_common', ['sales_date', sc.sales_date])
             this.$store.commit('offer_new/set_common', ['sales_note', sc.sales_note])
+            this.$store.commit('offer_new/set_common', ['sales_customer_name', sc.sales_customer_name])
             this.$store.commit('offer_new/set_common', ['sales_memo', sc.sales_memo])
             this.$store.commit('offer_new/set_common', ['sales_number', sc.sales_number])
             this.$store.commit('offer_new/set_common', ['sales_franco', sc.sales_franco])
@@ -485,7 +484,8 @@ module.exports = {
             this.$store.commit('sales_new/set_common', ['sales_date', sc.sales_date])
             this.$store.commit('sales_new/set_common', ['sales_note', sc.sales_note])
             this.$store.commit('sales_new/set_common', ['sales_memo', sc.sales_memo])
-            this.$store.commit('sales_new/set_common', ['sales_number', ""])
+            this.$store.commit('sales_new/set_common', ['sales_number', sc.sales_number])
+            this.$store.commit('sales_new/set_common', ['sales_customer_name', sc.sales_customer_name])
             this.$store.commit('sales_new/set_common', ['sales_disc', sc.sales_disc])
             this.$store.commit('sales_new/set_common', ['sales_discrp', sc.sales_discrp])
             this.$store.commit('sales_new/set_common', ['sales_ref', ""])

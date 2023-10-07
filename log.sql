@@ -170,7 +170,7 @@ CREATE TABLE `log_stock` (
   KEY `Log_StockDate` (`Log_StockDate`),
   KEY `Log_StockFromToM_WarehouseID` (`Log_StockFromToM_WarehouseID`),
   KEY `Log_StockIndex` (`log_stockindex`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,6 +179,7 @@ CREATE TABLE `log_stock` (
 
 LOCK TABLES `log_stock` WRITE;
 /*!40000 ALTER TABLE `log_stock` DISABLE KEYS */;
+INSERT INTO `log_stock` VALUES (1,'PURCHASE.RECEIVE',1,'',0,0,5,1,0,0,10,10,'Y','2023-10-04 22:08:20','2023-10-04 22:08:20',1,'2023-10-03 23:38:26','2023-10-03 23:38:26.0000000001'),(2,'PURCHASE.RECEIVE',2,'',0,0,6,1,0,0,10,10,'Y','2023-10-04 22:08:20','2023-10-04 22:08:20',1,'2023-10-03 23:38:54','2023-10-03 23:38:54.0000000002'),(3,'PURCHASE.MODIFY',1,'',0,0,5,1,0,10,-10,0,'Y','2023-10-04 22:26:12','2023-10-04 22:26:12',1,'2023-10-03 23:38:26','2023-10-03 23:38:26.0000000003'),(4,'PURCHASE.DELETE',2,'',0,0,6,1,0,10,-10,0,'Y','2023-10-04 22:26:12','2023-10-04 22:26:12',1,'2023-10-03 23:38:54','2023-10-03 23:38:54.0000000004'),(5,'PURCHASE.RECEIVE',1,'',0,0,5,1,0,0,20,20,'Y','2023-10-04 22:26:12','2023-10-04 22:26:12',1,'2023-10-03 23:38:26','2023-10-03 23:38:26.0000000005'),(6,'PURCHASE.DELETE',1,'',0,0,5,1,0,20,-20,0,'Y','2023-10-04 22:27:04','2023-10-04 22:27:04',1,'2023-10-03 23:38:26','2023-10-03 23:38:26.0000000006'),(7,'PURCHASE.RECEIVE',3,'',0,0,6,1,0,0,10,10,'Y','2023-10-04 22:27:04','2023-10-04 22:27:04',1,'2023-10-03 23:38:54','2023-10-03 23:38:54.0000000007'),(8,'PURCHASE.DELETE',3,'',0,0,6,1,0,10,-10,0,'Y','2023-10-04 22:30:05','2023-10-04 22:30:05',1,'2023-10-03 23:38:54','2023-10-03 23:38:54.0000000008'),(9,'PURCHASE.RECEIVE',4,'',0,0,5,1,0,0,20,20,'Y','2023-10-04 22:30:05','2023-10-04 22:30:05',1,'2023-10-03 23:38:26','2023-10-03 23:38:26.0000000009'),(10,'PURCHASE.RECEIVE',4,'',0,0,5,1,0,20,20,40,'Y','2023-10-04 22:32:02','2023-10-04 22:32:02',1,'2023-10-03 23:38:26','2023-10-03 23:38:26.0000000010'),(11,'PURCHASE.RECEIVE',5,'',0,0,6,1,0,0,10,10,'Y','2023-10-04 22:32:02','2023-10-04 22:32:02',1,'2023-10-03 23:38:54','2023-10-03 23:38:54.0000000011');
 /*!40000 ALTER TABLE `log_stock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,7 +200,7 @@ CREATE TABLE `log_type` (
   KEY `Log_TypeCode` (`Log_TypeCode`),
   KEY `Log_TypeIsActive` (`Log_TypeIsActive`),
   KEY `Log_TypeName` (`Log_TypeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +209,7 @@ CREATE TABLE `log_type` (
 
 LOCK TABLES `log_type` WRITE;
 /*!40000 ALTER TABLE `log_type` DISABLE KEYS */;
-INSERT INTO `log_type` VALUES (1,'SALES.DELIVERY','Pengiriman','Pengiriman ke [customer]','Y'),(2,'PURCHASE.RECEIVE','Penerimaan','Penerimaan dari [supplier]','Y'),(3,'INV.ADJUSTMENT','Penyesuaian','Adjustment','Y'),(4,'INV.TRANSFER.IN','Transfer Gudang','Transfer barang dari [towarehouse]','Y'),(5,'INV.TRANSFER.OUT','Transfer Gudang','Transfer barang ke [towarehouse]','Y'),(6,'INV.ASSEMBLY.IN','Perakitan','Perakitan Produk','Y'),(7,'INV.ASSEMBLY.OUT','Perakitan','Perakitan Produk','Y'),(8,'SALES.DELIVERY.DELETE','[hapus] Pengiriman','(hapus) Pengiriman ke [customer]','Y'),(9,'SALES.RETUR','Retur Penjualan','Retur Penjualan dari [customer]','Y'),(10,'SALES.RETUR.DELETE','[hapus] Retur Penjualan','(hapus) Retur Penjualan dari [customer]','Y');
+INSERT INTO `log_type` VALUES (1,'SALES.DELIVERY','Pengiriman','Pengiriman ke [customer]','Y'),(2,'PURCHASE.RECEIVE','Penerimaan','Penerimaan dari [supplier]','Y'),(3,'INV.ADJUSTMENT','Penyesuaian','Adjustment','Y'),(4,'INV.TRANSFER.IN','Transfer Gudang','Transfer barang dari [towarehouse]','Y'),(5,'INV.TRANSFER.OUT','Transfer Gudang','Transfer barang ke [towarehouse]','Y'),(6,'INV.ASSEMBLY.IN','Perakitan','Perakitan Produk','Y'),(7,'INV.ASSEMBLY.OUT','Perakitan','Perakitan Produk','Y'),(8,'SALES.DELIVERY.DELETE','[hapus] Pengiriman','(hapus) Pengiriman ke [customer]','Y'),(9,'SALES.RETUR','Retur Penjualan','Retur Penjualan dari [customer]','Y'),(10,'SALES.RETUR.DELETE','[hapus] Retur Penjualan','(hapus) Retur Penjualan dari [customer]','Y'),(11,'PURCHASE.MODIFY','Revisi Penerimaan','Revisi Penerimaan dari [supplier]','Y'),(12,'PURCHASE.DELETE','Hapus Penerimaan','Hapus Penerimaan dari [supplier]','Y');
 /*!40000 ALTER TABLE `log_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,4 +301,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-04  9:54:21
+-- Dump completed on 2023-10-06 13:40:39

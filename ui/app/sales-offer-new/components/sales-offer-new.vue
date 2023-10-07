@@ -11,8 +11,8 @@
         <v-card>
             <v-card-title primary-title class="cyan white--text pt-3">
                 <h3>
-                    <span v-show="!edit">PENAWARAN BARU</span>
-                    <span v-show="!!edit">UBAH DATA PENAWARAN</span>
+                    <span v-show="!edit">TERIMA ORDER BARU</span>
+                    <span v-show="!!edit">UBAH DATA TERIMA ORDER</span>
                 </h3>
             </v-card-title>
             <v-card-text>

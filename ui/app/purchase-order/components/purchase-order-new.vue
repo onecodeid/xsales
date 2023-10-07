@@ -11,8 +11,8 @@
         <v-card>
             <v-card-title primary-title class="cyan white--text pt-3">
                 <h3>
-                    <span v-show="!edit">PURCHASING BARU</span>
-                    <span v-show="!!edit">UBAH DATA PURCHASING</span>
+                    <span v-show="!edit">PEMBELIAN BARU</span>
+                    <span v-show="!!edit">UBAH DATA PEMBELIAN</span>
                 </h3>
             </v-card-title>
             <v-card-text>

@@ -38,6 +38,7 @@ export default {
         sales_dp: 0,
         sales_grandtotal: 0,
         sales_proforma: 'N',
+        sales_customer_name: '',
 
         proforma_duedate: current_date(),
         proforma_number: '',
@@ -286,6 +287,7 @@ export default {
 
             let hdata = {
                 p_date: context.state.sales_date,
+                p_number: context.state.sales_number,
                 p_shipping: context.state.sales_shipping,
                 p_dp: context.state.sales_dp,
                 p_total: 0,
@@ -296,8 +298,9 @@ export default {
                 p_memo: context.state.sales_memo,
                 p_ref: context.state.sales_ref,
                 p_customer: context.state.selected_customer.customer_id,
+                p_customer_name: context.state.sales_customer_name,
                 p_address: context.state.selected_address ? context.state.selected_address.address_id : 0,
-                p_staff: context.state.selected_staff.staff_id,
+                p_staff: 0, //context.state.selected_staff.staff_id,
                 p_offer: context.state.selected_offer ? context.state.selected_offer.sales_id : 0,
                 p_payment: context.state.selected_paymentplan ? context.state.selected_paymentplan.paymentplan_id : 0,
                 p_term: context.state.selected_term ? context.state.selected_term.term_id : 0,

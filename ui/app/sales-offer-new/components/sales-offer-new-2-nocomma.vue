@@ -44,27 +44,38 @@
                                         <v-text-field
                                             label="Nomor Faktur"
                                             v-model="sales_number"
-                                            :readonly="true"
+                                            :readonly="false"
                                             :disabled="view"
-                                            placeholder="( kosongkan saja )"
+                                            placeholder="Nomor Faktur"
                                         ></v-text-field>
                                     </v-flex>
                                     <v-flex xs9 pl-5>
-                                        <v-autocomplete
-                                            :items="customers"
-                                            v-model="selected_customer"
-                                            return-object
-                                            item-text="customer_name"
-                                            item-value="customer_id"
-                                            label="Customer"
-                                            :disabled="sales_used=='Y'"
-                                        >
-                                            <template slot="append-outer">
-                                                <v-btn color="success" class="ma-0 ml-2 btn-icon" @click="add_customer" :disabled="sales_used=='Y'">
-                                                    <v-icon>add</v-icon>
-                                                </v-btn> 
-                                            </template>
-                                        </v-autocomplete>
+                                        <v-layout>
+                                            <v-flex :class="[(!!selected_customer&&selected_customer.customer_code=='C.UMUM')?'xs4 pr-3':'xs12']">
+                                                <v-autocomplete
+                                                    :items="customers"
+                                                    v-model="selected_customer"
+                                                    return-object
+                                                    item-text="customer_name"
+                                                    item-value="customer_id"
+                                                    label="Customer"
+                                                    :disabled="sales_used=='Y'"
+                                                >
+                                                    <!-- <template slot="append-outer">
+                                                        <v-btn color="success" class="ma-0 ml-2 btn-icon" @click="add_customer" :disabled="sales_used=='Y'">
+                                                            <v-icon>add</v-icon>
+                                                        </v-btn> 
+                                                    </template> -->
+                                                </v-autocomplete>
+                                            </v-flex>
+                                            <v-flex v-if="!!selected_customer&&selected_customer.customer_code=='C.UMUM'" xs8>
+                                                <v-text-field
+                                                    label="Nama Customer"
+                                                    v-model="sales_customer_name"
+                                                ></v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+                                        
 
                                         <v-text-field
                                             label="Catatan"
@@ -214,11 +225,11 @@
                                                     v-show="!d.item"
                                                 >
                                                     <template slot="item" slot-scope="data">
-                                                        {{data.item.item_name}}
+                                                        {{data.item.item_code}} - {{data.item.item_name}}
                                                     </template>
 
                                                     <template slot="selection" slot-scope="data">
-                                                        {{data.item.item_name}}
+                                                        {{data.item.item_code}} - {{data.item.item_name}}
                                                     </template>
 
                                                     <template slot="prepend" v-if="!is_sales">
@@ -231,7 +242,7 @@
                                                     <v-flex xs12>
                                                         <v-text-field
                                                             solo
-                                                            :value="d.item.item_name"
+                                                            :value="d.item.item_code + ' - ' + d.item.item_name"
                                                             hide-details
                                                             clearable
                                                             readonly
@@ -241,7 +252,7 @@
                                                                 <v-btn color="red" class="ma-0 mr-1" icon :dark="false" flat @click="del_detail(n)" ><v-icon>delete</v-icon></v-btn>
                                                             </template>
                                                         </v-text-field>
-                                                        <div class="caption text-xs-left pl-5 py-1 mt-1"><a href="#" @click="purchase_history(d.item)"><i>History pembelian</i></a></div>
+                                                        <!-- <div class="caption text-xs-left pl-5 py-1 mt-1"><a href="#" @click="purchase_history(d.item)"><i>History pembelian</i></a></div> -->
                                                     </v-flex>
                                                     <!-- <div class="caption text-xs-right cyan lighten-2 px-2 py-1 mt-1"><i>History pembelian</i></div> -->
                                                     
@@ -566,6 +577,11 @@ module.exports = {
             set (v) { this.$store.commit('offer_new/set_common', ['sales_number', v]) }
         },
 
+        sales_customer_name : {
+            get () { return this.$store.state.offer_new.sales_customer_name },
+            set (v) { this.$store.commit('offer_new/set_common', ['sales_customer_name', v]) }
+        },
+
         sales_ppn : {
             get () { return this.$store.state.offer_new.sales_ppn },
             set (v) { 
@@ -632,8 +648,8 @@ module.exports = {
 
         btn_save_enabled () {
             if (!this.selected_customer) return false
-            if (!this.selected_staff) return false
-            if (!this.selected_leadtype) return false
+            // if (!this.selected_staff) return false
+            // if (!this.selected_leadtype) return false
 
             return true
         },
@@ -767,9 +783,20 @@ module.exports = {
         update_item(idx, v) {
             let d = this.details
             d[idx].item = v
+            d[idx].price = v.item_price
+
+            this.$store.dispatch("offer_new/getDisc", v.disc_id).then((x) => {
+                if (x.status != 'ERR') {
+                    d[idx].disc = x.amount
+                } else {
+                    d[idx].disc = v.disc_amount
+                }
+
+                this.$store.commit('offer_new/set_details', d)
+            })
             // d[idx].price = v.item_price
             
-            this.$store.commit('offer_new/set_details', d)
+            
         },
 
         update_pack(idx, v) {
