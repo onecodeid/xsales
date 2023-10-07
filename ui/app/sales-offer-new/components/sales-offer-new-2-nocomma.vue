@@ -207,7 +207,10 @@
                                         </v-layout>
                                     </v-card-title>
                                     <v-card-text class="px-3 py-2">
-                                        <v-layout row wrap v-for="(d, n) in details" :key="n" :class="{'mt-2':n>0}">
+                                        <v-layout row wrap v-for="(d, n) in details" :key="n" :class="{'mt-2':n>0}" v-show="!selected_customer">
+                                            <v-flex xs12 class="text-xs-center">Pilih dulu Customernya</v-flex>
+                                        </v-layout>
+                                        <v-layout row wrap v-for="(d, n) in details" :key="n" :class="{'mt-2':n>0}" v-show="!!selected_customer">
 
                                             <v-flex xs5 pr-3 v-show="d.other!='Y'">
                                                 <v-autocomplete
@@ -219,7 +222,7 @@
                                                     clearable
                                                     :readonly="!!d.item"
                                                     @change="update_item(n, $event)"
-                                                    item-text="item_name"
+                                                    item-text="item_code_name"
                                                     item-value="item_id"
                                                     placeholder="Pilih..."
                                                     v-show="!d.item"
@@ -488,16 +491,10 @@
                                                     </v-flex>
                                                     <v-flex xs4 pa-2 pt-3 class="text-xs-right">
                                                         <span class="caption">Rp</span> <span class="title">{{one_money(sales_grandtotal)}}</span>
-                                                        
                                                     </v-flex>
                                                 </v-layout>
-
-                                                
                                             </v-flex>
                                         </v-layout>
-
-                                        
-                                        
                                     </v-card-text>
                                 </v-card>                                
                             </v-flex>
