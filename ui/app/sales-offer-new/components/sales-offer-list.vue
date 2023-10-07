@@ -139,7 +139,7 @@
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_debit) }}</td>
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_credit) }}</td> -->
                     <td class="text-xs-center pa-0" @click="select(props.item)">
-                        <v-btn color="orange" dark class="btn-icon ma-0" small @click="printMe(props.item)"><v-icon>print</v-icon></v-btn>
+                        <!-- <v-btn color="orange" dark class="btn-icon ma-0" small @click="printMe(props.item)"><v-icon>print</v-icon></v-btn> -->
                         <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
                         <v-btn color="red" 
                             :dark="props.item.sales_done=='N'" 
@@ -484,7 +484,8 @@ module.exports = {
             this.$store.commit('sales_new/set_common', ['sales_date', sc.sales_date])
             this.$store.commit('sales_new/set_common', ['sales_note', sc.sales_note])
             this.$store.commit('sales_new/set_common', ['sales_memo', sc.sales_memo])
-            this.$store.commit('sales_new/set_common', ['sales_number', ""])
+            this.$store.commit('sales_new/set_common', ['sales_number', sc.sales_number])
+            this.$store.commit('sales_new/set_common', ['sales_customer_name', sc.sales_customer_name])
             this.$store.commit('sales_new/set_common', ['sales_disc', sc.sales_disc])
             this.$store.commit('sales_new/set_common', ['sales_discrp', sc.sales_discrp])
             this.$store.commit('sales_new/set_common', ['sales_ref', ""])

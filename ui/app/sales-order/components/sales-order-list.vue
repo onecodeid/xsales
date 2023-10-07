@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title primary-title class="pt-2 pb-0" v-show="!custom_title">
             <v-layout row wrap>
-                <v-flex xs6>
+                <v-flex xs8>
                     <h3 class="display-1 font-weight-light zalfa-text-title">{{title}}</h3>
                 </v-flex>
                 <v-flex xs1 pr-1>
@@ -30,7 +30,7 @@
                         :solo="true"
                     ></common-datepicker>
                 </v-flex>
-                <v-flex xs2 pl-2>
+                <!-- <v-flex xs2 pl-2>
                     <v-select
                         :items="staffs"
                         v-model="selected_staff"
@@ -46,7 +46,7 @@
                             <span class="" v-show="data.item.staff_name.length > 15">{{data.item.staff_name.substr(0, 13)+' ..'}}</span>
                         </template>
                     </v-select>
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs2 class="text-xs-right" pl-2>
                     <!-- <v-btn color="success" class="ma-0 btn-icon" @click="add">
                         <v-icon>add</v-icon>
@@ -101,14 +101,15 @@
                     <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.customer_name }}
                     </td> 
-                    <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
+                    <!-- <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.staff_name }}
-                    </td> 
-                    <td class="text-xs-right pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
-                        <span class="caption grey--text">Rp</span> <b>{{ one_money(props.item.sales_grandtotal) }}</b>
-                    </td>
+                    </td>  -->
+                    
                     <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.sales_note }}
+                    </td>
+                    <td class="text-xs-right pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
+                        <span class="caption grey--text">Rp</span> <b>{{ one_money(props.item.sales_grandtotal) }}</b>
                     </td>
                     
                     <!-- <td class="text-xs-left pa-2" @click="select(props.item)" v-show="is_sales">
@@ -122,29 +123,29 @@
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_credit) }}</td> -->
                     <td class="text-xs-center pa-0 pr-1" :class="bg_proforma(props.item)" @click="select(props.item)">
                         
-                        <v-layout row wrap>
-                            <v-flex xs6 pr-1>
-                                <v-btn color="primary" class="btn-icon ma-0" small block @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
-                            </v-flex>
-                            <v-flex xs6 pl-1>
+                        <!-- <v-layout row wrap> -->
+                            <!-- <v-flex xs6 pr-1> -->
+                                <v-btn color="primary" class="btn-icon ma-0 mr-1" small  @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
+                            <!-- </v-flex>
+                            <v-flex xs6 pl-1> -->
                                 <v-btn color="red" 
                             :dark="props.item.sales_done=='N'" 
                             :disabled="props.item.sales_done!='N'" 
-                            class="btn-icon ma-0" small block @click="del(props.item)"><v-icon>delete</v-icon></v-btn>
-                            </v-flex>
-                        </v-layout>
+                            class="btn-icon ma-0" small  @click="del(props.item)"><v-icon>delete</v-icon></v-btn>
+                            <!-- </v-flex> -->
+                        <!-- </v-layout> -->
 
-                        <v-btn @click="proforma(props.item)" 
+                        <!-- <v-btn @click="proforma(props.item)" 
                             :disabled="props.item.sales_done!='N' || props.item.sales_proforma!='N'"
                             :dark="props.item.sales_done=='N' && props.item.sales_proforma=='N'"
                             v-show="props.item.sales_proforma!='Y'"
                             class="btn-icon ma-0 cyan mt-1" small block
-                            title="Buat Proforma Invoice"><v-icon class="mr-1">money</v-icon>Proforma</v-btn>
+                            title="Buat Proforma Invoice"><v-icon class="mr-1">money</v-icon>Proforma</v-btn> -->
                         
-                        <v-btn @click="proforma_print(props.item)" 
+                        <!-- <v-btn @click="proforma_print(props.item)" 
                             v-show="props.item.sales_proforma=='Y'" dark
                             class="btn-icon ma-0 amber mt-1" small block
-                            title="Cetak Proforma Invoice"><v-icon class="mr-1">print</v-icon>Proforma</v-btn>
+                            title="Cetak Proforma Invoice"><v-icon class="mr-1">print</v-icon>Proforma</v-btn> -->
                         
                         
                     </td>
@@ -211,21 +212,7 @@ module.exports = {
                     text: "CUSTOMER",
                     align: "left",
                     sortable: false,
-                    width: "19%",
-                    class: "pa-2 zalfa-bg-purple lighten-3 white--text"
-                },
-                {
-                    text: "SALES",
-                    align: "left",
-                    sortable: false,
-                    width: "11%",
-                    class: "pa-2 zalfa-bg-purple lighten-3 white--text"
-                },
-                {
-                    text: "TOTAL",
-                    align: "right",
-                    sortable: false,
-                    width: "12%",
+                    width: "30%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
                 {
@@ -233,6 +220,20 @@ module.exports = {
                     align: "left",
                     sortable: false,
                     width: "31%",
+                    class: "pa-2 zalfa-bg-purple lighten-3 white--text"
+                },
+                // {
+                //     text: "SALES",
+                //     align: "left",
+                //     sortable: false,
+                //     width: "11%",
+                //     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
+                // },
+                {
+                    text: "TOTAL",
+                    align: "right",
+                    sortable: false,
+                    width: "12%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
                 {
@@ -336,6 +337,7 @@ module.exports = {
             this.$store.commit('sales_new/set_common', ['sales_ref', ''])
             this.$store.commit('sales_new/set_common', ['sales_note', ''])
             this.$store.commit('sales_new/set_common', ['sales_memo', ''])
+            this.$store.commit('sales_new/set_common', ['sales_customer_name', ''])
             this.$store.commit('sales_new/set_common', ['sales_receipt', ''])
             this.$store.commit('sales_new/set_common', ['sales_shipping', 0])
             this.$store.commit('sales_new/set_common', ['sales_dp', 0])
@@ -378,6 +380,7 @@ module.exports = {
             this.$store.commit('sales_new/set_common', ['sales_date', sc.sales_date])
             this.$store.commit('sales_new/set_common', ['sales_note', sc.sales_note])
             this.$store.commit('sales_new/set_common', ['sales_memo', sc.sales_memo])
+            this.$store.commit('sales_new/set_common', ['sales_customer_name', sc.sales_customer_name])
             this.$store.commit('sales_new/set_common', ['sales_number', sc.sales_number])
             this.$store.commit('sales_new/set_common', ['sales_disc', sc.sales_disc])
             this.$store.commit('sales_new/set_common', ['sales_discrp', sc.sales_discrp])

@@ -27,8 +27,10 @@ DECLARE pdppayid INTEGER;
 DECLARE pstaff DOUBLE DEFAULT 0;
 DECLARE poffer INTEGER;
 DECLARE o_offer INTEGER;
+DECLARE warehouse_id INTEGER DEFAULT 1;
+DECLARE nn INTEGER;
 
--- AFFILIATE
+
 DECLARE aff_id INTEGER DEFAULT 0;
 DECLARE aff_fee DOUBLE;
 DECLARE aff_feerp DOUBLE;
@@ -40,6 +42,7 @@ DECLARE l INTEGER DEFAULT 0;
 DECLARE d_item INTEGER;
 DECLARE d_price DOUBLE;
 DECLARE d_qty DOUBLE;
+DECLARE d_oqty DOUBLE;
 DECLARE d_disc DOUBLE;
 DECLARE d_discrp DOUBLE;
 DECLARE d_ppn CHAR(1) DEFAULT "N";
@@ -76,6 +79,7 @@ START TRANSACTION;
 SET xppn = (SELECT fn_conf('ppn')) / 100;
 
 SET pdate = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_date"));
+SET pnumber = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_number"));
 SET ptotal = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_total"));
 SET pdisc = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_disc"));
 SET pdiscrp = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_discrp"));
@@ -120,7 +124,7 @@ END IF;
 
 IF pid = 0 THEN
     
-    SET pnumber = (SELECT fn_numbering("SO"));
+    -- SET pnumber = (SELECT fn_numbering("SO"));
     INSERT INTO l_sales(L_SalesDate,
         L_SalesNumber,
         L_SalesRef,
@@ -145,24 +149,24 @@ IF pid = 0 THEN
     SELECT pdate, pnumber, pref, pcustomer, paddress, ppayment, pterm, pexp, ptotal, pdisc, pdiscrp, pshipping, pdp, pppn, pnote, pmemo, pstaff, poffer,aff_id, aff_fee, uid;
 
     SET pid = (SELECT LAST_INSERT_ID());
-    CALL sp_log_activity("CREATE", "SALES.ORDER", pid, uid);
+--    CALL sp_log_activity("CREATE", "SALES.ORDER", pid, uid);
 ELSE
     SET o_offer = (SELECT L_SalesL_OfferID FROM l_sales WHERE L_SalesID = pid);
     UPDATE l_offer SET L_OfferUsed = "N" WHERE L_OfferID = o_offer;
     UPDATE l_sales
-    SET L_SalesDate = pdate, L_SalesRef = pref, L_SalesM_DeliveryAddressID = paddress, L_SalesM_PaymentPlanID = ppayment, L_SalesM_TermID = pterm, L_SalesM_ExpeditionID = pexp, L_SalesTotal = ptotal, L_SalesDiscount = pdisc, L_SalesDiscountRp = pdiscrp, L_SalesShipping = pshipping, L_SalesDp = pdp, L_SalesIncludePPN = pppn, L_SalesNote = pnote, L_SalesMemo = pmemo, L_SalesS_StaffID = pstaff, L_SalesL_OfferID = poffer,
+    SET L_SalesDate = pdate, L_SalesNumber = pnumber, L_SalesRef = pref, L_SalesM_DeliveryAddressID = paddress, L_SalesM_PaymentPlanID = ppayment, L_SalesM_TermID = pterm, L_SalesM_ExpeditionID = pexp, L_SalesTotal = ptotal, L_SalesDiscount = pdisc, L_SalesDiscountRp = pdiscrp, L_SalesShipping = pshipping, L_SalesDp = pdp, L_SalesIncludePPN = pppn, L_SalesNote = pnote, L_SalesMemo = pmemo, L_SalesS_StaffID = pstaff, L_SalesL_OfferID = poffer,
     L_SalesM_AffiliateID = aff_id, L_SalesAffiliateFee = aff_fee, L_SalesUID = uid
     WHERE L_SalesID = pid;
 
     SET pnumber = (SELECT L_SalesNumber FROM l_sales WHERE L_SalesID = pid);
     SET pdpid = (SELECT L_SalesF_PaymentDPID FROM l_sales WHERE L_SalesID = pid);
-    CALL sp_log_activity("MODIFY", "SALES.ORDER", pid, uid);
+--    CALL sp_log_activity("MODIFY", "SALES.ORDER", pid, uid);
 END IF;
 
 UPDATE l_offer SET L_OfferUsed = "Y" WHERE L_OfferID = poffer;
 
--- DP Section
--- ----------
+
+
 IF pdp > 0 THEN
     IF pdpid = 0 THEN
         INSERT INTO f_pay(F_PayTotal)
@@ -197,8 +201,10 @@ ELSE
 END IF;
 
 UPDATE l_sales SET L_SalesF_PaymentDPID = pdpid WHERE L_SalesID = pid;
--- END OF DP Section
--- -----------------
+
+UPDATE l_salesdetail
+SET L_SalesDetailIsActive = "O"
+WHERE L_SalesDetailL_SalesID = pid AND L_SalesDetailIsActive = "Y";
 
 SET l = JSON_LENGTH(jdata);
 WHILE n < l DO
@@ -210,7 +216,7 @@ WHILE n < l DO
     SET d_discrp = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.discrp'));
 	SET d_ppn = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.ppn'));
     SET d_total = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.subtotal'));
-    -- SET d_subtotal = d_price * d_qty * (100-d_disc) / 100;
+    
     SET d_subtotal = ((d_price * (100-d_disc) / 100) - d_discrp) * d_qty;
 
     IF d_ppn IS NULL THEN SET d_ppn = "N"; END IF;
@@ -226,7 +232,7 @@ WHILE n < l DO
         SET d_total = d_subtotal;
     END IF;
 
-    SET d_id = (SELECT L_SalesDetailID FROM l_salesdetail WHERE L_SalesDetailIsActive = "Y" AND L_SalesDetailA_ItemID = d_item AND L_SalesDetailL_SalesID = pid);
+    SET d_id = (SELECT L_SalesDetailID FROM l_salesdetail WHERE L_SalesDetailIsActive = "O" AND L_SalesDetailA_ItemID = d_item AND L_SalesDetailL_SalesID = pid);
 
     IF d_id IS NULL THEN
         INSERT INTO l_salesdetail(
@@ -247,9 +253,27 @@ WHILE n < l DO
 
         SET d_id = (SELECT LAST_INSERT_ID());
     ELSE
+
+        SET d_oqty = (SELECT L_SalesDetailQty FROM l_salesdetail WHERE L_SalesDetailID = d_id);
+
         UPDATE l_salesdetail
-        SET L_SalesDetailQty = d_qty, L_SalesDetailPrice = d_price, L_SalesDetailDisc = d_disc, L_SalesDetailDiscRp = d_discrp, L_SalesDetailSubTotal = d_subtotal, L_SalesDetailPPN = d_ppn, L_SalesDetailPPNAmount = d_ppn_amount, L_SalesDetailTotal = d_total
+        SET L_SalesDetailQty = d_qty, L_SalesDetailPrice = d_price, L_SalesDetailDisc = d_disc, L_SalesDetailDiscRp = d_discrp, L_SalesDetailSubTotal = d_subtotal, L_SalesDetailPPN = d_ppn, L_SalesDetailPPNAmount = d_ppn_amount, L_SalesDetailTotal = d_total, L_SalesDetailIsActive = "Y"
         WHERE L_SalesDetailID = d_id;
+
+        IF d_oqty <> d_qty THEN
+            -- UPDATE STOCK
+            UPDATE i_stock
+            JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+                AND L_SalesDetailID = d_id
+                AND L_SalesDetailIsActive = "Y"
+            SET I_StockQty = I_StockQty + d_oqty,
+                I_StockLastTransCode = "SALES.MODIFY",
+                I_StockLastTransRefID = L_SalesDetailID,
+                I_StockLastTransQty = d_oqty
+            WHERE I_StockM_WarehouseID = warehouse_id
+            AND I_StockIsActive = "Y";
+            -- END OF UPDATE STOK
+        END IF;
 
     END IF;
 
@@ -260,21 +284,25 @@ END WHILE;
 
 UPDATE l_salesdetail
 SET L_SalesDetailIsActive = "N"
-WHERE L_SalesDetailL_SalesID = pid
-AND NOT FIND_IN_SET(L_SalesDetailID, d_ids) AND L_SalesDetailIsActive = "Y" ;
+WHERE L_SalesDetailL_SalesID = pid AND L_SalesDetailIsActive = "O";
 
--- UPDATE TOTAL INVOICE
+-- UPDATE l_salesdetail
+-- SET L_SalesDetailIsActive = "N"
+-- WHERE L_SalesDetailL_SalesID = pid
+-- AND NOT FIND_IN_SET(L_SalesDetailID, d_ids) AND L_SalesDetailIsActive = "Y" ;
+
+
 UPDATE l_sales
 JOIN (
     SELECT L_SalesDetailL_SalesID b_id, SUM(L_SalesDetailSubTotal) b_total, sum(L_SalesDetailPPNAmount) b_ppn
-    -- SUM(L_SalesDetailSubTotal) b_total, 
+    
     FROM l_salesdetail WHERE L_SalesDetailL_SalesID = pid AND L_SalesDetailIsActive = "Y"
 ) x ON b_id = L_SalesID
 SET L_SalesSubTotal = b_total, L_SalesTotal = (b_total * (100-L_SalesDiscount) / 100) - L_SalesDiscountRp;
--- , L_SalesPPN = b_ppn, 
---    L_SalesGrandTotal = (b_total * (100-L_SalesDiscount) / 100) - L_SalesDiscountRp + b_ppn + pshipping - pdp;
 
--- UPDATE GRAND TOTAL
+
+
+
 IF d_ppn <> "Y" THEN
     SET xppn = 0; END IF;
 
@@ -283,24 +311,48 @@ SET L_SalesPPN = L_SalesTotal * (xppn),
     L_SalesGrandTotal = (L_SalesTotal * (1 + xppn)) + pshipping - pdp
 WHERE L_SalesID = pid;
 
--- UPDATE DP
+
 UPDATE f_paymentdp
 SET F_PaymentDpPPN = xppn * 100, F_PaymentDpNettAmount = F_PaymentDpAmount / (1 + xppn) WHERE F_PaymentDpID = pdpid;
 UPDATE f_paymentdp
 SET F_PaymentDpPPNAmount = F_PaymentDpAmount - F_PaymentDpNettAmount WHERE F_PaymentDpID = pdpid;
 
--- TOTAL HPP
+
 SET ptotalhpp = (SELECT SUM(L_SalesDetailHPP * L_SalesDetailQty)
     FROM l_salesdetail WHERE L_SalesDetailL_SalesID = pid AND L_SalesDetailIsactive = "Y");
 
 UPDATE l_sales SET L_SalesTotalHPP = ptotalhpp
--- L_SalesTotal = ptotal, L_SalesGrandTotal = ptotal + pshipping 
 WHERE L_SalesID = pid;
 
+-- UPDATE STOK
+    UPDATE i_stock
+    JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+        AND L_SalesDetailL_SalesID = pid
+        AND L_SalesDetailIsActive = "Y"
+    JOIN l_sales ON L_SalesDetailL_SalesID = L_SalesID
+    SET I_StockQty = I_StockQty - L_SalesDetailQty,
+        I_StockLastTransCode = "SALES.DELIVERY",
+        I_StockLastTransRefID = L_SalesDetailID,
+        I_StockLastTransQty = (0 - L_SalesDetailQty)
+        -- I_StockLastTransQty = (0 - L_SalesDetailQty),
+        -- I_StockLastTransDate = concat(L_SalesDate, " ", time(now()))
+    WHERE I_StockM_WarehouseID = warehouse_id
+        AND I_StockIsActive = "Y";
 
-SELECT "OK" as status, JSON_OBJECT("sales_id", pid) as data;
+SET nn = (SELECT COUNT(I_StockID)
+            FROM i_stock
+            JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+                AND L_SalesDetailL_SalesID = pid
+                AND L_SalesDetailIsActive = "Y"
+            WHERE I_StockIsActive = "Y" AND I_StockM_WarehouseID = warehouse_id AND I_StockQty < 0);
 
-COMMIT;
+IF nn > 0 THEN
+    SELECT "ERR" status, "Ada barang yang stoknya tidak mencukupi !" message;
+    ROLLBACK;
+ELSE
+    SELECT "OK" as status, JSON_OBJECT("sales_id", pid) as data;
+    COMMIT;
+END IF;
 
 END;;
 DELIMITER ;

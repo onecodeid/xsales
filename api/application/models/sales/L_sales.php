@@ -26,7 +26,7 @@ class L_Sales extends MY_Model
                 0 sales_paid, 0 sales_unpaid, L_SalesShipping sales_shipping, L_SalesDP sales_dp, L_SalesGrandTotal sales_grandtotal,
                 L_SalesDiscount sales_disc, L_SalesDiscountRp sales_discrp,
                 L_SalesDone sales_done, L_SalesProforma sales_proforma, L_SalesProformaNumber proforma_number, L_SalesProformaDueDate proforma_duedate,
-                L_SalesNote sales_note, L_SalesMemo sales_memo, M_CustomerName customer_name, IFNULL(L_SalesRef, '') sales_ref,
+                L_SalesNote sales_note, L_SalesMemo sales_memo, L_SalesM_CustomerName sales_customer_name, M_CustomerName customer_name, IFNULL(L_SalesRef, '') sales_ref,
                 L_SalesIncludePPN sales_ppn,
                 M_CustomerID customer_id, L_SalesS_StaffID sales_staff, S_StaffName staff_name,
                 L_OfferID offer_id, L_OfferNumber offer_number, L_OfferDate offer_date,
