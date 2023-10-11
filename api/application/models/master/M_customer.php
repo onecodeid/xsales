@@ -41,7 +41,7 @@ class M_customer extends MY_Model
                 AND ((M_ProvinceID = ? AND ? <> 0) OR ? = 0)
                 AND ((M_CityID = ? AND ? <> 0) OR ? = 0)
                 AND ((M_CustomerIsCompany = ? AND ? <> '') OR ? = '')
-                ORDER BY M_CustomerName ASC
+                ORDER BY M_CustomerCode ASC
                 LIMIT {$limit} OFFSET {$offset}", [$d['customer_name'], $d['customer_name'], $d['customer_name'], $d['customer_name'], $d['province'], $d['province'], $d['province'], $d['city'], $d['city'], $d['city'], $d['type'], $d['type'], $d['type']]);
         if ($r)
         {
