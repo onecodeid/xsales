@@ -97,7 +97,7 @@
                     </td> 
 
                     <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)">{{ props.item.sales_date }}</td>
-                    <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)">{{ props.item.sales_number }}</td>
+                    <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)"><b>{{ props.item.sales_number }}</b></td>
                     <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.customer_name }}
                     </td> 
