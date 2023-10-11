@@ -9,7 +9,6 @@ DECLARE pppn CHAR(1) DEFAULT "Y";
 DECLARE pnote text;
 DECLARE pmemo VARCHAR(1000);
 DECLARE pcustomer INTEGER;
-DECLARE pcustomer_name VARCHAR(100);
 DECLARE pleadtype INTEGER;
 DECLARE ptotal DOUBLE DEFAULT 0;
 DECLARE pshipping DOUBLE DEFAULT 0;
@@ -68,14 +67,12 @@ START TRANSACTION;
 SET xppn = (SELECT fn_conf('ppn')) / 100;
 
 SET pdate = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_date"));
-SET pnumber = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_number"));
 SET ptotal = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_total"));
 SET pshipping = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_shipping"));
 SET pppn = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_ppn"));
 SET pnote = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_note"));
 SET pmemo = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_memo"));
 SET pcustomer = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_customer"));
-SET pcustomer_name = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_customer_name"));
 SET pleadtype = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_leadtype"));
 SET pstaff = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_staff"));
 SET ppayment = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_payment"));
@@ -95,11 +92,11 @@ IF pshipping IS NULL THEN SET pshipping = 0; END IF;
 
 IF pid = 0 THEN
     
---    SET pnumber = (SELECT fn_numbering("SF"));
+    SET pnumber = (SELECT fn_numbering_order(pcustomer));
+    -- (SELECT fn_numbering("SF"));
     INSERT INTO l_offer(L_OfferDate,
         L_OfferNumber,
         L_OfferM_CustomerID,
-        L_OfferM_CustomerName,
         L_OfferM_LeadTypeID,
         L_OfferTotal,
         L_OfferShipping,
@@ -114,14 +111,14 @@ IF pid = 0 THEN
         L_OfferValidity,
         L_OfferStockNote,
         L_OfferUID)
-    SELECT pdate, pnumber, pcustomer, pcustomer_name, pleadtype, ptotal, pshipping, pppn, pnote, pmemo, pstaff, ppayment, pterm, pfranco, pdelivery, pvalidity, pstock, uid;
+    SELECT pdate, pnumber, pcustomer, pleadtype, ptotal, pshipping, pppn, pnote, pmemo, pstaff, ppayment, pterm, pfranco, pdelivery, pvalidity, pstock, uid;
 
     SET pid = (SELECT LAST_INSERT_ID());
     CALL sp_log_activity("CREATE", "SALES.OFFER", pid, uid);
 ELSE
 
     UPDATE l_offer
-    SET L_OfferNumber = pnumber, L_OfferM_CustomerID = pcustomer, L_OfferM_CustomerName = pcustomer_name, L_OfferDate = pdate, L_OfferTotal = ptotal, L_OfferShipping = pshipping, L_OfferIncludePPN = pppn, L_OfferNote = pnote, L_OfferMemo = pmemo, 
+    SET L_OfferM_CustomerID = pcustomer, L_OfferDate = pdate, L_OfferTotal = ptotal, L_OfferShipping = pshipping, L_OfferIncludePPN = pppn, L_OfferNote = pnote, L_OfferMemo = pmemo, 
     L_OfferS_StaffID = pstaff, L_OfferM_PaymentPlanID = ppayment, L_OfferM_TermID = pterm, L_OfferFranco = pfranco, L_OfferDelivery = pdelivery,
     L_OfferM_LeadTypeID = pleadtype, L_OfferValidity = pvalidity, L_OfferStockNote = pstock, L_OfferUID = uid
     WHERE L_OfferID = pid;

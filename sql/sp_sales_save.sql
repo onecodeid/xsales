@@ -124,6 +124,7 @@ END IF;
 
 IF pid = 0 THEN
     
+    SET pnumber = (SELECT L_OfferNumber FROM l_offer WHERE L_OfferID = poffer);
     -- SET pnumber = (SELECT fn_numbering("SO"));
     INSERT INTO l_sales(L_SalesDate,
         L_SalesNumber,
@@ -164,8 +165,6 @@ ELSE
 END IF;
 
 UPDATE l_offer SET L_OfferUsed = "Y" WHERE L_OfferID = poffer;
-
-
 
 IF pdp > 0 THEN
     IF pdpid = 0 THEN
