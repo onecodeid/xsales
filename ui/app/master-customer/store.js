@@ -4,8 +4,8 @@
 //
 //
 // Actions
-import customer from "./modules/customer.js?t=ad2ds1abc";
-import customer_new from "./modules/customer_new.js?t=albssd1sdasc";
+import customer from "./modules/customer.js?t=as1abc";
+import customer_new from "./modules/customer_new.js?t=albasc";
 import customer_filter from "./modules/customer_filter.js?t=aads12sbc";
 import address from "./modules/customer_address.js?t=alkjbsda12sc";
 import system from "../assets/js/system.js?t=2ds134";

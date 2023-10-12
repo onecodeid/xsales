@@ -334,7 +334,7 @@ module.exports = {
             this.$store.commit('customer_new/set_common', ['customer_prospect', 'N'])
             this.$store.commit('customer_new/set_phones', [])
             this.$store.commit('customer_new/set_cbanks', [])
-            this.$store.commit('customer_new/set_object', ["discs", []])
+            this.$store.commit('customer_new/set_object', ["cdiscs", []])
             this.$store.commit('address/set_addresses', [])
             this.$store.commit('address/set_selected_address', null)
             
