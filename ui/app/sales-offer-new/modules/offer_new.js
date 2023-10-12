@@ -55,7 +55,7 @@ export default {
         selected_term: null,
 
         details: [],
-        detail_default: { item: null, qty: 0, price: 0, disc: 0, discrp: 0, ppn: 'N', total: 0, disctype: 'P', other: 'N', other_name: '', pack: null, unit: null, tooltip: true },
+        detail_default: { id: 0, item: null, qty: 0, price: 0, disc: 0, discrp: 0, ppn: 'N', total: 0, disctype: 'P', other: 'N', other_name: '', pack: null, unit: null, tooltip: true },
 
         dialog_new: false
     },
@@ -198,6 +198,7 @@ export default {
                     disc = d.disctype == 'P' ? d.disc : 0
                     discrp = d.disctype == 'R' ? d.discrp : 0
                     ds.push({
+                        id: d.id,
                         itemid: (d.other != 'Y' ? d.item.item_id : 0),
                         other: d.other,
                         other_name: d.other_name,

@@ -30,7 +30,7 @@ class L_Sales extends MY_Model
                 L_SalesIncludePPN sales_ppn,
                 M_CustomerID customer_id, L_SalesS_StaffID sales_staff, S_StaffName staff_name,
                 L_OfferID offer_id, L_OfferNumber offer_number, L_OfferDate offer_date,
-                CONCAT('[', GROUP_CONCAT(JSON_OBJECT('item', JSON_OBJECT('item_id', M_ItemID, 'item_code', M_ItemCode, 'item_name', IFNULL(L_SalesDetailA_ItemName, M_ItemName),
+                CONCAT('[', GROUP_CONCAT(JSON_OBJECT('id', L_SalesDetailID, 'item', JSON_OBJECT('item_id', M_ItemID, 'item_code', M_ItemCode, 'item_name', IFNULL(L_SalesDetailA_ItemName, M_ItemName),
                 'item_code_name', CONCAT(M_ItemCode, ' - ', M_ItemName)), 'price', L_SalesDetailPrice, 'qty', L_SalesDetailQty, 'disc', L_SalesDetailDisc, 'discrp', L_SalesDetailDiscRp, 'disctype', IF(L_SalesDetailDiscRp=0,'P','R'), 'ppn', L_SalesDetailPPN, 'ppn_amount', L_SalesDetailPPNAmount, 'total', L_SalesDetailTotal, 
                 'subtotal', L_SalesDetailQty * ((L_SalesDetailPrice * (100 - L_SalesDetailDisc) / 100) - L_SalesDetailDiscRp), 
                 'netto', L_SalesDetailSubtotal, 'detail_id', L_SalesDetailID)), ']') details,

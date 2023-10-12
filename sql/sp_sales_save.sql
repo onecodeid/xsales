@@ -29,7 +29,7 @@ DECLARE poffer INTEGER;
 DECLARE o_offer INTEGER;
 DECLARE warehouse_id INTEGER DEFAULT 1;
 DECLARE nn INTEGER;
-
+DECLARE nnn VARCHAR(1000);
 
 DECLARE aff_id INTEGER DEFAULT 0;
 DECLARE aff_fee DOUBLE;
@@ -231,7 +231,8 @@ WHILE n < l DO
         SET d_total = d_subtotal;
     END IF;
 
-    SET d_id = (SELECT L_SalesDetailID FROM l_salesdetail WHERE L_SalesDetailIsActive = "O" AND L_SalesDetailA_ItemID = d_item AND L_SalesDetailL_SalesID = pid);
+    SET d_id = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.id'));
+    -- SET d_id = (SELECT L_SalesDetailID FROM l_salesdetail WHERE L_SalesDetailIsActive = "O" AND L_SalesDetailA_ItemID = d_item AND L_SalesDetailL_SalesID = pid);
 
     IF d_id IS NULL THEN
         INSERT INTO l_salesdetail(
@@ -269,6 +270,17 @@ WHILE n < l DO
                 I_StockLastTransCode = "SALES.MODIFY",
                 I_StockLastTransRefID = L_SalesDetailID,
                 I_StockLastTransQty = d_oqty
+            WHERE I_StockM_WarehouseID = warehouse_id
+            AND I_StockIsActive = "Y";
+
+            UPDATE i_stock
+            JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+                AND L_SalesDetailID = d_id
+                AND L_SalesDetailIsActive = "Y"
+            SET I_StockQty = I_StockQty - d_qty,
+                I_StockLastTransCode = "SALES.DELIVERY",
+                I_StockLastTransRefID = L_SalesDetailID,
+                I_StockLastTransQty = d_qty
             WHERE I_StockM_WarehouseID = warehouse_id
             AND I_StockIsActive = "Y";
             -- END OF UPDATE STOK
@@ -324,19 +336,19 @@ UPDATE l_sales SET L_SalesTotalHPP = ptotalhpp
 WHERE L_SalesID = pid;
 
 -- UPDATE STOK
-    UPDATE i_stock
-    JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
-        AND L_SalesDetailL_SalesID = pid
-        AND L_SalesDetailIsActive = "Y"
-    JOIN l_sales ON L_SalesDetailL_SalesID = L_SalesID
-    SET I_StockQty = I_StockQty - L_SalesDetailQty,
-        I_StockLastTransCode = "SALES.DELIVERY",
-        I_StockLastTransRefID = L_SalesDetailID,
-        I_StockLastTransQty = (0 - L_SalesDetailQty)
+    -- UPDATE i_stock
+    -- JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+    --     AND L_SalesDetailL_SalesID = pid
+    --     AND L_SalesDetailIsActive = "Y"
+    -- JOIN l_sales ON L_SalesDetailL_SalesID = L_SalesID
+    -- SET I_StockQty = I_StockQty - L_SalesDetailQty,
+    --     I_StockLastTransCode = "SALES.DELIVERY",
+    --     I_StockLastTransRefID = L_SalesDetailID,
+    --     I_StockLastTransQty = (0 - L_SalesDetailQty)
         -- I_StockLastTransQty = (0 - L_SalesDetailQty),
         -- I_StockLastTransDate = concat(L_SalesDate, " ", time(now()))
-    WHERE I_StockM_WarehouseID = warehouse_id
-        AND I_StockIsActive = "Y";
+    -- WHERE I_StockM_WarehouseID = warehouse_id
+    --     AND I_StockIsActive = "Y";
 
 SET nn = (SELECT COUNT(I_StockID)
             FROM i_stock
@@ -344,9 +356,16 @@ SET nn = (SELECT COUNT(I_StockID)
                 AND L_SalesDetailL_SalesID = pid
                 AND L_SalesDetailIsActive = "Y"
             WHERE I_StockIsActive = "Y" AND I_StockM_WarehouseID = warehouse_id AND I_StockQty < 0);
+SET nnn = (SELECT GROUP_CONCAT(M_ItemName SEPARATOR ", ")
+            FROM i_stock
+            JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
+                AND L_SalesDetailL_SalesID = pid
+                AND L_SalesDetailIsActive = "Y"
+JOIN m_item ON I_StockM_ITemID = M_ItemID
+            WHERE I_StockIsActive = "Y" AND I_StockM_WarehouseID = warehouse_id AND I_StockQty < 0);
 
 IF nn > 0 THEN
-    SELECT "ERR" status, "Ada barang yang stoknya tidak mencukupi !" message;
+    SELECT "ERR" status, CONCAT("Ada barang yang stoknya tidak mencukupi !", d_oqty, d_qty, nnn) message;
     ROLLBACK;
 ELSE
     SELECT "OK" as status, JSON_OBJECT("sales_id", pid) as data;

@@ -76,7 +76,7 @@ export default {
         affiliate_fee: 0,
 
         details: [],
-        detail_default: { item: null, qty: 0, price: 0, disc: 0, discrp: 0, ppn: 'N', ppn_amount: 0, total: 0, subtotal: 0, disctype: 'P', netto: 0 },
+        detail_default: { id: 0, item: null, qty: 0, price: 0, disc: 0, discrp: 0, ppn: 'N', ppn_amount: 0, total: 0, subtotal: 0, disctype: 'P', netto: 0 },
 
         dialog_new: false,
         dialog_itemname: false,
@@ -282,7 +282,7 @@ export default {
                 if ((d.qty > 0) && !!d.item) {
                     disc = d.disctype == 'P' ? d.disc : 0
                     discrp = d.disctype == 'R' ? d.discrp : 0
-                    ds.push({ itemid: d.item.item_id, price: d.price, qty: d.qty, disc: disc, discrp: discrp, ppn: d.ppn, subtotal: d.total, netto: d.netto })
+                    ds.push({ id: d.id, itemid: d.item.item_id, price: d.price, qty: d.qty, disc: disc, discrp: discrp, ppn: d.ppn, subtotal: d.total, netto: d.netto })
                 }
 
             let hdata = {

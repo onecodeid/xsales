@@ -114,7 +114,7 @@ IF pid = 0 THEN
     SELECT pdate, pnumber, pcustomer, pleadtype, ptotal, pshipping, pppn, pnote, pmemo, pstaff, ppayment, pterm, pfranco, pdelivery, pvalidity, pstock, uid;
 
     SET pid = (SELECT LAST_INSERT_ID());
-    CALL sp_log_activity("CREATE", "SALES.OFFER", pid, uid);
+    -- CALL sp_log_activity("CREATE", "SALES.OFFER", pid, uid);
 ELSE
 
     UPDATE l_offer
@@ -126,7 +126,7 @@ ELSE
     UPDATE l_offerdetail
     SET L_OfferDetailIsActive = "O"
     WHERE L_OfferDetailL_OfferID = pid AND L_OfferDetailIsActive = "Y";
-    CALL sp_log_activity("MODIFY", "SALES.OFFER", pid, uid);
+    -- CALL sp_log_activity("MODIFY", "SALES.OFFER", pid, uid);
 END IF;
 
 SET l = JSON_LENGTH(jdata);
@@ -166,16 +166,15 @@ WHILE n < l DO
         SET d_total = d_subtotal;
     END IF;
 
+    -- IF d_other <> "Y" THEN
+    --     SET d_id = (SELECT L_OfferDetailID FROM l_offerdetail WHERE L_OfferDetailIsActive = "O" AND L_OfferDetailA_ItemID = d_item AND L_OfferDetailL_OfferID = pid AND L_OfferDetailOther <> "Y");
+    -- ELSE
+    --     SET d_id = (SELECT L_OfferDetailID FROM l_offerdetail WHERE L_OfferDetailIsActive = "O" AND L_OfferDetailL_OfferID = pid AND L_OfferDetailOther = "Y" LIMIT 1);
+    -- END IF;
     
-    
+    SET d_id = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.id'));
 
-    IF d_other <> "Y" THEN
-        SET d_id = (SELECT L_OfferDetailID FROM l_offerdetail WHERE L_OfferDetailIsActive = "O" AND L_OfferDetailA_ItemID = d_item AND L_OfferDetailL_OfferID = pid AND L_OfferDetailOther <> "Y");
-    ELSE
-        SET d_id = (SELECT L_OfferDetailID FROM l_offerdetail WHERE L_OfferDetailIsActive = "O" AND L_OfferDetailL_OfferID = pid AND L_OfferDetailOther = "Y" LIMIT 1);
-    END IF;
-
-    IF d_id IS NULL THEN
+    IF d_id IS NULL OR d_id = 0 THEN
         INSERT INTO l_offerdetail(
             L_OfferDetailL_OfferID,
             L_OfferDetailA_ItemID,

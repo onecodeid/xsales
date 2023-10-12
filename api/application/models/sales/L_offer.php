@@ -38,7 +38,7 @@ class L_Offer extends MY_Model
                 L_OfferM_PaymentPlanID sales_payment, L_OfferM_TermID sales_term, IFNULL(L_OfferValidity, '') sales_validity,
                 IFNULL(L_OfferStockNote, '') sales_stocknote,
                 IFNULL(L_SalesID, 0) so_id, IFNULL(L_SalesNumber, '') so_number,
-                CONCAT('[', GROUP_CONCAT(JSON_OBJECT('item', JSON_OBJECT('item_id', M_ItemID,'item_code', M_ItemCode,'item_name', M_ItemName), 'other', L_OfferDetailOther, 'other_name', IFNULL(L_OfferDetailOtherName, ''), 'price', L_OfferDetailPrice, 'qty', L_OfferDetailQty, 'disc', L_OfferDetailDisc, 'discrp', L_OfferDetailDiscRp, 'disctype', IF(L_OfferDetailDiscRp=0,'P','R'), 'ppn', L_OfferDetailPPN, 'ppn_amount', L_OfferDetailPPNAmount, 'total', L_OfferDetailTotal, 'subtotal', L_OfferDetailSubTotal, 'netto', L_OfferDetailSubTotal, 
+                CONCAT('[', GROUP_CONCAT(JSON_OBJECT('id', L_OfferDetailID, 'item', JSON_OBJECT('item_id', M_ItemID,'item_code', M_ItemCode,'item_name', M_ItemName), 'other', L_OfferDetailOther, 'other_name', IFNULL(L_OfferDetailOtherName, ''), 'price', L_OfferDetailPrice, 'qty', L_OfferDetailQty, 'disc', L_OfferDetailDisc, 'discrp', L_OfferDetailDiscRp, 'disctype', IF(L_OfferDetailDiscRp=0,'P','R'), 'ppn', L_OfferDetailPPN, 'ppn_amount', L_OfferDetailPPNAmount, 'total', L_OfferDetailTotal, 'subtotal', L_OfferDetailSubTotal, 'netto', L_OfferDetailSubTotal, 
                 'pack', JSON_OBJECT('pack_id', IFNULL(pa.M_PackID, 0), 'pack_name', IFNULL(pa.M_PackName, 0)),
                 'unit', JSON_OBJECT('unit_id', IFNULL(ua.M_UnitID, 0), 'unit_name', IFNULL(ua.M_UnitName, 0)) )), ']') details
 
