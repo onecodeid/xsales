@@ -5,7 +5,7 @@
 //
 // Actions
 import offer from "./modules/offer.js?t=13uj4dse3";
-import offer_new from "./modules/offer_new.js?t=1d2as33";
+import offer_new from "./modules/offer_new.js?t=1d3";
 import sales from "../sales-order/modules/sales.js?t=13usdje3";
 import sales_new from "../sales-order/modules/sales_new.js?t=1dds3";
 import unit from "../master-unit/modules/unit.js";
