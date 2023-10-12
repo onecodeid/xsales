@@ -410,6 +410,7 @@ export default {
                 url: "master/disc/search",
                 prm: prm,
                 callback: function(d) {
+                    console.log(d)
                     context.commit("set_object", ['discs', d.records])
                 }
             }, { root: true })

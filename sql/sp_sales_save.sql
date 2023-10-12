@@ -10,6 +10,7 @@ DECLARE pppn CHAR(1) DEFAULT "Y";
 DECLARE pnote VARCHAR(1000);
 DECLARE pmemo VARCHAR(1000);
 DECLARE pcustomer INTEGER;
+DECLARE pcustomer_name VARCHAR(100);
 DECLARE paddress INTEGER;
 DECLARE ppayment INTEGER;
 DECLARE pterm INTEGER;
@@ -90,6 +91,7 @@ SET pnote = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_note"));
 SET pmemo = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_memo"));
 SET pref = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_ref"));
 SET pcustomer = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_customer"));
+SET pcustomer_name = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_customer_name"));
 SET paddress = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_address"));
 SET pstaff = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_staff"));
 SET poffer = JSON_UNQUOTE(JSON_EXTRACT(hdata, "$.p_offer"));
@@ -130,6 +132,7 @@ IF pid = 0 THEN
         L_SalesNumber,
         L_SalesRef,
         L_SalesM_CustomerID,
+        L_SalesM_CustomerName,
         L_SalesM_DeliveryAddressID,
         L_SalesM_PaymentPlanID,
         L_SalesM_TermID,
@@ -147,7 +150,7 @@ IF pid = 0 THEN
         L_SalesM_AffiliateID,
         L_SalesAffiliateFee,
         L_SalesUID)
-    SELECT pdate, pnumber, pref, pcustomer, paddress, ppayment, pterm, pexp, ptotal, pdisc, pdiscrp, pshipping, pdp, pppn, pnote, pmemo, pstaff, poffer,aff_id, aff_fee, uid;
+    SELECT pdate, pnumber, pref, pcustomer, pcustomer_name, paddress, ppayment, pterm, pexp, ptotal, pdisc, pdiscrp, pshipping, pdp, pppn, pnote, pmemo, pstaff, poffer,aff_id, aff_fee, uid;
 
     SET pid = (SELECT LAST_INSERT_ID());
 --    CALL sp_log_activity("CREATE", "SALES.ORDER", pid, uid);
@@ -155,7 +158,9 @@ ELSE
     SET o_offer = (SELECT L_SalesL_OfferID FROM l_sales WHERE L_SalesID = pid);
     UPDATE l_offer SET L_OfferUsed = "N" WHERE L_OfferID = o_offer;
     UPDATE l_sales
-    SET L_SalesDate = pdate, L_SalesNumber = pnumber, L_SalesRef = pref, L_SalesM_DeliveryAddressID = paddress, L_SalesM_PaymentPlanID = ppayment, L_SalesM_TermID = pterm, L_SalesM_ExpeditionID = pexp, L_SalesTotal = ptotal, L_SalesDiscount = pdisc, L_SalesDiscountRp = pdiscrp, L_SalesShipping = pshipping, L_SalesDp = pdp, L_SalesIncludePPN = pppn, L_SalesNote = pnote, L_SalesMemo = pmemo, L_SalesS_StaffID = pstaff, L_SalesL_OfferID = poffer,
+    SET L_SalesDate = pdate, L_SalesNumber = pnumber, L_SalesRef = pref, L_SalesM_DeliveryAddressID = paddress, L_SalesM_PaymentPlanID = ppayment, L_SalesM_TermID = pterm, 
+    L_SalesM_CustomerName = pcustomer_name, L_SalesM_ExpeditionID = pexp, L_SalesTotal = ptotal, L_SalesDiscount = pdisc, L_SalesDiscountRp = pdiscrp, 
+    L_SalesShipping = pshipping, L_SalesDp = pdp, L_SalesIncludePPN = pppn, L_SalesNote = pnote, L_SalesMemo = pmemo, L_SalesS_StaffID = pstaff, L_SalesL_OfferID = poffer,
     L_SalesM_AffiliateID = aff_id, L_SalesAffiliateFee = aff_fee, L_SalesUID = uid
     WHERE L_SalesID = pid;
 
