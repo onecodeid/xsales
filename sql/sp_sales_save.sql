@@ -239,7 +239,7 @@ WHILE n < l DO
     SET d_id = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.id'));
     -- SET d_id = (SELECT L_SalesDetailID FROM l_salesdetail WHERE L_SalesDetailIsActive = "O" AND L_SalesDetailA_ItemID = d_item AND L_SalesDetailL_SalesID = pid);
 
-    IF d_id IS NULL THEN
+    IF d_id IS NULL OR d_id = 0 THEN
         INSERT INTO l_salesdetail(
             L_SalesDetailL_SalesID,
             L_SalesDetailA_ItemID,
@@ -257,6 +257,15 @@ WHILE n < l DO
         FROM m_item WHERE M_ItemID = d_item;
 
         SET d_id = (SELECT LAST_INSERT_ID());
+
+        -- UPDATE STOCK
+        UPDATE i_stock
+        SET I_StockQty = I_StockQty - d_qty,
+            I_StockLastTransCode = "SALES.DELIVERY",
+            I_StockLastTransRefID = d_id,
+            I_StockLastTransQty = d_qty
+        WHERE I_StockM_WarehouseID = warehouse_id AND I_StockM_ItemID = d_item
+        AND I_StockIsActive = "Y";
     ELSE
 
         SET d_oqty = (SELECT L_SalesDetailQty FROM l_salesdetail WHERE L_SalesDetailID = d_id);
@@ -336,6 +345,7 @@ SET F_PaymentDpPPNAmount = F_PaymentDpAmount - F_PaymentDpNettAmount WHERE F_Pay
 
 SET ptotalhpp = (SELECT SUM(L_SalesDetailHPP * L_SalesDetailQty)
     FROM l_salesdetail WHERE L_SalesDetailL_SalesID = pid AND L_SalesDetailIsactive = "Y");
+IF ptotalhpp IS NULL THEN SET ptotalhpp = 0; END IF;
 
 UPDATE l_sales SET L_SalesTotalHPP = ptotalhpp
 WHERE L_SalesID = pid;
@@ -361,7 +371,7 @@ SET nn = (SELECT COUNT(I_StockID)
                 AND L_SalesDetailL_SalesID = pid
                 AND L_SalesDetailIsActive = "Y"
             WHERE I_StockIsActive = "Y" AND I_StockM_WarehouseID = warehouse_id AND I_StockQty < 0);
-SET nnn = (SELECT GROUP_CONCAT(M_ItemName SEPARATOR ", ")
+SET nnn = (SELECT GROUP_CONCAT(CONCAT(M_ItemCode, ' - ', M_ItemName) SEPARATOR ", ")
             FROM i_stock
             JOIN l_salesdetail ON L_SalesDetailA_ItemID = I_StockM_ItemID
                 AND L_SalesDetailL_SalesID = pid
@@ -370,7 +380,7 @@ JOIN m_item ON I_StockM_ITemID = M_ItemID
             WHERE I_StockIsActive = "Y" AND I_StockM_WarehouseID = warehouse_id AND I_StockQty < 0);
 
 IF nn > 0 THEN
-    SELECT "ERR" status, CONCAT("Ada barang yang stoknya tidak mencukupi !", d_oqty, d_qty, nnn) message;
+    SELECT "ERR" status, CONCAT("Ada barang yang stoknya tidak mencukupi ! ", nnn) message;
     ROLLBACK;
 ELSE
     SELECT "OK" as status, JSON_OBJECT("sales_id", pid) as data;

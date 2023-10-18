@@ -116,6 +116,61 @@ class Sales extends MY_Controller
         $r = $this->l_sales->search_id($this->sys_input['sales_id']);
         $this->sys_ok($r);
     }
+
+    function invoice()
+    {
+        $cols = ["no"=>["w"=>5,"t"=>"NO"],
+            "name"=>["w"=>30,"t"=>"NAMA","f"=>"TOTAL"], 
+            "price"=>["w"=>15,"a"=>STR_PAD_LEFT,"t"=>"HARGA"], 
+            "qty"=>["w"=>10,"a"=>STR_PAD_LEFT,"t"=>"QTY"], 
+            "bruto"=>["w"=>15,"a"=>STR_PAD_LEFT,"t"=>"BRUTO"], 
+            "disc"=>["w"=>10,"a"=>STR_PAD_LEFT,"t"=>"DISKON"], 
+            "netto"=>["w"=>15,"a"=>STR_PAD_LEFT,"t"=>"NETTO"]];
+        $data = [
+            ["no" => 1, "name" => "Silica Gel Curah", "price" => 3400, "qty" => 50, "bruto" => 170000, "disc" => 1000, "netto" => 169000],
+            ["no" => 2, "name" => "Dummy Product 1", "price" => 2500, "qty" => 30, "bruto" => 75000, "disc" => 500, "netto" => 74500],
+            ["no" => 3, "name" => "Dummy Product 2", "price" => 1800, "qty" => 20, "bruto" => 36000, "disc" => 1200, "netto" => 34800],
+            ["no" => 4, "name" => "Dummy Product 3", "price" => 4200, "qty" => 40, "bruto" => 168000, "disc" => 2000, "netto" => 166000],
+            ["no" => 5, "name" => "Dummy Product 4", "price" => 3100, "qty" => 25, "bruto" => 77500, "disc" => 750, "netto" => 76750],
+            ["no" => 6, "name" => "Dummy Product 5", "price" => 2700, "qty" => 35, "bruto" => 94500, "disc" => 800, "netto" => 93700],
+        ];
+        
+        $data_lines = [];
+        $titles = [];
+        $footer = [];
+        $width = 0;
+        foreach ($cols as $k => $v) {
+            $titles[] = str_pad($v['t'], $v["w"], " ", isset($v["a"])?$v["a"]:STR_PAD_RIGHT);
+            $width += $v['w'];
+        }
+        
+        $bruto=0; $disc=0; $netto=0;
+        foreach ($data as $k => $v) {
+            $x = [];
+            foreach ($v as $l => $w) {
+                $x[] = str_pad(is_numeric($w)?number_format($w):$w, $cols[$l]["w"], " ", isset($cols[$l]["a"])?$cols[$l]["a"]:STR_PAD_RIGHT);
+                if ($l=='bruto') $bruto+=$w;
+                if ($l=='netto') $netto+=$w;
+                if ($l=='disc') $disc+=$w;
+            }
+            $data_lines[] = join("", $x);
+        }
+        
+        $cols["bruto"]["f"] = number_format($bruto);
+        $cols["disc"]["f"] = number_format($disc);
+        $cols["netto"]["f"] = number_format($netto);
+        foreach ($cols as $k => $v)
+            $footer[] = str_pad(isset($v['f'])?$v['f']:' ', $v["w"], " ", isset($v["a"])?$v["a"]:STR_PAD_RIGHT);
+          
+        $x = [str_repeat("=", $width)];
+        $x[] = join("", $titles);
+        $x[] = str_repeat("-", $width);
+        $x = array_merge($x, $data_lines);
+        $x[] = str_repeat("-", $width);
+        $x[] = join("", $footer);
+
+        echo join(chr(10), $x);
+    }
 }
 
 ?>
