@@ -162,6 +162,7 @@
         
         <common-dialog-delete :data="sales_id" @confirm_del="confirm_del" v-if="dialog_delete"></common-dialog-delete>
         <common-dialog-confirm :data="sales_id" @confirm="confirm_post" v-if="dialog_confirm" :text="text_post"></common-dialog-confirm>
+        <payment></payment>
     </v-card>
 </template>
 
@@ -181,7 +182,8 @@ module.exports = {
     components : {
         "common-dialog-delete" : httpVueLoader("../../common/components/common-dialog-delete.vue"),
         "common-dialog-confirm" : httpVueLoader("../../common/components/common-dialog-confirm.vue"),
-        'common-datepicker' : httpVueLoader('../../common/components/common-datepicker.vue?t='+ts)
+        'common-datepicker' : httpVueLoader('../../common/components/common-datepicker.vue?t='+ts),
+        'payment' : httpVueLoader('./sales-order-payment.vue')
     },
 
     data () {

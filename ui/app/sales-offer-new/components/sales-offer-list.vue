@@ -536,6 +536,7 @@ module.exports = {
             //         if (a.account_id == d.account)
             //             d.account = a
             // console.log(details)
+            for (let n in details) details[n].id = 0
             this.$store.commit('sales_new/set_details', details)
 
             this.$store.commit('sales_new/set_common', ['dialog_new', true])

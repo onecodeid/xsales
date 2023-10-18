@@ -329,6 +329,10 @@ export default {
                     context.commit('set_common', ['save', false])
                     if (context.state.sa)
                         window.location.replace('../')
+                },
+
+                failback : function (e) {
+                    alert(e)
                 }
             }, { root: true })
         },
