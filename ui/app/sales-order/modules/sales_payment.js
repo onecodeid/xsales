@@ -13,7 +13,7 @@ export default {
 
         payment_date: current_date(),
 
-        dialog: true
+        dialog: false
     },
     
     mutations : {
