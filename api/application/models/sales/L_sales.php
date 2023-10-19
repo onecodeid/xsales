@@ -40,7 +40,7 @@ class L_Sales extends MY_Model
 
                 CONCAT('[', 
                     IF(F_SpayID IS NULL, '',
-                        GROUP_CONCAT(
+                        GROUP_CONCAT(DISTINCT
                         JSON_OBJECT('pay_id', F_SPayID, 'pay_date', F_SPayDate, 'pay_number', F_SPayNumber,
                         'pay_note', F_SPayNote, 'pay_amount', F_SpayAmount, 'pay_type', F_SpayM_PaymentTypeID))), ']') payments
 
