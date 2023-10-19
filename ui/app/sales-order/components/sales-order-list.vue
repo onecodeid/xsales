@@ -111,6 +111,13 @@
                     <td class="text-xs-right pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
                         <span class="caption grey--text">Rp</span> <b>{{ one_money(props.item.sales_grandtotal) }}</b>
                     </td>
+                    <td class=" pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
+                        <v-layout v-for="(p,m) in props.item.payments" :key="'pay'+m">
+                            <v-flex xs6><a href="javascript:;" @click="editPay(props.item, p)">{{ p.pay_date }}</a></v-flex>
+                            <v-flex xs6 class="text-xs-right"><a href="javascript:;" @click="editPay(props.item, p)"><span class="caption grey--text">Rp</span> <b>{{ one_money(p.pay_amount) }}</b></a></v-flex>
+                        </v-layout>
+                        
+                    </td>
                     
                     <!-- <td class="text-xs-left pa-2" @click="select(props.item)" v-show="is_sales">
                         {{ props.item.sales_receipt }}
@@ -125,7 +132,8 @@
                         
                         <!-- <v-layout row wrap> -->
                             <!-- <v-flex xs6 pr-1> -->
-                                <v-btn color="primary" class="btn-icon ma-0 mr-1" small  @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
+                                <v-btn color="orange white--text" class="btn-icon ma-0" small  @click="pay(props.item)"><v-icon>attach_money</v-icon></v-btn>
+                                <v-btn color="primary" class="btn-icon ma-0" small  @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
                             <!-- </v-flex>
                             <v-flex xs6 pl-1> -->
                                 <v-btn color="red" 
@@ -174,6 +182,8 @@
     margin-top: 0px;
     margin-left: 0px;
 }
+
+a { display: block; text-decoration: none; border-bottom: dashed 1px #226799 }
 </style>
 
 <script>
@@ -214,35 +224,36 @@ module.exports = {
                     text: "CUSTOMER",
                     align: "left",
                     sortable: false,
-                    width: "30%",
+                    width: "15%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
                 {
                     text: "CATATAN",
                     align: "left",
                     sortable: false,
-                    width: "31%",
+                    width: "28%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
-                // {
-                //     text: "SALES",
-                //     align: "left",
-                //     sortable: false,
-                //     width: "11%",
-                //     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
-                // },
+                
                 {
-                    text: "TOTAL",
+                    text: "TOTAL TAGIHAN",
                     align: "right",
                     sortable: false,
                     width: "12%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
                 {
+                    text: "RIWAYAT BAYAR",
+                    align: "left",
+                    sortable: false,
+                    width: "15%",
+                    class: "pa-2 zalfa-bg-purple lighten-3 white--text"
+                },
+                {
                     text: "ACTION",
                     align: "center",
                     sortable: false,
-                    width: "8%",
+                    width: "11%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 }
             ]
@@ -323,6 +334,9 @@ module.exports = {
     },
 
     methods : {
+        __c (a, b) { this.$store.commit('sales_new/set_object', [a, b]) },
+        __cp (a, b) { this.$store.commit('payment/set_object', [a, b]) },
+
         one_money (x) {
             return window.one_money(x)
         },
@@ -545,7 +559,6 @@ module.exports = {
         },
 
         bg_proforma (x) {
-            console.log(x)
             if (x.sales_proforma=='Y')
                 return 'amber lighten-4'
             return 'white'
@@ -553,11 +566,45 @@ module.exports = {
 
         add_exp () {
             return
+        },
+
+        pay (x) {
+            this.select(x)
+
+            this.__cp("payment_total", x.sales_grandtotal)
+            this.__cp("payment_paid", x.sales_paid)
+            this.__cp("payment_unpaid", x.sales_unpaid)
+            this.__cp("payment_amount", 0)
+            this.__cp("payment_note", '')
+            this.__cp("selected_payment_type", null)
+            this.__cp("payment_id", 0)
+            this.__cp("edit", false)
+            this.$store.commit("payment/set_object", ["dialog", true])
+        },
+
+        editPay (x, y) {
+            this.select(x)
+
+            this.__cp("payment_total", x.sales_grandtotal)
+            this.__cp("payment_paid", x.sales_paid)
+            this.__cp("payment_unpaid", x.sales_unpaid)
+            this.__cp("payment_amount", y.pay_amount)
+            this.__cp("payment_date", y.pay_date)
+            this.__cp("payment_note", y.pay_note)
+            this.__cp("payment_id", y.pay_id)
+            this.__cp("selected_payment", y)
+            this.__cp("edit", true)
+            let pt = null
+            for (let ptx of this.$store.state.payment.payment_types) {
+                if (ptx.paymenttype_id == y.pay_type) pt = ptx
+            }
+            this.__cp("selected_payment_type", pt)
+
+            this.$store.commit("payment/set_object", ["dialog", true])
         }
     },
 
     mounted () {
-        console.log(this.is_sales)
         if (this.is_sales)
             this.headers[2].text="NOMOR INVOICE"
 

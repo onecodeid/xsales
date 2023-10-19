@@ -23,7 +23,7 @@ class L_Sales extends MY_Model
 
         $r = $dbiv->query(
                 "SELECT L_SalesID sales_id, L_SalesNumber sales_number, DATE_FORMAT(L_SalesDate, '%d-%m-%Y') sales_date, L_SalesTotal sales_total,
-                0 sales_paid, 0 sales_unpaid, L_SalesShipping sales_shipping, L_SalesDP sales_dp, L_SalesGrandTotal sales_grandtotal,
+                L_SalesPaid sales_paid, L_SalesUnpaid sales_unpaid, L_SalesShipping sales_shipping, L_SalesDP sales_dp, L_SalesGrandTotal sales_grandtotal,
                 L_SalesDiscount sales_disc, L_SalesDiscountRp sales_discrp,
                 L_SalesDone sales_done, L_SalesProforma sales_proforma, L_SalesProformaNumber proforma_number, L_SalesProformaDueDate proforma_duedate,
                 L_SalesNote sales_note, L_SalesMemo sales_memo, L_SalesM_CustomerName sales_customer_name, M_CustomerName customer_name, IFNULL(L_SalesRef, '') sales_ref,
@@ -36,7 +36,13 @@ class L_Sales extends MY_Model
                 'netto', L_SalesDetailSubtotal, 'detail_id', L_SalesDetailID)), ']') details,
                 L_SalesM_DeliveryAddressID address_id, L_SalesM_PaymentPlanID payment_id, L_SalesM_TermID term_id,
                 L_SalesM_ExpeditionID expedition_id, L_SalesL_InvoiceID sales_invoice,
-                L_SalesM_AffiliateID affiliate_id, L_SalesAffiliateFee affiliate_fee, IFNULL(M_AffiliateName, '') affiliate_name
+
+
+                CONCAT('[', 
+                    IF(F_SpayID IS NULL, '',
+                        GROUP_CONCAT(
+                        JSON_OBJECT('pay_id', F_SPayID, 'pay_date', F_SPayDate, 'pay_number', F_SPayNumber,
+                        'pay_note', F_SPayNote, 'pay_amount', F_SpayAmount, 'pay_type', F_SpayM_PaymentTypeID))), ']') payments
 
                 FROM `{$this->table_name}`
                 JOIN m_customer ON L_SalesM_CustomerID = M_CustomerID
@@ -45,6 +51,7 @@ class L_Sales extends MY_Model
                 LEFT JOIN s_staff ON L_SalesS_StaffID = S_StaffID
                 LEFT JOIN m_affiliate ON L_SalesM_AffiliateID = M_AffiliateID
                 LEFT JOIN l_offer ON L_SalesL_OfferID = L_OfferID
+                LEFT JOIN f_spay ON L_SalesID = F_SpayL_SalesID AND F_SpayIsActive = 'Y'
                 WHERE (`L_SalesNumber` LIKE ? OR `M_CustomerName` LIKE ?)
                 AND `L_SalesIsActive` = 'Y'
                 AND ((L_SalesM_CustomerID = ? AND ? > 0) OR ? = 0)
@@ -77,6 +84,7 @@ class L_Sales extends MY_Model
                     // $details[$m]->stock = $this->i_stock->search_by_item($w->item);
                 }
                 $r[$k]['details'] = $details; //json_decode($v['details']);
+                $r[$k]['payments'] = json_decode($v['payments']);
             }
             $l['records'] = $r;
         }
