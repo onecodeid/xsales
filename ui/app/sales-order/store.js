@@ -6,7 +6,7 @@
 // Actions
 import sales from "./modules/sales.js?t=1dfsdssx";
 import sales_new from "./modules/sales_new.js?t=dxx";
-import payment from "./modules/sales_payment.js?t=xsx";
+import payment from "./modules/sales_payment.js?t=xdsx";
 import invoice_new from "../sales-invoice/modules/invoice_new.js?t=1ass1dfd2423d3";
 import invoice from "../sales-invoice/modules/invoice.js?t=12sas1fdds23d3";
 import item_logpurchase from "../master-item/modules/item_logpurchase.js?t=127fd8ses3";
