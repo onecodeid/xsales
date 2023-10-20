@@ -21,7 +21,7 @@ class One_sales_013 extends RPT_Controller
         $this->pdf->SetAutoPageBreak(true,1);
 
         $this->pdf->rptclass = $this;
-        $this->pdf->setRptTitle('Laporan Penjualan Per Sales Detail');
+        $this->pdf->setRptTitle('Laporan Penjualan Detail');
         $this->pdf->setRptSubtitle('Periode '.date('d M Y', strtotime($this->sys_input['sdate'])).' s/d '.date('d M Y', strtotime($this->sys_input['edate'])).' ');
         $this->pdf->header_func = "my_header_recapt";
         $this->pdf->footer_func = "my_footer";
@@ -138,7 +138,7 @@ class One_sales_013 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 11, 1, "SALES : " . strtoupper($d['staff_name']) , '', 0, 'L', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 11, 1, "", '', 0, 'L', 0);
         $me->Cell(5, 1, "SubTotal : " , '', 0, 'R', 0);
         $me->Cell(3, 0.7, number_format($d['sub_total_ppn']) , '', 0, 'R', 0);
         $me->Cell(3, 0.7, number_format($d['sub_total']) , '', 0, 'R', 0);
