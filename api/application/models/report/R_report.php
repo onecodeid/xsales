@@ -145,7 +145,7 @@ class R_report extends MY_Model
     }
 
     // Report Penjualan Per Sales Per Tanggal Detail Item
-    function One_sales_013($staffid, $sdate, $edate)
+    function One_sales_013($sdate, $edate)
     {
         $r = $this->db->query("CALL `sp_r_ONE-SAL-013`(?, ?)", [$staffid, $sdate, $edate])
                     ->result_array();
