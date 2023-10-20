@@ -52,7 +52,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-layout row wrap>
+                <!-- <v-layout row wrap>
                     <v-flex xs12>
                         <v-select
                             :items="staffs"
@@ -63,7 +63,7 @@
                             label="Sales"
                         ></v-select>
                     </v-flex>
-                </v-layout>
+                </v-layout> -->
             </v-card-text>
 
             <v-card-actions>
@@ -95,7 +95,7 @@ module.exports = {
         },
 
         params () {
-            return ['sdate='+this.sdate, 'edate='+this.edate, 'staffid='+this.selected_staff.staff_id].join('&')
+            return ['sdate='+this.sdate, 'edate='+this.edate].join('&')
         },
 
         edate : {

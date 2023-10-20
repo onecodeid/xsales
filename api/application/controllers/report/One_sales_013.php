@@ -30,7 +30,7 @@ class One_sales_013 extends RPT_Controller
 
         // Get data
         $this->load->model('report/r_report');
-        $r = $this->r_report->one_sales_013( $this->sys_input['staffid'], $this->sys_input['sdate'], $this->sys_input['edate'] );
+        $r = $this->r_report->one_sales_013( $this->sys_input['sdate'], $this->sys_input['edate'] );
 
         //
         $this->load->model('system/s_staff');
@@ -57,15 +57,15 @@ class One_sales_013 extends RPT_Controller
             
             if (sizeof($d) > 0)
             {
-                $staff = $this->s_staff->get( $d[0]['staff_id'] );
-                $staff_id = $staff['staff_id'];
+                $staff = [];
+                $staff_id = 0;
             }
             
             // $data = isset($r[1])?$r[1]:[];
             // $r = $r[0][0];
             $this->pdf->SetMargins(0.7, 0.5, 0.5);
             $this->pdf->AddPage('L', 'A4');
-            $this->tableHeader($this->pdf, ['staff_name' => $staff['staff_name'], 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+            $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
 
             $this->pdf->SetFont('Arial','', 9);
 
@@ -76,14 +76,14 @@ class One_sales_013 extends RPT_Controller
             {
                 if ($staff_id != $v['staff_id'])
                 {
-                    $staff_id = $v['staff_id'];
-                    $staff = $this->s_staff->get( $staff_id );
+                    $staff_id = 0;//$v['staff_id'];
+                    $staff = []; //$this->s_staff->get( $staff_id );
 
                     $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
                     $sub_total = 0;
                     $sub_total_ppn = 0;
 
-                    $this->tableHeader($this->pdf, ['staff_name' => $staff['staff_name'], 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
                 }
 
                 $ylimit = $this->pdf->h - 2.9;
@@ -91,7 +91,7 @@ class One_sales_013 extends RPT_Controller
                 {
                     $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
                     $this->pdf->AddPage('L', 'A4');
-                    $this->tableHeader($this->pdf, ['staff_name' => $staff['staff_name'], 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
 
                     // $sub_total = 0;
                     // $sub_total_ppn = 0;
