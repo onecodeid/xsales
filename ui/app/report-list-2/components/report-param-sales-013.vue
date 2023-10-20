@@ -69,8 +69,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="success" @click="dialog=!dialog" flat>Tutup</v-btn>
-                <v-btn color="success" @click="generate"
-                    :disabled="!selected_staff">Tampilkan</v-btn>
+                <v-btn color="success" @click="generate">Tampilkan</v-btn>
             </v-card-actions>
         </v-card>
         <!-- <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print> -->
