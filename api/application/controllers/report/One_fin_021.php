@@ -2,7 +2,7 @@
 
 // Report All Stock All Warehouse
 
-class One_fin_007 extends RPT_Controller
+class One_fin_021 extends RPT_Controller
 {
     var $report_code;
     var $wQty;
@@ -12,7 +12,7 @@ class One_fin_007 extends RPT_Controller
         parent::__construct();
 
         $this->load->library("pdf");
-        $this->report_code = 'FIN-007';
+        $this->report_code = 'FIN-021';
         $this->wQty = 2;
 
         $this->load->model("report/r_reportfinance");
@@ -21,20 +21,20 @@ class One_fin_007 extends RPT_Controller
     function index() {
 
         // get data
-        // $prm = [
-        //     'search'=>'%', //.$this->sys_input['search'].'%', 
-        //     'sdate'=>$this->sys_input['sdate'],
-        //     'edate'=>$this->sys_input['edate']
-        // ];
-        $prm = [];
-        $r = $this->r_reportfinance->fin_007($prm);
+        $prm = [
+            // 'search'=>'%'.$this->sys_input['search'].'%', 
+            'sdate'=>$this->sys_input['sdate'],
+            'edate'=>$this->sys_input['edate']
+        ];
+        $r = $this->r_reportfinance->fin_021($prm);
         
-        $this->pdf = new PDF("P","cm",array(21,29.7));
+        $this->pdf = new PDF("L","cm",array(21,29.7));
         $this->pdf->SetAutoPageBreak(true,1);
 
         $this->pdf->rptclass = $this;
-        $this->pdf->setRptTitle('Laporan Piutang Pelanggan');
-        $this->pdf->setRptSubtitle('Per '.date('d F Y'));
+        $this->pdf->setRptTitle('Laporan Penerimaan Piutang');
+        $this->pdf->setRptSubtitle('Periode '.date('d M Y', strtotime($this->sys_input['sdate'])).' s/d '.date('d M Y', strtotime($this->sys_input['edate'])).' ');
+        // $this->pdf->setRptSubtitle('Per '.date('d F Y'));
         $this->pdf->header_func = "my_header_recapt";
         $this->pdf->footer_func = "my_footer";
 
@@ -48,24 +48,30 @@ class One_fin_007 extends RPT_Controller
             $width = $this->pdf->w - $this->pdf->lMargin - $this->pdf->rMargin;
             foreach ($r as $k => $v)
             {
-                $this->pdf->SetFillColor(222,222,222);
-                $this->pdf->SetTextColor(0,0,0);
-                $this->pdf->Cell($width, 0.7, $v['customer_name'], 'LBR', 0, 'L', 1);
+                // $this->pdf->SetFillColor(222,222,222);
+                // $this->pdf->SetTextColor(0,0,0);
+                $this->pdf->Cell(1, 0.7, $k+1, 'LBR', 0, 'L', 0);
+                $this->pdf->Cell(2, 0.7, $v['pay_date'], 'LBR', 0, 'L', 0);
+                $this->pdf->Cell(2.5, 0.7, $v['invoice_number'], 'LBR', 0, 'L', 0);
+                $this->pdf->Cell($width-13, 0.7, $v['customer_name'], 'LBR', 0, 'L', 0);
+                $this->pdf->Cell(2.5, 0.7, number_format($v['invoice_grandtotal']), 'LBR', 0, 'R', 0);
+                $this->pdf->Cell(2.5, 0.7, number_format($v['pay_amount']), 'LBR', 0, 'R', 0);
+                $this->pdf->Cell(2.5, 0.7, $v['pay_type'], 'LBR', 0, 'L', 0);
                 $this->pdf->Ln(0.7);
 
-                $invoices = $v['invoices'];
-                foreach ($invoices as $l => $w)
-                {
-                    $this->pdf->Cell(1, 0.7, $l+1, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2, 0.7, $w->invoice_date, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2.5, 0.7, $w->invoice_number, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell($width-(15.5), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2.5, 0.7, $w->term_name, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
-                    $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
-                    $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_unpaid), 'LBR', 0, 'R', 0);
-                    $this->pdf->Ln(0.7);
-                }
+                // $invoices = $v['invoices'];
+                // foreach ($invoices as $l => $w)
+                // {
+                //     $this->pdf->Cell(1, 0.7, $l+1, 'LBR', 0, 'L', 0);
+                //     $this->pdf->Cell(2, 0.7, $w->invoice_date, 'LBR', 0, 'L', 0);
+                //     $this->pdf->Cell(2.5, 0.7, $w->invoice_number, 'LBR', 0, 'L', 0);
+                //     $this->pdf->Cell($width-(15.5), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
+                //     $this->pdf->Cell(2.5, 0.7, $w->term_name, 'LBR', 0, 'L', 0);
+                //     $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
+                //     $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
+                //     $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_unpaid), 'LBR', 0, 'R', 0);
+                //     $this->pdf->Ln(0.7);
+                // }
             }
         }
         
@@ -342,11 +348,11 @@ class One_fin_007 extends RPT_Controller
         $me->pdf->Cell(2, 0.7, "TANGGAL" , 'TBLR', 0, 'C', 1);
         // $me->pdf->Cell($w - 21.5, 0.7, "NOMOR INVOICE" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.5, 0.7, "NOMOR" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell($w-15.5, 0.7, "CATATAN" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "TERM" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell($w-13, 0.7, "CATATAN" , 'TBLR', 0, 'C', 1);
+        
         $me->pdf->Cell(2.5, 0.7, "TAGIHAN" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.5, 0.7, "DIBAYAR" , 'TLBR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "SISA PIUTANG" , 'TLBR', 0, 'C', 1);
+        $me->pdf->Cell(2.5, 0.7, "TIPE BAYAR" , 'TBLR', 0, 'C', 1);
         $me->pdf->Ln(0.8);
 
         // $me->pdf->Cell($w - 20.5, 0.7, "" , '', 0, 'C', 0);

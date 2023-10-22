@@ -40,6 +40,7 @@ export default {
             'fin-006': false,
             'fin-007': false,
             'fin-010': false,
+            'fin-021': false,
             'pur-002': false
         },
 

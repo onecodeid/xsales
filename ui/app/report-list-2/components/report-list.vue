@@ -52,6 +52,7 @@
         <report-param-fin-006 v-if="dialog['fin-006']"></report-param-fin-006>
         <report-param-fin-007 v-if="dialog['fin-007']"></report-param-fin-007>
         <report-param-fin-010 v-if="dialog['fin-010']"></report-param-fin-010>
+        <report-param-fin-021 v-if="dialog['fin-021']"></report-param-fin-021>
         <report-param-pur-002 v-if="dialog['pur-002']"></report-param-pur-002>
 
     </v-card>
@@ -97,6 +98,7 @@ module.exports = {
         "report-param-fin-006" : httpVueLoader("./report-param-fin-006.vue"+t),
         "report-param-fin-007" : httpVueLoader("./report-param-fin-007.vue"+t),
         "report-param-fin-010" : httpVueLoader("./report-param-fin-010.vue"+t),
+        "report-param-fin-021" : httpVueLoader("./report-param-fin-021.vue"+t),
         "report-param-pur-002" : httpVueLoader("./report-param-pur-002.vue"+t)
     },
 

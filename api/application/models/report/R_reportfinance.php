@@ -529,7 +529,8 @@ class R_reportfinance extends MY_Model
 
         $dir = getcwd()."/application/models/report/sql/";
         $q = file_get_contents($dir."q_fin007.sql");
-        $r = $this->db->query($q, [$d['search'], $d['search'], $d['sdate'], $d['edate'], $d['staff_id'], $d['staff_id'], $d['staff_id']])->result_array();
+        // $r = $this->db->query($q, [$d['search'], $d['search'], $d['sdate'], $d['edate']])->result_array();
+        $r = $this->db->query($q, [])->result_array();
 
         foreach ($r as $k => $v)
         {
@@ -810,6 +811,24 @@ class R_reportfinance extends MY_Model
             foreach($r[$k]['invoices'] as $l => $w)
                 $r[$k]['invoices'][$l]->payments = json_decode($w->payments);
         }
+
+        return $r;
+    }
+
+    function fin_021( $d )
+    {
+        $customerid = 0;
+
+        $dir = getcwd()."/application/models/report/sql/";
+        $q = file_get_contents($dir."q_fin021.sql");
+        $r = $this->db->query($q, [$d['sdate'], $d['edate']])->result_array();
+
+        // foreach ($r as $k => $v)
+        // {
+        //     $r[$k]['invoices'] = json_decode($v['invoices']);
+        //     foreach($r[$k]['invoices'] as $l => $w)
+        //         $r[$k]['invoices'][$l]->payments = json_decode($w->payments);
+        // }
 
         return $r;
     }

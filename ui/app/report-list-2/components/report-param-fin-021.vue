@@ -10,6 +10,36 @@
             </v-card-title>
 
             <v-card-text>
+                <!-- <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-select
+                            :items="months"
+                            v-model="selected_month"
+                            label="Bulan Periode"
+                            item-value="month_value"
+                            item-text="month_name"
+                            return-object
+                        ></v-select>
+                    </v-flex>
+                </v-layout>
+
+                <v-layout row wrap mb-3>
+                    <v-flex xs6 pr-2>
+                        <v-text-field
+                            label="Dari Tanggal"
+                            type="number"
+                            v-model="start_day"
+                        ></v-text-field>
+                    </v-flex>
+                    <v-flex xs6 pl-2>
+                        <v-text-field
+                            label="Sampai Tanggal"
+                            type="number"
+                            v-model="end_day"
+                        ></v-text-field>
+                    </v-flex>
+                </v-layout> -->
+
                 <v-layout row wrap mb-3>
                     <v-flex xs12>
                         <common-datepicker label="Tanggal Awal" data="1" :solo="false" @change="change_sdate" :date="sdate"></common-datepicker>
@@ -21,13 +51,25 @@
                         <common-datepicker label="Tanggal Akhir" data="1" :solo="false" @change="change_edate" :date="edate"></common-datepicker>
                     </v-flex>
                 </v-layout>
+
+                <!-- <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-select
+                            :items="staffs"
+                            v-model="selected_staff"
+                            return-object
+                            item-text="staff_name"
+                            item-value="staff_id"
+                            label="Sales"
+                        ></v-select>
+                    </v-flex>
+                </v-layout> -->
             </v-card-text>
 
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="success" @click="dialog=!dialog" flat>Tutup</v-btn>
-                <v-btn color="success" @click="generate"
-                    :disabled="false">Tampilkan</v-btn>
+                <v-btn color="success" @click="generate">Tampilkan</v-btn>
             </v-card-actions>
         </v-card>
         <!-- <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print> -->
@@ -41,16 +83,10 @@ module.exports = {
         // "common-dialog-print" : httpVueLoader("./../../common/components/common-dialog-print.vue")
     },
 
-    data () {
-        return {
-            x : 0
-        }
-    },
-
     computed : {
         dialog : {
-            get () { return this.$store.state.report_param.dialog['fin-007'] },
-            set (v) { this.$store.commit('report_param/set_dialog', ['fin-007', v]) }
+            get () { return this.$store.state.report_param.dialog['fin-021'] },
+            set (v) { this.$store.commit('report_param/set_dialog', ['fin-021', v]) }
         },
 
         report_url () {
@@ -75,25 +111,33 @@ module.exports = {
             return this.$store.state.report.selected_report
         },
 
-        endyears () {
-            return this.$store.state.report_param.endyears
+        months () {
+            return this.$store.state.report_param.months
         },
 
-        selected_endyear : {
-            get () { return this.$store.state.report_param.selected_endyear },
-            set (v) { this.$store.commit('report_param/set_object', ['selected_endyear', v]) }
+        selected_month : {
+            get () { return this.$store.state.report.selected_report },
+            set (v) { this.$store.commit('report_param/set_selected_month', v) }
         },
 
-        URL () {
-            return this.$store.state.report_param.URL
+        staffs () {
+            return this.$store.state.report_param.staffs
+        },
+
+        selected_staff : {
+            get () { return this.$store.state.report_param.selected_staff },
+            set (v) { this.$store.commit('report_param/set_selected_staff', v) }
         }
     },
 
     methods : {
         generate () {
+            // if ( (this.sdate.split('-'))[1] != (this.edate.split('-'))[1] ) {
+            //     alert('Laporan harus pada bulan yang sama :(')
+            //     return
+            // }
             let urls = this.$store.state.report.URL+'report/'+this.selected_report.report_url+
                         '?'+this.params
-            console.log(urls)
             this.$store.commit('report_param/set_common', ['report_url', urls])
             this.$store.commit('set_dialog_print', true)
 
@@ -109,8 +153,9 @@ module.exports = {
         }
     },
 
-    beforeMount () {
-        this.generate()
+    mounted () {
+        this.$store.dispatch('report_param/search_month')
+        this.$store.dispatch('report_param/search_staff')
     }
 }
 </script>
