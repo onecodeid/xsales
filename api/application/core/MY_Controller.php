@@ -170,7 +170,7 @@ class RPT_Controller extends MY_Controller
         $me->pdf->SetFont('Arial', 'B', 13);
         $gy = $me->pdf->tMargin;
 
-        $me->pdf->Image(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin+0.5, $me->pdf->tMargin+0.5, 2);
+        $me->pdf->Image(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin+0.5, $me->pdf->tMargin+0.5, 2.5);
         // $rtt = new PDF_Rotate();
         // $me->pdf->RotatedImage(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin+0.5+2, $me->pdf->tMargin+0.5+2, 2, 2, 180);
 
@@ -245,7 +245,7 @@ class RPT_Controller extends MY_Controller
         $width = $me->pdf->w - $me->pdf->lMargin - $me->pdf->rMargin;
         $me->pdf->SetFont('Arial', 'B', 13);
 
-        $me->pdf->Image(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin, $me->pdf->tMargin, 1.5);
+        $me->pdf->Image(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin, $me->pdf->tMargin, 2.5);
 
         $me->pdf->SetY($me->pdf->tMargin);
         $me->pdf->SetFont('Arial', '', 18);
