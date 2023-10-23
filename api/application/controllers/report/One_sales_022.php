@@ -80,23 +80,23 @@ class One_sales_022 extends RPT_Controller
 
             foreach ($d as $k => $v)
             {
-                if ($staff_id != $v['staff_id'])
-                {
-                    $staff_id = 0;//$v['staff_id'];
-                    $staff = []; //$this->s_staff->get( $staff_id );
+                // if ($staff_id != $v['staff_id'])
+                // {
+                //     $staff_id = 0;//$v['staff_id'];
+                //     $staff = []; //$this->s_staff->get( $staff_id );
 
-                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
-                    $sub_total = 0;
-                    $sub_total_ppn = 0;
+                //     $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+                //     $sub_total = 0;
+                //     $sub_total_ppn = 0;
 
-                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
-                }
+                //     $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+                // }
 
                 $ylimit = $this->pdf->h - 2.9;
                 if ($this->pdf->GetY() > $ylimit)
                 {
                     $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
-                    $this->pdf->AddPage('L', 'A4');
+                    $this->pdf->AddPage('P', 'A4');
                     $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
 
                     // $sub_total = 0;
@@ -142,14 +142,17 @@ class One_sales_022 extends RPT_Controller
         $wItemName = $me->w - $me->lMargin - $me->rMargin - 14;
         $this->pdf->SetFont('Arial','', 9);
         
-        $me->SetFillColor(0,0,0);
-        $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 13.5, 1, "", '', 0, 'L', 0);
-        $me->Cell(5, 1, "SubTotal : " , '', 0, 'R', 0);
-        $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
-        $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
-        $me->Cell(3, 0.7, number_format($d['sub_total']) , '', 0, 'R', 0);
-        $me->Ln(0.8);
+        if ($me->PageNo()>1) {
+            $me->SetFillColor(0,0,0);
+            $me->SetTextColor(0,0,0);
+            $me->Cell($me->w - $me->lMargin - $me->rMargin - 13.5, 1, "", '', 0, 'L', 0);
+            $me->Cell(5, 1, "SubTotal : " , '', 0, 'R', 0);
+            $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
+            $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
+            $me->Cell(3, 0.7, number_format($d['sub_total']) , '', 0, 'R', 0);
+            $me->Ln(0.8);
+        }
+        
 
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(255,255,255);
