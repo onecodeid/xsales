@@ -162,6 +162,15 @@ class R_report extends MY_Model
         return $r;
     }
 
+    // Report Penjualan Per Sales Per Tanggal Detail Item
+    function One_sales_022($sdate, $edate)
+    {
+        $r = $this->db->query("CALL `sp_r_ONE-SAL-022`(?, ?)", [$sdate, $edate])
+                    ->result_array();
+        $this->clean_mysqli_connection($this->db->conn_id);
+        return $r;
+    }
+
     // Report Nota PO
     function One_purchase_001($id, $uid)
     {

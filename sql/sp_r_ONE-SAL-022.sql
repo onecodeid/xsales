@@ -1,7 +1,7 @@
 
-DROP PROCEDURE `sp_r_ONE-SAL-013`;
+DROP PROCEDURE `sp_r_ONE-SAL-022`;
 DELIMITER ;;
-CREATE PROCEDURE `sp_r_ONE-SAL-013` (IN `sdate` date, IN `edate` date)
+CREATE PROCEDURE `sp_r_ONE-SAL-022` (IN `sdate` date, IN `edate` date)
 BEGIN
 
 SELECT invoice_id, invoice_date, invoice_number,
