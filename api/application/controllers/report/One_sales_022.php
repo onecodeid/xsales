@@ -71,7 +71,7 @@ class One_sales_022 extends RPT_Controller
             $width = $this->pdf->w - $this->pdf->lMargin - $this->pdf->rMargin;
 
 
-            $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+            $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
 
             $this->pdf->SetFont('Arial','', 9);
 
@@ -85,19 +85,19 @@ class One_sales_022 extends RPT_Controller
                     $staff_id = 0;//$v['staff_id'];
                     $staff = []; //$this->s_staff->get( $staff_id );
 
-                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
                     $sub_total = 0;
                     $sub_total_ppn = 0;
 
-                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
                 }
 
                 $ylimit = $this->pdf->h - 2.9;
                 if ($this->pdf->GetY() > $ylimit)
                 {
-                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
                     $this->pdf->AddPage('L', 'A4');
-                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
+                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
 
                     // $sub_total = 0;
                     // $sub_total_ppn = 0;
