@@ -40,7 +40,7 @@ FROM (
         
         0 invoice_ppnvalue,
         0 staff_id, '' staff_name, 
-        M_CustomerID customer_id, M_customerName customer_name,
+        M_CustomerID customer_id, IF(M_CustomerCode = 'C.UMUM', CONCAT(M_customerName, " - ", L_SalesM_CustomerName), M_customerName) customer_name,
         M_ItemID item_id, M_ItemName item_name, L_SalesDetailQty item_qty,
         L_SalesDetailPrice item_price,
 
