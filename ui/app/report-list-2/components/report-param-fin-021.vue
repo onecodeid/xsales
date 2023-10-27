@@ -52,18 +52,18 @@
                     </v-flex>
                 </v-layout>
 
-                <!-- <v-layout row wrap>
+                <v-layout row wrap>
                     <v-flex xs12>
                         <v-select
-                            :items="staffs"
-                            v-model="selected_staff"
+                            :items="payment_types"
+                            v-model="selected_payment_type"
                             return-object
-                            item-text="staff_name"
-                            item-value="staff_id"
-                            label="Sales"
+                            item-text="paymenttype_name"
+                            item-value="paymenttype_id"
+                            label="Tipe Bayar"
                         ></v-select>
                     </v-flex>
-                </v-layout> -->
+                </v-layout>
             </v-card-text>
 
             <v-card-actions>
@@ -94,7 +94,7 @@ module.exports = {
         },
 
         params () {
-            return ['sdate='+this.sdate, 'edate='+this.edate].join('&')
+            return ['sdate='+this.sdate, 'edate='+this.edate, 'ptype='+(this.selected_payment_type?this.selected_payment_type.paymenttype_id:0)].join('&')
         },
 
         edate : {
@@ -127,6 +127,15 @@ module.exports = {
         selected_staff : {
             get () { return this.$store.state.report_param.selected_staff },
             set (v) { this.$store.commit('report_param/set_selected_staff', v) }
+        },
+
+        payment_types () {
+            return this.$store.state.report_param.payment_types
+        },
+
+        selected_payment_type : {
+            get () { return this.$store.state.report_param.selected_payment_type },
+            set (v) { this.$store.commit('report_param/set_object', ['selected_payment_type', v]) }
         }
     },
 
@@ -156,6 +165,9 @@ module.exports = {
     mounted () {
         this.$store.dispatch('report_param/search_month')
         this.$store.dispatch('report_param/search_staff')
+        this.$store.dispatch('report_param/search_paymenttype').then((d) => {
+            console.log(d)
+        })
     }
 }
 </script>

@@ -115,7 +115,10 @@ export default {
         selected_account: null,
 
         endyears: [],
-        selected_endyear: null
+        selected_endyear: null,
+
+        payment_types: [],
+        selected_payment_type: null
     },
     mutations: {
         set_common(state, v) {
@@ -434,6 +437,19 @@ export default {
                 prm: prm,
                 callback: function(d) {
                     context.commit("set_object", ["months2", d])
+                    return d
+                }
+            }, { root: true })
+        },
+
+        async search_paymenttype(context) {
+            let prm = {search:'', page:1}
+
+            return context.dispatch("system/postme", {
+                url: "master/paymenttype/search",
+                prm: prm,
+                callback: function(d) {
+                    context.commit("set_object", ["payment_types", d.records])
                     return d
                 }
             }, { root: true })

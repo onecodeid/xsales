@@ -24,7 +24,8 @@ class One_fin_021 extends RPT_Controller
         $prm = [
             // 'search'=>'%'.$this->sys_input['search'].'%', 
             'sdate'=>$this->sys_input['sdate'],
-            'edate'=>$this->sys_input['edate']
+            'edate'=>$this->sys_input['edate'],
+            'ptype'=>isset($this->sys_input['ptype'])?$this->sys_input['ptype']:0
         ];
         $r = $this->r_reportfinance->fin_021($prm);
         
