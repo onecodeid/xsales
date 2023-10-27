@@ -98,9 +98,6 @@ class One_sales_022 extends RPT_Controller
                     $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
                     $this->pdf->AddPage('P', 'A4');
                     $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
-
-                    // $sub_total = 0;
-                    // $sub_total_ppn = 0;
                 }
 
                 $this->pdf->Cell(1, 0.7, $k+1, 'LBR', 0, 'C', 0);
