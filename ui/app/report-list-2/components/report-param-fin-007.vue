@@ -10,7 +10,7 @@
             </v-card-title>
 
             <v-card-text>
-                <v-layout row wrap mb-3>
+                <!-- <v-layout row wrap mb-3>
                     <v-flex xs12>
                         <common-datepicker label="Tanggal Awal" data="1" :solo="false" @change="change_sdate" :date="sdate"></common-datepicker>
                     </v-flex>
@@ -19,6 +19,35 @@
                 <v-layout row wrap mb-3>
                     <v-flex xs12>
                         <common-datepicker label="Tanggal Akhir" data="1" :solo="false" @change="change_edate" :date="edate"></common-datepicker>
+                    </v-flex>
+                </v-layout> -->
+
+                <v-layout row wrap mb-3>
+                    <v-flex xs12>
+                        <v-autocomplete
+                            label="Customer"
+                            v-model="selected_customer"
+                            :items="customers"
+                            :search-input.sync="search_customer"
+                            auto-select-first
+                            no-filter
+                            return-object
+                            :clearable="true"
+                            item-text="customer_name"
+                            :loading="false"
+                            no-data-text="Pilih Customer"
+                            
+                            >
+                            <template
+                                slot="item"
+                                slot-scope="{ item }"
+                                >
+                                <v-list-tile-content>
+                                    <v-list-tile-title v-text="item.customer_name"></v-list-tile-title>
+                                </v-list-tile-content>
+                            </template>
+
+                        </v-autocomplete>
                     </v-flex>
                 </v-layout>
             </v-card-text>
@@ -58,7 +87,7 @@ module.exports = {
         },
 
         params () {
-            return ['sdate='+this.sdate, 'edate='+this.edate].join('&')
+            return ['sdate='+this.sdate, 'edate='+this.edate, 'customer='+(this.selected_customer?this.selected_customer.customer_id:0)].join('&')
         },
 
         edate : {
@@ -86,6 +115,20 @@ module.exports = {
 
         URL () {
             return this.$store.state.report_param.URL
+        },
+
+        customers () {
+            return this.$store.state.report_param.customers
+        },
+
+        selected_customer : {
+            get () { return this.$store.state.report_param.selected_customer },
+            set (v) { this.$store.commit('report_param/set_selected_customer', v) }
+        },
+
+        search_customer : {
+            get () { return this.$store.state.report_param.search_customer },
+            set (v) { this.$store.commit('report_param/set_common', ['search_customer', v]) }
         }
     },
 
@@ -106,11 +149,25 @@ module.exports = {
 
         change_sdate(x) {
             this.sdate = x.new_date
-        }
+        },
+
+        thr_search: _.debounce( function () {
+            this.$store.dispatch("report_param/search_customer")
+        })
     },
 
     beforeMount () {
-        this.generate()
+        // this.generate()
+    },
+
+    watch : {
+        search_customer(val, old) {
+            if (val == null || typeof val == 'undefined') val = ""
+            if (val == old ) return
+            if (this.$store.state.report_param.search_status == 1 ) return  
+            this.$store.commit("report_param/set_common", ['search_customer', val])
+            this.thr_search()
+        }
     }
 }
 </script>

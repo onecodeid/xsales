@@ -18,7 +18,8 @@ from (
     join m_term on l_salesm_termid = m_termid
     left join f_spay on f_spayl_salesid = l_salesid and f_spayisactive = "Y"
     where l_salesunpaid > 0
-    and l_salesisactive = "Y" 
+    and l_salesisactive = "Y"
+    and ((l_salesm_customerid = ? and ? <> 0) or ? = 0)
 
     group by l_salesid
     order by m_customername) x
