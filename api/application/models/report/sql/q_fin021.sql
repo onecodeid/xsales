@@ -9,4 +9,5 @@ JOIN m_customer ON L_SalesM_CustomerID = M_CustomerID
 JOIN m_term ON L_SalesM_TermID = M_TermID
 JOIN m_paymenttype ON F_SpayM_paymentTypeID = M_PaymentTypeID
 where F_SpayIsActive = "Y" AND F_SPayDate BETWEEN ? AND ?
+AND ((F_SpayM_PaymentTypeID = ? AND ? <> 0) OR ? = 0)
 ORDER BY F_SpayDate asc, m_customername asc;

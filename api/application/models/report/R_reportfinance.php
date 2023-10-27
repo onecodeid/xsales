@@ -818,10 +818,11 @@ class R_reportfinance extends MY_Model
     function fin_021( $d )
     {
         $customerid = 0;
+        $ptype = isset($d['ptype'])?$d['ptype']:0;
 
         $dir = getcwd()."/application/models/report/sql/";
         $q = file_get_contents($dir."q_fin021.sql");
-        $r = $this->db->query($q, [$d['sdate'], $d['edate']])->result_array();
+        $r = $this->db->query($q, [$d['sdate'], $d['edate'], $ptype, $ptype, $ptype])->result_array();
 
         // foreach ($r as $k => $v)
         // {
