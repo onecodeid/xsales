@@ -9,8 +9,8 @@
 //     import ('./modules/report.js?t=asd');
 // const report_param = () =>
 //     import ('./modules/report_param.js?a1sdsdwasseassss')
-import report from "./modules/report.js?t=asd"
-import report_param from "./modules/report_param.js?a1seassss";
+import report from "./modules/report.js?t=afsd"
+import report_param from "./modules/report_param.js?a1seadfssss";
 import sales015 from "./modules/sales-015.js?t=123s"
 import sales016 from "./modules/sales-016.js?t=123s"
 import sales017 from "./modules/sales-017.js?t=123ws"

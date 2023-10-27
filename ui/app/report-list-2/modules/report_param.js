@@ -1,7 +1,7 @@
 // 1 => LOADING
 // 2 => DONE
 // 3 => ERROR
-import * as api from "./api_report.js"
+import * as api from "./api_report.js?t=34"
 import { one_token, URL, page_sizes } from "../../assets/js/global.js"
 
 export default {

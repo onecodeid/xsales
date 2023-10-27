@@ -1,7 +1,7 @@
 
 DROP PROCEDURE `sp_r_ONE-SAL-022`;
 DELIMITER ;;
-CREATE PROCEDURE `sp_r_ONE-SAL-022` (IN `sdate` date, IN `edate` date)
+CREATE PROCEDURE `sp_r_ONE-SAL-022` (IN `sdate` date, IN `edate` date, IN `customerid` INT)
 BEGIN
 
 SELECT invoice_id, invoice_date, invoice_number,
@@ -63,7 +63,8 @@ FROM (
 
 
     JOIN m_customer ON L_SalesM_CustomerID = M_CustomerID
-    WHERE L_SalesDetailIsActive = "Y"
+    WHERE L_SalesDetailIsActive = "Y" 
+    AND ((M_CustomerID = customerid AND customerid <> 0) OR customerid = 0)
     ORDER BY L_SalesDate, M_CustomerName, M_ItemName) xxx 
     ORDER BY invoice_date, customer_name, invoice_number
 ) yyy GROUP BY invoice_id ORDER BY invoice_date, invoice_number;

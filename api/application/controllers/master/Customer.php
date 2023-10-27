@@ -67,8 +67,11 @@ class Customer extends MY_Controller
 
     function search_autocomplete()
     {
+        $search = '';
+        if (isset($this->sys_input['search'])) $search = $this->sys_input['search'];
+        if (isset($this->sys_input['customer_name'])) $search = $this->sys_input['customer_name'];
         $r = $this->m_customer->search_autocomplete(
-            ['customer_name'=>'%'.$this->sys_input['customer_name'].'%', 
+            ['customer_name'=>'%'.$search.'%', 
             'page'=>1,
             'city'=>0,
             'province'=>0,

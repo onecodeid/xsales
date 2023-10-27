@@ -13,7 +13,7 @@ export async function search_staff(prm) {
 }
 
 export async function search_customer(prm) {
-    return ajaxPost(URL + 'admin/customer/search_autocomplete', prm)
+    return ajaxPost(URL + 'master/customer/search_autocomplete', prm)
 }
 
 export async function search_region(prm) {
