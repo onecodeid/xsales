@@ -30,7 +30,7 @@ class One_sales_022 extends RPT_Controller
 
         // Get data
         $this->load->model('report/r_report');
-        $r = $this->r_report->one_sales_022( $this->sys_input['sdate'], $this->sys_input['edate'] );
+        $r = $this->r_report->one_sales_022( $this->sys_input['sdate'], $this->sys_input['edate'], (isset($this->sys_input['customer'])?$this->sys_input['customer']:0) );
 
         //
         $this->load->model('system/s_staff');
@@ -106,9 +106,9 @@ class One_sales_022 extends RPT_Controller
                 $this->pdf->Cell(1, 0.7, $k+1, 'LBR', 0, 'C', 0);
                 $this->pdf->Cell(2, 0.7, $v['invoice_date'], 'LBR', 0, 'L', 0);
                 $this->pdf->Cell(2.5, 0.7, $v['invoice_number'], 'LBR', 0, 'L', 0);
-                $this->pdf->Cell($width-14, 0.7, $v['customer_name'], 'LBR', 0, 'L', 0);
-                $this->pdf->Cell(3, 0.7, number_format($v['item_bruto']), 'BR', 0, 'R', 0);
-                $this->pdf->Cell(2.5, 0.7, number_format($v['item_disc'] + $v['item_disctotal']), 'BR', 0, 'R', 0);
+                $this->pdf->Cell($width-8.5, 0.7, $v['customer_name'], 'LBR', 0, 'L', 0);
+                // $this->pdf->Cell(3, 0.7, number_format($v['item_bruto']), 'BR', 0, 'R', 0);
+                // $this->pdf->Cell(2.5, 0.7, number_format($v['item_disc'] + $v['item_disctotal']), 'BR', 0, 'R', 0);
                 $this->pdf->Cell(3, 0.7, number_format($v['item_subtotal'] + ($v['item_incppn']=="Y"?0:$v['item_ppnamount'])), 'BR', 0, 'R', 0);
                 
 
@@ -139,16 +139,16 @@ class One_sales_022 extends RPT_Controller
 
     function tableHeader($me, $d)
     {
-        $wItemName = $me->w - $me->lMargin - $me->rMargin - 14;
+        $wItemName = $me->w - $me->lMargin - $me->rMargin - 9;
         $this->pdf->SetFont('Arial','', 9);
         
         if ($me->PageNo()>1) {
             $me->SetFillColor(0,0,0);
             $me->SetTextColor(0,0,0);
-            $me->Cell($me->w - $me->lMargin - $me->rMargin - 13.5, 1, "", '', 0, 'L', 0);
+            $me->Cell($me->w - $me->lMargin - $me->rMargin - 8, 1, "", '', 0, 'L', 0);
             $me->Cell(5, 1, "SubTotal : " , '', 0, 'R', 0);
-            $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
-            $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
+            // $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
+            // $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
             $me->Cell(3, 0.7, number_format($d['sub_total']) , '', 0, 'R', 0);
             $me->Ln(0.8);
         }
@@ -160,8 +160,8 @@ class One_sales_022 extends RPT_Controller
         $me->Cell(2, 1, 'TANGGAL' , 'LTBR', 0, 'C', 1);
         $me->Cell(3, 1, 'NOMOR' , 'LTBR', 0, 'C', 1);
         $me->Cell($wItemName, 1, 'NAMA CUSTOMER' , 'LTBR', 0, 'C', 1);
-        $me->Cell(3, 1, 'BRUTO' , 'LTBR', 0, 'C', 1);
-        $me->Cell(2, 1, 'POTONGAN' , 'LTBR', 0, 'C', 1);
+        // $me->Cell(3, 1, 'BRUTO' , 'LTBR', 0, 'C', 1);
+        // $me->Cell(2, 1, 'POTONGAN' , 'LTBR', 0, 'C', 1);
         $me->Cell(3, 1, 'NETTO' , 'LTBR', 0, 'C', 1);
 
         // $me->Cell(4, 0.7, 'TOTAL' , 'TBR', 0, 'C',1);
@@ -177,10 +177,10 @@ class One_sales_022 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 11.5, 1, "" , '', 0, 'L', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 6, 1, "" , '', 0, 'L', 0);
         $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
-        $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
-        $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
+        // $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
+        // $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
         $me->Cell(3, 0.7, number_format($d['sub_total']) , 'BR', 0, 'R', 0);
         // $me->Ln(1);
 
