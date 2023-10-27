@@ -20,14 +20,9 @@ class One_fin_007 extends RPT_Controller
 
     function index() {
 
-        // get data
-        // $prm = [
-        //     'search'=>'%', //.$this->sys_input['search'].'%', 
-        //     'sdate'=>$this->sys_input['sdate'],
-        //     'edate'=>$this->sys_input['edate']
-        // ];
+        $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0];
         $prm = [];
-        $r = $this->r_reportfinance->fin_007($prm);
+        $r = $this->r_reportfinance->fin_007($this->sys_input);
         
         $this->pdf = new PDF("P","cm",array(21,29.7));
         $this->pdf->SetAutoPageBreak(true,1);
@@ -53,6 +48,8 @@ class One_fin_007 extends RPT_Controller
                 $this->pdf->Cell($width, 0.7, $v['customer_name'], 'LBR', 0, 'L', 1);
                 $this->pdf->Ln(0.7);
 
+                $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0];
+
                 $invoices = $v['invoices'];
                 foreach ($invoices as $l => $w)
                 {
@@ -65,174 +62,16 @@ class One_fin_007 extends RPT_Controller
                     $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_unpaid), 'LBR', 0, 'R', 0);
                     $this->pdf->Ln(0.7);
+
+                    $total['bill'] += $w->invoice_grandtotal;
+                    $total['paid'] += $w->invoice_paid;
+                    $total['unpaid'] += $w->invoice_unpaid;
                 }
+
+                $this->tableFooter($this->pdf, $total);
             }
         }
         
-        $this->pdf->Output();
-    }
-    function indexz() {
-        $this->pdf = new PDF("L","cm",array(21,29.7));
-        $this->pdf->SetAutoPageBreak(true,1);
-
-        $this->pdf->rptclass = $this;
-        $this->pdf->setRptTitle('Laporan Piutang Pelanggan');
-        $this->pdf->setRptSubtitle('Per '.date('d F Y'));
-        $this->pdf->header_func = "my_header_recapt";
-        $this->pdf->footer_func = "my_footer";
-
-        $this->pdf->SetFont('Arial','', 11);
-
-        // Get data
-        $this->load->model('report/r_report');
-        $r = $this->r_report->one_fin_007( $this->sys_input );
-
-        $grand_total = 0;
-        $sub_total = 0;
-        $sub_total_ppn = 0;
-        $staff_id = 0;
-        $customer_id = 0;
-        $n = 1;
-
-        if ($r)
-        {
-            $d = $r;
-            $dx = [];
-            foreach ($d as $k => $v)
-            {
-                $v['desc'] = 'Sales Invoice';
-                $dx[] = $v;
-                $payments = json_decode($v['payments']);
-                foreach ($payments as $l => $w)
-                {
-                    $dx[] = ['invoice_number'=>$w->pay_number,
-                            'invoice_date'=>$w->pay_date,
-                            'invoice_duedate'=>'',
-                            'invoice_grandtotal'=>(0-$w->pay_total),
-                            'customer_id'=>$v['customer_id'],
-                            'customer_name'=>$v['customer_name'],
-                            'desc'=>'     Penerimaan Piutang'];
-                }
-            }
-            // if (sizeof($d) > 0)
-            // {
-            //     $staff = $this->s_staff->get( $d[0]['staff_id'] );
-            //     $staff_id = $staff['staff_id'];
-            // }
-            
-            // $data = isset($r[1])?$r[1]:[];
-            // $r = $r[0][0];
-            $this->pdf->SetMargins(0.7, 0.5, 0.5);
-            $this->pdf->AddPage('L', 'A4');
-            // $this->tableHeader($this->pdf, ['staff_name' => $staff['staff_name'], 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
-
-            // $this->pdf->SetFont('Arial','', 9);
-
-            // $wQty = $this->wQty;
-            // $wItemName = $this->pdf->w - $this->pdf->lMargin - $this->pdf->rMargin - 19;
-
-            
-            $w = $this->pdf->w - $this->pdf->lMargin - $this->pdf->rMargin ;
-            $balance = 0;
-            foreach ($dx as $k => $v)
-            {
-                if ($this->pdf->GetY() > 18.8)
-                {
-                    $this->pdf->AddPage('L', 'A4');
-                    if ($customer_id == $v['customer_id'])
-                        $this->tableHeaderCustomer($this->pdf, $v);
-                }
-
-                if ($customer_id != $v['customer_id'])
-                {
-                    $balance = 0;
-                    $n = 1;
-                    $customer_id = $v['customer_id'];
-                    $this->tableHeaderCustomer($this->pdf, $v);
-                }
-            //     if ($staff_id != $v['staff_id'])
-            //     {
-            //         $staff_id = $v['staff_id'];
-            //         $staff = $this->s_staff->get( $staff_id );
-
-            //         $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
-            //         $sub_total = 0;
-            //         $sub_total_ppn = 0;
-
-            //         $this->tableHeader($this->pdf, ['staff_name' => $staff['staff_name'], 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
-            //     }
-
-            //     $ylimit = $this->pdf->h - 2.9;
-            //     if ($this->pdf->GetY() > $ylimit)
-            //     {
-            //         $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
-            //         $this->pdf->AddPage('L', 'A4');
-            //         $this->tableHeader($this->pdf, ['staff_name' => $staff['staff_name'], 'sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
-
-            //         // $sub_total = 0;
-            //         // $sub_total_ppn = 0;
-            //     }
-
-                $balance += $v['invoice_grandtotal'];
-                $grand_total += $v['invoice_grandtotal'];
-
-                $this->pdf->Cell(1, 0.7, ($n), 'LBR', 0, 'C', 0);
-                $this->pdf->Cell(4, 0.7, $v['desc'], 'LBR', 0, 'L', 0);
-                $this->pdf->Cell($w - 21.5, 0.7, $v['invoice_number'], 'LBR', 0, 'L', 0);
-                $this->pdf->Cell(3, 0.7, $v['invoice_date'], 'LBR', 0, 'L', 0);
-                $this->pdf->Cell(3, 0.7, $v['invoice_duedate'], 'LBR', 0, 'L', 0);
-                $this->pdf->Cell(1, 0.7, "", 'LBR', 0, 'L', 0);
-                if ($v['invoice_grandtotal'] > 0)
-                    $this->pdf->Cell(3.5, 0.7, number_format($v['invoice_grandtotal']), 'BR', 0, 'R', 0);
-                else
-                    $this->pdf->Cell(3.5, 0.7, "(".number_format(0-$v['invoice_grandtotal']).")", 'BR', 0, 'R', 0);
-                $this->pdf->Cell(2.5, 0.7, number_format(0), 'BR', 0, 'R', 0);
-                $this->pdf->Cell(3.5, 0.7, number_format($balance), 'BR', 0, 'R', 0);
-                
-                $bjt = 0;//$v['date_diff'] <= 0 ? $v['invoice_unpaid'] : 0;
-                $jt30 = 0;//$v['date_diff'] <= 30 && $v['date_diff'] > 0 ? $v['invoice_unpaid'] : 0;
-                $jt60 = 0;//$v['date_diff'] <= 60 && $v['date_diff'] > 30 ? $v['invoice_unpaid'] : 0;
-                $jt90 = 0;//$v['date_diff'] <= 90 && $v['date_diff'] > 60 ? $v['invoice_unpaid'] : 0;
-                $jt120 = 0;//$v['date_diff'] <= 120 && $v['date_diff'] > 90 ? $v['invoice_unpaid'] : 0;
-                $jtrest = 0;//$v['date_diff'] > 120 ? $v['invoice_unpaid'] : 0;
-
-                
-
-                // $payments = json_decode($v['payments']);
-
-            //     $this->pdf->Cell(3, 0.7, $v['staff_name'], 'LBR', 0, 'L', 0);
-            //     $this->pdf->Cell($wItemName, 0.7, $v['customer_name'], 'BR', 0, 'L', 0);
-            //     $this->pdf->Cell(3, 0.7, number_format($v['invoice_ppn']), 'BR', 0, 'R', 0);
-            //     $this->pdf->Cell(3, 0.7, number_format($v['invoice_total']+$v['invoice_ppn']), 'BR', 0, 'R', 0);
-            //     $this->pdf->Cell(3, 0.7, number_format($v['invoice_total']), 'BR', 0, 'R', 0);
-                
-
-                $this->pdf->Ln(0.7);
-                $n++;
-
-            //     $sub_total += $v['invoice_total'];
-            //     $sub_total_ppn += $v['invoice_ppn'];
-            }
-
-            // $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'sub_total_ppn' => $sub_total_ppn]);
-            // $this->pdf->Ln(0.2);
-            // $this->pdf->SetFont('Arial','B', 9);
-            // $this->pdf->Cell($wItemName+3, 0.7, 'TOTAL', 'BLTR', 0, 'C', 0);
-            // $this->pdf->Cell($wQty, 0.7, '', 'BTR', 0, 'R', 0);
-            // $this->pdf->Cell(2, 0.7, '', 'BTR', 0, 'C', 0);
-            // $this->pdf->Cell($wQty, 0.7, '', 'BTR', 0, 'R', 0);
-            // $this->pdf->Cell($wQty+1, 0.7, number_format($grand_total, 2), 'BTR', 0, 'R', 0);
-            $this->pdf->Ln(0.2);
-            $this->pdf->SetFont('Arial','B', 9);
-            $this->pdf->Cell(1, 0.7, '', 'LBT', 0, 'C', 1);
-            $this->pdf->Cell($w - 10.5, 0.7, 'GRAND TOTAL', 'TBR', 0, 'L', 1);
-            // $this->pdf->Cell(3.5, 0.7, number_format($v['invoice_grandtotal']), 'BR', 0, 'R', 0);
-            // $this->pdf->Cell(2.5, 0.7, number_format(0), 'BR', 0, 'R', 0);
-            $this->pdf->Cell(9.5, 0.7, number_format($grand_total), 'TBR', 0, 'R', 1);
-            
-        }
-
-       
         $this->pdf->Output();
     }
 
@@ -286,11 +125,11 @@ class One_fin_007 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 12, 1, "" , '', 0, 'L', 0);
-        $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
-        $me->Cell(3, 0.7, number_format($d['sub_total_ppn']) , 'LBR', 0, 'R', 0);
-        $me->Cell(3, 0.7, number_format($d['sub_total']+$d['sub_total_ppn']) , 'LBR', 0, 'R', 0);
-        $me->Cell(3, 0.7, number_format($d['sub_total']) , 'BR', 0, 'R', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 7.5, 1, "TOTAL" , '', 0, 'L', 0);
+        // $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
+        $me->Cell(2.5, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
+        $me->Cell(2.5, 0.7, number_format($d['paid']) , 'LBR', 0, 'R', 0);
+        $me->Cell(2.5, 0.7, number_format($d['unpaid']) , 'BR', 0, 'R', 0);
         // $me->Ln(1);
 
         // $me->SetFillColor(0,0,0);

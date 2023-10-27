@@ -526,11 +526,12 @@ class R_reportfinance extends MY_Model
     function fin_007( $d )
     {
         $customerid = 0;
+        if (isset($d['customer'])) $customerid = $d['customer'];
 
         $dir = getcwd()."/application/models/report/sql/";
         $q = file_get_contents($dir."q_fin007.sql");
         // $r = $this->db->query($q, [$d['search'], $d['search'], $d['sdate'], $d['edate']])->result_array();
-        $r = $this->db->query($q, [])->result_array();
+        $r = $this->db->query($q, [$customerid, $customerid, $customerid])->result_array();
 
         foreach ($r as $k => $v)
         {
