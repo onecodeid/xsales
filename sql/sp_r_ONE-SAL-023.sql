@@ -31,7 +31,7 @@ L_SalesShipping sales_shipping,
 L_SalesDP sales_dp,
 L_SalesNote sales_note,
 
-M_CustomerName customer_name, M_CustomerAddress customer_address, IFNULL(M_CustomerPICName, '') customer_pic,
+IF(M_CustomerCode = 'C.UMUM', L_SalesM_CustomerName, M_CustomerName) customer_name, IFNULL(M_CustomerAddress, '-') customer_address, IFNULL(M_CustomerPICName, '') customer_pic,
 IFNULL(M_CustomerPhones, "[]") customer_phones,
     IFNULL(M_KelurahanName, '') village_name,
     IFNULL(M_DistrictName, '') district_name,

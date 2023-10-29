@@ -26,7 +26,8 @@ class L_Sales extends MY_Model
                 L_SalesPaid sales_paid, L_SalesUnpaid sales_unpaid, L_SalesShipping sales_shipping, L_SalesDP sales_dp, L_SalesGrandTotal sales_grandtotal,
                 L_SalesDiscount sales_disc, L_SalesDiscountRp sales_discrp,
                 L_SalesDone sales_done, L_SalesProforma sales_proforma, L_SalesProformaNumber proforma_number, L_SalesProformaDueDate proforma_duedate,
-                L_SalesNote sales_note, L_SalesMemo sales_memo, L_SalesM_CustomerName sales_customer_name, M_CustomerName customer_name, IFNULL(L_SalesRef, '') sales_ref,
+                L_SalesNote sales_note, L_SalesMemo sales_memo, L_SalesM_CustomerName sales_customer_name, 
+                M_CustomerCode customer_code, M_CustomerName customer_name, IFNULL(L_SalesRef, '') sales_ref,
                 L_SalesIncludePPN sales_ppn,
                 M_CustomerID customer_id, L_SalesS_StaffID sales_staff, S_StaffName staff_name,
                 L_OfferID offer_id, L_OfferNumber offer_number, L_OfferDate offer_date,
@@ -52,14 +53,14 @@ class L_Sales extends MY_Model
                 LEFT JOIN m_affiliate ON L_SalesM_AffiliateID = M_AffiliateID
                 LEFT JOIN l_offer ON L_SalesL_OfferID = L_OfferID
                 LEFT JOIN f_spay ON L_SalesID = F_SpayL_SalesID AND F_SpayIsActive = 'Y'
-                WHERE (`L_SalesNumber` LIKE ? OR `M_CustomerName` LIKE ?)
+                WHERE (`L_SalesNumber` LIKE ? OR `M_CustomerName` LIKE ? OR L_SalesM_CustomerName LIKE ?)
                 AND `L_SalesIsActive` = 'Y'
                 AND ((L_SalesM_CustomerID = ? AND ? > 0) OR ? = 0)
                 AND ((L_SalesS_StaffID = ? AND ? > 0) OR ? = 0)
                 AND L_SalesDate BETWEEN ? AND ? {$done}
                 GROUP BY L_SalesID
                 ORDER BY L_SalesDate DESC, L_SalesNumber DESC
-                LIMIT {$limit} OFFSET {$offset}", [$d['search'], $d['search'], $customer, $customer, $customer, 
+                LIMIT {$limit} OFFSET {$offset}", [$d['search'], $d['search'], $d['search'], $customer, $customer, $customer, 
                     $staff, $staff, $staff,
                     ($d['sdate']==null?'1971-01-01':$d['sdate']), $d['edate']]);
         if ($r)
@@ -93,11 +94,11 @@ class L_Sales extends MY_Model
             "SELECT count(`{$this->table_key}`) n
             FROM `{$this->table_name}`
             JOIN m_customer ON L_SalesM_CustomerID = M_CustomerID
-            WHERE (`L_SalesNumber` LIKE ? OR `M_CustomerName` LIKE ?)
+            WHERE (`L_SalesNumber` LIKE ? OR `M_CustomerName` LIKE ? OR L_SalesM_CustomerName LIKE ?)
             AND ((L_SalesM_CustomerID = ? AND ? > 0) OR ? = 0)
             AND ((L_SalesS_StaffID = ? AND ? > 0) OR ? = 0)
             AND L_SalesDate BETWEEN ? AND ? {$done}
-            AND `L_SalesIsActive` = 'Y'", [$d['search'], $d['search'], $customer, $customer, $customer, 
+            AND `L_SalesIsActive` = 'Y'", [$d['search'], $d['search'], $d['search'], $customer, $customer, $customer, 
                 $staff, $staff, $staff,
                 ($d['sdate']==null?'1971-01-01':$d['sdate']), $d['edate']]);
         if ($r)

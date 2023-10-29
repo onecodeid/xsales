@@ -98,9 +98,10 @@
 
                     <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)">{{ props.item.sales_date }}</td>
                     <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)"><b>{{ props.item.sales_number }}</b></td>
-                    <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
-                        {{ props.item.customer_name }}
-                    </td> 
+                    
+                    <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)">
+                        {{ props.item.customer_name }} <span v-show="props.item.customer_code=='C.UMUM'"> - {{ props.item.sales_customer_name }}</span>
+                    </td>
                     <!-- <td class="text-xs-left pa-2" :class="bg_proforma(props.item)" @click="select(props.item)" v-show="!is_sales">
                         {{ props.item.staff_name }}
                     </td>  -->
