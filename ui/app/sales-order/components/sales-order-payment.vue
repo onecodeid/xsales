@@ -18,7 +18,7 @@
             <v-card-text>
                 <v-layout row wrap>
                     <v-flex xs8>
-                        <v-text-field readonly :value="selected_sales.customer_name+' / '+selected_sales.sales_number" label="Customer / Order"></v-text-field>
+                        <v-text-field readonly :value="selected_sales.customer_name+(selected_sales.customer_code=='C.UMUM'?(' - '+selected_sales.sales_customer_name+' / '):' / ')+selected_sales.sales_number" label="Customer / Order"></v-text-field>
                     </v-flex>
                     <v-flex xs4 pl-2>
                         <v-text-field readonly :value="payment_total" label="Total Tagihan" reverse suffix="Rp"></v-text-field>
