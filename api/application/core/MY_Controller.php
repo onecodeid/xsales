@@ -170,20 +170,20 @@ class RPT_Controller extends MY_Controller
         $me->pdf->SetFont('Arial', 'B', 13);
         $gy = $me->pdf->tMargin;
 
-        $me->pdf->Image(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin+0.5, $me->pdf->tMargin+0.5, 2.5);
+        $me->pdf->Image(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin+0.5, $me->pdf->tMargin+0, 2.5);
         // $rtt = new PDF_Rotate();
         // $me->pdf->RotatedImage(base_url() . '/assets/images/logo-mph.png', $me->pdf->lMargin+0.5+2, $me->pdf->tMargin+0.5+2, 2, 2, 180);
 
         // blank columns
-        $row_first = 2.5;
+        $row_first = 1.5;
         $row_small = 0.5;
         $me->pdf->SetY($gy);
-        $me->pdf->Cell(3, $row_first, '', 'RB', 0, 'R');
+        $me->pdf->Cell(3, $row_first, '', 'B', 0, 'R');
         $me->pdf->Cell($width-7, $row_first, '', 'RB', 0, 'R');
         $me->pdf->Cell(4, $row_first, '', 'B', 0, 'R');
         $me->pdf->SetY($gy+$row_first);
 
-        $me->pdf->SetY($gy+0.5);
+        $me->pdf->SetY($gy);
         $me->pdf->SetFont('Arial', '', 18);
         $me->pdf->Cell($width-4, 0.5, '', '', 0, 'R');
         $me->pdf->MultiCell(4, 0.7, $title, '', 'C');
@@ -191,50 +191,50 @@ class RPT_Controller extends MY_Controller
         $me->pdf->SetFont('Arial', 'B', 14);
         $me->pdf->SetY($gy);
         $me->pdf->SetX($margins[0]+3.3);
-        $me->pdf->Cell($width-6, 0.5, 'CV. Ady Water', '', 0, 'L');
+        $me->pdf->Cell($width-6, 0.5, 'PELITA KALENDER', '', 0, 'L');
 
         $me->pdf->SetFont('Arial', 'B', 8);
         $me->pdf->SetY($gy+0.5);
         $me->pdf->SetX($margins[0]+3.3);       
-        $me->pdf->Write(0.5,'Office : ');
+        // $me->pdf->Write(0.5,'Office : ');
         $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,'Jl. Mande Raya No. 26 Cikadut Cicaheum Bandung');
+        $me->pdf->Write(0.5,'Komp. Kanjengan Blok B No. 8');
 
         $me->pdf->SetFont('Arial', 'B', 8);
         $me->pdf->SetY($gy+0.85);
         $me->pdf->SetX($margins[0]+3.3);       
-        $me->pdf->Write(0.5,'Jakarta 1 : ');
-        $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,'Jl. Kemanggisan Pulo I No. 6 Palmerah Jakarta Barat');
+        $me->pdf->Write(0.5,'Semarang');
+        // $me->pdf->SetFont('Arial', '', 8);
+        // $me->pdf->Write(0.5,'Jl. Kemanggisan Pulo I No. 6 Palmerah Jakarta Barat');
 
-        $me->pdf->SetFont('Arial', 'B', 8);
-        $me->pdf->SetY($gy+1.2);
-        $me->pdf->SetX($margins[0]+3.3);       
-        $me->pdf->Write(0.5,'Jakarta 2 : ');
-        $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,'Jl. Tanah Merdeka No. 80B RT 15 / RW 05 Rambutan, Ciracas Jakarta Timur');
+        // $me->pdf->SetFont('Arial', 'B', 8);
+        // $me->pdf->SetY($gy+1.2);
+        // $me->pdf->SetX($margins[0]+3.3);       
+        // $me->pdf->Write(0.5,'Jakarta 2 : ');
+        // $me->pdf->SetFont('Arial', '', 8);
+        // $me->pdf->Write(0.5,'Jl. Tanah Merdeka No. 80B RT 15 / RW 05 Rambutan, Ciracas Jakarta Timur');
 
-        $me->pdf->SetFont('Arial', 'B', 8);
-        $me->pdf->SetY($gy+1.55);
-        $me->pdf->SetX($margins[0]+3.3);       
-        $me->pdf->Write(0.5,'Phone / Fax : ');
-        $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,'+62(22) 7238019');
-        $me->pdf->SetFont('Arial', 'B', 8);
-        $me->pdf->Write(0.5,' Mobile Phone : ');
-        $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,isset($me->pdf->hdr_data['phone'])?$me->pdf->hdr_data['phone']:$this->data_phone);
+        // $me->pdf->SetFont('Arial', 'B', 8);
+        // $me->pdf->SetY($gy+1.55);
+        // $me->pdf->SetX($margins[0]+3.3);       
+        // $me->pdf->Write(0.5,'Phone / Fax : ');
+        // $me->pdf->SetFont('Arial', '', 8);
+        // $me->pdf->Write(0.5,'+62(22) 7238019');
+        // $me->pdf->SetFont('Arial', 'B', 8);
+        // $me->pdf->Write(0.5,' Mobile Phone : ');
+        // $me->pdf->SetFont('Arial', '', 8);
+        // $me->pdf->Write(0.5,isset($me->pdf->hdr_data['phone'])?$me->pdf->hdr_data['phone']:$this->data_phone);
 
-        $me->pdf->SetFont('Arial', 'B', 8);
-        $me->pdf->SetY($gy+1.95);
-        $me->pdf->SetX($margins[0]+3.3);       
-        $me->pdf->Write(0.5,'Email : ');
-        $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,isset($me->pdf->hdr_data['email'])?$me->pdf->hdr_data['email']:$this->data_email);
-        $me->pdf->SetFont('Arial', 'B', 8);
-        $me->pdf->Write(0.5,' Website : ');
-        $me->pdf->SetFont('Arial', '', 8);
-        $me->pdf->Write(0.5,'https://adywater.com');
+        // $me->pdf->SetFont('Arial', 'B', 8);
+        // $me->pdf->SetY($gy+1.95);
+        // $me->pdf->SetX($margins[0]+3.3);       
+        // $me->pdf->Write(0.5,'Email : ');
+        // $me->pdf->SetFont('Arial', '', 8);
+        // $me->pdf->Write(0.5,isset($me->pdf->hdr_data['email'])?$me->pdf->hdr_data['email']:$this->data_email);
+        // $me->pdf->SetFont('Arial', 'B', 8);
+        // $me->pdf->Write(0.5,' Website : ');
+        // $me->pdf->SetFont('Arial', '', 8);
+        // $me->pdf->Write(0.5,'https://adywater.com');
 
         $me->pdf->SetY($row_first+$margins[1]);
         $me->pdf->SetX($margins[0]);

@@ -129,17 +129,28 @@
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_debit) }}</td>
                     <td class="text-xs-right pa-2" @click="select(props.item)">Rp {{ one_money(props.item.sales_credit) }}</td> -->
                     <td class="text-xs-center pa-0 pr-1" :class="bg_proforma(props.item)" @click="select(props.item)">
+
+                        <div class="row">
+                            <div class="col-12 mb-1">
+                                <v-btn color="orange" class="btn-icon ma-0" small @click="print_invoice(props.item)" dark title="Cetak invoice"><v-icon>print</v-icon></v-btn>
+                                <v-btn color="success white--text" class="btn-icon ma-0" small  @click="pay(props.item)"><v-icon>attach_money</v-icon></v-btn>
+                            </div>
+                            <div class="col-12">
+                                <v-btn color="primary" class="btn-icon ma-0" small  @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
+                                <v-btn color="red" 
+                                    :dark="props.item.sales_done=='N'" 
+                                    :disabled="props.item.sales_done!='N'" 
+                                    class="btn-icon ma-0" small  @click="del(props.item)"><v-icon>delete</v-icon></v-btn>
+                            </div>
+                        </div>
                         
                         <!-- <v-layout row wrap> -->
                             <!-- <v-flex xs6 pr-1> -->
-                                <v-btn color="orange white--text" class="btn-icon ma-0" small  @click="pay(props.item)"><v-icon>attach_money</v-icon></v-btn>
-                                <v-btn color="primary" class="btn-icon ma-0" small  @click="edit(props.item)"><v-icon>create</v-icon></v-btn>
+                                
+                                
                             <!-- </v-flex>
                             <v-flex xs6 pl-1> -->
-                                <v-btn color="red" 
-                            :dark="props.item.sales_done=='N'" 
-                            :disabled="props.item.sales_done!='N'" 
-                            class="btn-icon ma-0" small  @click="del(props.item)"><v-icon>delete</v-icon></v-btn>
+                                
                             <!-- </v-flex> -->
                         <!-- </v-layout> -->
 
@@ -170,6 +181,7 @@
         
         <common-dialog-delete :data="sales_id" @confirm_del="confirm_del" v-if="dialog_delete"></common-dialog-delete>
         <common-dialog-confirm :data="sales_id" @confirm="confirm_post" v-if="dialog_confirm" :text="text_post"></common-dialog-confirm>
+        <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print>
         <payment></payment>
     </v-card>
 </template>
@@ -193,7 +205,8 @@ module.exports = {
         "common-dialog-delete" : httpVueLoader("../../common/components/common-dialog-delete.vue"),
         "common-dialog-confirm" : httpVueLoader("../../common/components/common-dialog-confirm.vue"),
         'common-datepicker' : httpVueLoader('../../common/components/common-datepicker.vue?t='+ts),
-        'payment' : httpVueLoader('./sales-order-payment.vue')
+        "common-dialog-print" : httpVueLoader("../../common/components/common-dialog-print-size.vue"),
+        'payment' : httpVueLoader('./sales-order-payment.vue?t='+ts)
     },
 
     data () {
@@ -256,7 +269,9 @@ module.exports = {
                     width: "11%",
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 }
-            ]
+            ],
+
+            report_url: ''
         }
     },
 
@@ -330,6 +345,11 @@ module.exports = {
                 this.$store.commit('sales/set_selected_staff', v) 
                 this.search()
             }
+        },
+
+        dialog_report : {
+            get () { return this.$store.state.dialog_print },
+            set (v) { this.$store.commit('set_dialog_print', v) }
         }
     },
 
@@ -601,6 +621,13 @@ module.exports = {
             this.__cp("selected_payment_type", pt)
 
             this.$store.commit("payment/set_object", ["dialog", true])
+        },
+
+        print_invoice (x) {
+            this.select(x)
+            let so = x
+            this.report_url = this.$store.state.sales.url+"report/one_sales_023?id="+so.sales_id
+            this.$store.commit('set_dialog_print', true)
         }
     },
 

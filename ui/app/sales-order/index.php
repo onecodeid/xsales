@@ -41,7 +41,7 @@ $ts = "?ts=" . Date("ymdhis");
             <sales-invoice-new></sales-invoice-new>
             <master-customer-new></master-customer-new>
             <master-expedition-new></master-expedition-new>
-            <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print>
+            <!-- <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print> -->
             <common-dialog-progress text="Sedang menyiapkan data Customer, mohon ditunggu... 😉"></common-dialog-progress>
          </v-app>
       </div>
@@ -120,7 +120,7 @@ methods : {
         "sales-invoice-new" : httpVueLoader("../sales-invoice/components/sales-invoice-proforma.vue?t=<?=date('YmdHis');?>"),
         "master-customer-new" : httpVueLoader("../master-customer/components/master-customer-new.vue?t=<?=date('YmdHis');?>"),
         "master-expedition-new" : httpVueLoader("../master-expedition/components/master-expedition-new.vue"),
-        "common-dialog-print" : httpVueLoader("../common/components/common-dialog-print-size.vue?t=<?=date('YmdHis');?>"),
+      //   "common-dialog-print" : httpVueLoader("../common/components/common-dialog-print-size.vue?t=<?=date('YmdHis');?>"),
         "common-dialog-progress" : httpVueLoader("../common/components/common-dialog-progress.vue?t=<?=date('YmdHis');?>")
       }
     })

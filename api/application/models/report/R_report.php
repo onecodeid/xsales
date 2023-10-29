@@ -171,6 +171,15 @@ class R_report extends MY_Model
         return $r;
     }
 
+    // Report Nota Invoice
+    function One_sales_023($id, $uid)
+    {
+        $r = $this->db->query("CALL `sp_r_ONE-SAL-023`(?, ?)", [$id, $uid])
+                    ->row();
+        $this->clean_mysqli_connection($this->db->conn_id);
+        return $r;
+    }
+
     // Report Nota PO
     function One_purchase_001($id, $uid)
     {
