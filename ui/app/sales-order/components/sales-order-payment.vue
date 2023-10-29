@@ -51,8 +51,10 @@
                 </v-layout>
             </v-card-text>
             <v-card-actions>
+                
                 <v-btn color="red" dark @click="del">Hapus</v-btn>
                 <v-spacer></v-spacer>
+                <v-btn color="primary" @click="dialog=!dialog" text flat>Tutup</v-btn>
                 <v-btn color="primary" @click="save">Simpan</v-btn>
             </v-card-actions>
         </v-card>
