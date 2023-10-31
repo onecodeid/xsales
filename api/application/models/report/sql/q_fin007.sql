@@ -20,6 +20,7 @@ from (
     where l_salesunpaid > 0
     and l_salesisactive = "Y"
     and ((l_salesm_customerid = ? and ? <> 0) or ? = 0)
+    and L_SalesGrandTotal > 0
 
     group by l_salesid
     order by m_customername) x
