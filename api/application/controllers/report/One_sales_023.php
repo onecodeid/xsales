@@ -17,6 +17,8 @@ class One_sales_023 extends RPT_Controller
     }
 
     function index() {
+        $adjustment = 0.5;
+
         // Get data
         // --------
         $this->load->model('report/r_report');
@@ -42,7 +44,7 @@ class One_sales_023 extends RPT_Controller
         // $this->pdf->header_func = "my_header";
         // $this->pdf->footer_func = "my_footer";
 
-        $this->pdf->SetMargins(0.7, 0.5, 0.7);
+        $this->pdf->SetMargins(0.7, 0.5+$adjustment, 0.7);
         $this->pdf->SetAutoPageBreak(true, 0.5);
         $this->pdf->AddPage($size[0], $size[1]);
         $this->pdf->SetFont('Arial','', 11);
@@ -69,8 +71,9 @@ class One_sales_023 extends RPT_Controller
                 $title, 
                 '');
 
-        $fy = $this->pdf->GetY();
-        $this->pdf->Ln(-0.2);
+
+        $fy = $this->pdf->GetY()+$adjustment;
+        $this->pdf->Ln(-0.2+$adjustment);
         $this->pdf->Cell(11.6, 2.3, '', 'LBR', 0, 'L');
         $this->pdf->Cell(8, 2.3, '', 'LBR', 0, 'L');
 
@@ -79,7 +82,7 @@ class One_sales_023 extends RPT_Controller
         if ($r->sales_shipping == 0) $total_n--;
         if ($r->sales_dp == 0) $total_n--;
 
-        $base_after_item = 5.1 + (sizeof($data)*0.5) + 0.4;
+        $base_after_item = 5.1 + (sizeof($data)*0.5) + 0.4+$adjustment;
         $ack_h = 1.2;
         $total_h = ($total_n*0.5)+0.2;
 
@@ -226,7 +229,7 @@ class One_sales_023 extends RPT_Controller
 
         
         // DATA
-        $this->pdf->SetY(4.4);
+        $this->pdf->SetY(4.4+$adjustment);
         $this->pdf->Cell(1.5, 0.7, 'NO.', 'LTB', 0, 'C');
         $this->pdf->Cell(1.5, 0.7, 'KODE', 'TB', 0, 'L');
         $this->pdf->Cell(5.8, 0.7, 'NAMA ITEM', 'TB', 0, 'L');
