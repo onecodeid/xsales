@@ -1,4 +1,4 @@
-select F_SpayDate pay_date, m_customerid customer_id, m_customername customer_name,
+select F_SpayDate pay_date, m_customerid customer_id, IF(M_CustomerCode='C.UMUM', L_SalesM_CustomerName, m_customername) customer_name,
     L_SalesID invoice_id, L_SalesDate invoice_date, "" invoice_duedate, L_SalesNumber invoice_number, L_SalesGrandTotal invoice_grandtotal, L_SalesNote invoice_note,
     L_SalesPaid invoice_paid, L_SalesUnpaid invoice_unpaid, M_TermID term_id, M_TermName term_name, M_TermDuration term_duration, '' sales_name,
     F_SpayAmount pay_amount, M_PaymentTypeName pay_type
