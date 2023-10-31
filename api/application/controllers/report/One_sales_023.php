@@ -71,15 +71,15 @@ class One_sales_023 extends RPT_Controller
 
         $fy = $this->pdf->GetY();
         $this->pdf->Ln(-0.2);
-        $this->pdf->Cell(11.6, 2.8, '', 'LBR', 0, 'L');
-        $this->pdf->Cell(8, 2.8, '', 'LBR', 0, 'L');
+        $this->pdf->Cell(11.6, 2.3, '', 'LBR', 0, 'L');
+        $this->pdf->Cell(8, 2.3, '', 'LBR', 0, 'L');
 
         $total_n = 7;
         if ($r->sales_disc == 0 && $r->sales_discrp == 0) $total_n--;
         if ($r->sales_shipping == 0) $total_n--;
         if ($r->sales_dp == 0) $total_n--;
 
-        $base_after_item = 5.6 + (sizeof($data)*0.5) + 0.4;
+        $base_after_item = 5.1 + (sizeof($data)*0.5) + 0.4;
         $ack_h = 1.2;
         $total_h = ($total_n*0.5)+0.2;
 
@@ -226,7 +226,7 @@ class One_sales_023 extends RPT_Controller
 
         
         // DATA
-        $this->pdf->SetY(4.9);
+        $this->pdf->SetY(4.4);
         $this->pdf->Cell(1.5, 0.7, 'NO.', 'LTB', 0, 'C');
         $this->pdf->Cell(1.5, 0.7, 'KODE', 'TB', 0, 'L');
         $this->pdf->Cell(5.8, 0.7, 'NAMA ITEM', 'TB', 0, 'L');
