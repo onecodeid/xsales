@@ -30,7 +30,7 @@ class One_sales_023 extends RPT_Controller
         // --------------
         // End of Get data
 
-        $data_max_a5 = 6;
+        $data_max_a5 = 8;
         // restructuring data
         $datas = [];
         foreach ($data as $k => $v)
