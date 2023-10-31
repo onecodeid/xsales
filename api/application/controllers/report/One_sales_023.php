@@ -219,8 +219,8 @@ class One_sales_023 extends RPT_Controller
         $this->pdf->Cell(3.5, 0.5, 'Penerima,', '', 0, 'C');
         $this->pdf->Ln(2.5);
         $this->pdf->SetStyle('B', true);
-        $this->pdf->Cell(3.5, 0.5, $r->admin_name, '', 0, 'C');
-        $this->pdf->Cell(3.5, 0.5, $r->ack_name, '', 0, 'C');
+        $this->pdf->Cell(3.5, 0.5, "( .................................. )", '', 0, 'C');
+        $this->pdf->Cell(3.5, 0.5, "( .................................. )", '', 0, 'C');
         $this->pdf->Cell(3.5, 0.5, "( .................................. )", '', 0, 'C');
 
 
