@@ -30,7 +30,16 @@ class One_sales_023 extends RPT_Controller
         // --------------
         // End of Get data
 
-        $data_max_a5 = 2;
+        $data_max_a5 = 8;
+        // restructuring data
+        $datas = [];
+        foreach ($data as $k => $v)
+        {
+            $x = floor($k/$data_max_a5);
+            if (!isset($datas[$x])) $datas[$x] = [];
+            $datas[$x][] = $v;
+        }
+
         $this->pdf = new PDF("P","cm",array(21,29.7));
         $this->pdf->SetAutoPageBreak(true, 1);
         $size = ["L","A5"];
@@ -46,312 +55,228 @@ class One_sales_023 extends RPT_Controller
 
         $this->pdf->SetMargins(0.7, 0.5+$adjustment, 0.7);
         $this->pdf->SetAutoPageBreak(true, 0.5);
-        $this->pdf->AddPage($size[0], $size[1]);
-        $this->pdf->SetFont('Arial','', 11);
-        
-        $r->customer_phones = json_decode($r->customer_phones);
 
-        // Phones
-        $hdr_data = [];
-        $sales_phones = json_decode($r->sales_phones);
-        if (sizeof($sales_phones)>0)
+        foreach ($datas as $kkk => $vvv)
         {
-            $phones = [];
-            foreach ($sales_phones as $k => $v) $phones[] = $v->no;
-            $hdr_data['phone'] = join(', ', $phones);
-        }
+            $data = $vvv;
 
-        // Email
-        if ($r->sales_email != "") $hdr_data['email'] = $r->sales_email;
-        $this->pdf->setHdrData($hdr_data);
-        
-        $title = 'INVOICE';
-        $this->pdf->SetTextColor(0,0,0);
-        $this->my_header_a5($this, 
-                $title, 
-                '');
+            $this->pdf->AddPage($size[0], $size[1]);
+            $this->pdf->SetFont('Arial','', 11);
+            if (!is_array($r->customer_phones))
+                $r->customer_phones = json_decode($r->customer_phones);
 
+            // Phones
+            $hdr_data = [];
+            $sales_phones = json_decode($r->sales_phones);
+            if (sizeof($sales_phones)>0)
+            {
+                $phones = [];
+                foreach ($sales_phones as $k => $v) $phones[] = $v->no;
+                $hdr_data['phone'] = join(', ', $phones);
+            }
 
-        $fy = $this->pdf->GetY()+$adjustment;
-        $this->pdf->Ln(-0.2+$adjustment);
-        $this->pdf->Cell(11.6, 2.3, '', 'LBR', 0, 'L');
-        $this->pdf->Cell(8, 2.3, '', 'LBR', 0, 'L');
-
-        $total_n = 7;
-        if ($r->sales_disc == 0 && $r->sales_discrp == 0) $total_n--;
-        if ($r->sales_shipping == 0) $total_n--;
-        if ($r->sales_dp == 0) $total_n--;
-
-        $base_after_item = 5.1 + (sizeof($data)*0.5) + 0.4+$adjustment;
-        $ack_h = 1.2;
-        $total_h = ($total_n*0.5)+0.2;
-
-        $this->pdf->SetY($base_after_item);
-        $this->pdf->Cell(12.6, $total_h+$ack_h, '', 'LBTR', 0, 'L');
-        $this->pdf->Cell(7, $total_h+$ack_h, '', 'TBR', 0, 'L');
-        $this->pdf->SetY($base_after_item+$total_h);
-        $this->pdf->Cell(9.1, 0.5, '', '', 0, 'L');
-        // $this->pdf->Cell(3.5, $ack_h, '', 'BR', 0, 'L');
-        // $this->pdf->Cell(3.5, $ack_h, '', 'BR', 0, 'L');
-        // $this->pdf->Cell(3.5, $ack_h, '', 'BR', 0, 'L');
-
-
-        $customer = "<b>{$r->customer_name}</b>";
-        if ($r->customer_pic != "") $customer .= " (PIC : <b>{$r->customer_pic}</b>)";
-
-        $this->pdf->SetY($fy);
-        $this->pdf->SetFont('Arial','', 9);
-        $rm = $this->pdf->rMargin;
-        
-        $this->pdf->Cell(3, 0.5, "No Transaksi");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, $r->sales_number, "", 0, "L");
-        $this->pdf->Ln(0.5);
-        $this->pdf->Cell(3, 0.5, "Tanggal");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, date('d/m/Y', strtotime($r->sales_date)), "", 0, "L");
-        $this->pdf->Ln(0.5);
-        $this->pdf->Cell(3, 0.5, "Nama");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, $r->customer_name, "", 0, "L");
-        $this->pdf->Ln(0.5);
-        $this->pdf->Cell(3, 0.5, "Alamat");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, $r->customer_address, "", 0, "L");
-        $this->pdf->Ln(0.5);
-
-        // $this->pdf->SetRightMargin($this->pdf->w - $this->pdf->GetX() - (9.5+1.8));
-        // $this->pdf->WriteHTML("To : {$customer}", 0.5);
-        // $this->pdf->SetRightMargin($rm);
-        // $this->pdf->Ln(0.5);
-
-        // $this->pdf->SetRightMargin($this->pdf->w - $this->pdf->GetX() - (9.5+1.8));
-        // $this->pdf->WriteHTML( "Alamat : " . $r->customer_address . " - " .
-        //     ($r->district_name != "" && $r->district_name != null ? $r->district_name . ", " : "") .
-        //     ($r->city_name != "" && $r->city_name != null ? $r->city_name . ", " : "") .
-        //     $r->province_name . " ", 0.5);
-
-
-        // PHONES
-        // $phs = [];
-        // foreach ($r->customer_phones as $l => $w)
-        //     $phs[] = "+62 ".$w->no;
-        // $this->pdf->WriteHTML("<b>".join(', ', $phs)."</b>", 0.5);
-
-        // $this->pdf->SetRightMargin($rm);
-
-        $this->pdf->SetY($fy);
-        $this->pdf->SetX(12.6);
-        $this->pdf->Cell(3, 0.5, "Pembayaran");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, $r->term_name, "", 0, "R");
-        $this->pdf->Ln(0.5);
-        $this->pdf->SetX(12.6);
-        $this->pdf->Cell(3, 0.5, "Lama Kredit");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, $r->term_duration, "", 0, "R");
-        $this->pdf->Ln(0.5);
-        $this->pdf->SetX(12.6);
-        $this->pdf->Cell(3, 0.5, "Jatuh Tempo");
-        $this->pdf->Cell(0.5, 0.5, ":");
-        $this->pdf->Cell(3.9, 0.5, date('d F Y', strtotime($r->sales_due_date)), "", 0, "R");
-
-        // FOOTER
-        $this->pdf->SetY($base_after_item+0.1);
-        // $this->pdf->SetStyle('B', true);
-        // $this->pdf->WriteHTML("Pengirim : <b>{$r->admin_name}</b>");
-        // $this->pdf->Ln(0.7);
-        // $rm = $this->pdf->rMargin;
-        // $h = 0.5;
-        // $this->pdf->SetRightMargin($this->pdf->w - $this->pdf->GetX() - 9);
-
-        // $this->pdf->SetStyle('B', true);
-        // $this->pdf->WriteHtml("Pesan : ", $h);
-        // $this->pdf->SetStyle('B', false);
-        // $this->pdf->WriteHtml($r->sales_note, $h);
-        // $this->pdf->SetRightMargin($rm);
-
-
-        // $this->pdf->SetStyle('B', false);
-        // $this->pdf->WriteHTMLCell(9, "<b>Pesan</b> : " . $r->sales_note, 0.6);
-        // $this->pdf->SetStyle('B', false);
-        // $this->pdf->SetFont('Arial','', 9);
-        
-        // $this->pdf->Ln(0.45);
-        // $this->pdf->Cell(1.45,0.5, '');
-        // $this->pdf->SetY($this->pdf->GetY()+0.2);
-        // $this->pdf->Ln(0.7);
-        // $this->pdf->MultiCell(7.3, 0.5, $r->sales_note, "", "L");
-        // $this->pdf->Ln(0.5);
-
-        // PATCH
-        // $this->pdf->Ln(-0.2);
-
-        // $this->pdf->SetStyle('B', true);
-        // $this->pdf->WriteHTML("Pembayaran : ");
-        // $this->pdf->SetStyle('B', false);
-        // $this->pdf->WriteHTML($r->term_name);
-        // $this->pdf->Ln(0.5);
-
-        // $this->pdf->SetStyle('B', true);
-        // $this->pdf->WriteHTML("Transfer ke :");
-        // $this->pdf->Ln(0.7);
-        
-        
-        // $this->pdf->SetStyle('B', false);
-        // $this->pdf->SetFont('Arial','', 9);
-        // $banks = json_decode($r->banks);
-        // foreach ($banks as $k => $v)
-        // {
-        //     $this->pdf->MultiCell(8.8, 0.5, "{$v->bank_name} a/n {$v->account_name} {$v->account_number}", "", "L");
-        // }
-
-        // PATCH
-        // $this->pdf->Ln(-0.2);
-
-        // $this->pdf->SetStyle('B', true);
-        // $this->pdf->WriteHTML("Terbilang :");
-        // $this->pdf->Ln(0.7);
-        // $this->pdf->SetStyle('B', false);
-        // $this->pdf->SetFont('Arial','', 9);
-        // $this->pdf->MultiCell(8.8, 0.5, ucwords($r->terbilang) . ' Rupiah', "", "L");
-
-        $this->pdf->SetStyle('B', false);
-        $this->pdf->Cell(3.5, 0.5, 'Dibuat,', '', 0, 'C');
-        $this->pdf->Cell(3.5, 0.5, 'Mengetahui,', '', 0, 'C');
-        $this->pdf->Cell(3.5, 0.5, 'Penerima,', '', 0, 'C');
-        $this->pdf->Ln(2.5);
-        $this->pdf->SetStyle('B', true);
-        $this->pdf->Cell(3.5, 0.5, "( ........................... )", '', 0, 'C');
-        $this->pdf->Cell(3.5, 0.5, "( ........................... )", '', 0, 'C');
-        $this->pdf->Cell(3.5, 0.5, "( ........................... )", '', 0, 'C');
-
-
-        
-        // DATA
-        $this->pdf->SetY(4.4+$adjustment);
-        $this->pdf->Cell(1.5, 0.7, 'NO.', 'LTB', 0, 'C');
-        $this->pdf->Cell(1.5, 0.7, 'KODE', 'TB', 0, 'L');
-        $this->pdf->Cell(5.8, 0.7, 'NAMA ITEM', 'TB', 0, 'L');
-        
-        $this->pdf->Cell(1.5, 0.7, 'QTY', 'TB', 0, 'R');
-        $this->pdf->Cell(2, 0.7, 'HARGA', 'TB', 0, 'R');
-        $this->pdf->Cell(2.5, 0.7, 'BRUTO', 'TB', 0, 'R');
-        $this->pdf->Cell(2, 0.7, 'POT.', 'TB', 0, 'R');
-        $this->pdf->Cell(2.5, 0.7, 'NETTO', 'TB', 0, 'R');
-        $this->pdf->Cell(0.3, 0.7, '', 'TBR', 0, 'R');
-        $this->pdf->Ln(0.7);
-
-        $total = 0;
-        $this->pdf->SetStyle('B', false);
-        $item_h = 0.5;
-        $this->pdf->Ln(0.2);
-
-        $totals = ['disc'=>0, 'bruto'=>0, 'netto'=>0];
-        foreach ($data as $k => $v)
-        {
-            $bruto = $v['item_price']*$v['item_qty'];
-            $disc = $v['item_disc']*$bruto/100;
-            $netto = $v['item_subtotal'];
-
-            $this->pdf->Cell(1.5, $item_h, $k+1, '', 0, 'C');
-            $this->pdf->Cell(1.5, $item_h, $v['item_code'], '', 0, 'L');
-            $this->pdf->Cell(5.8, $item_h, $v['item_name'], '', 0, 'L');
+            // Email
+            if ($r->sales_email != "") $hdr_data['email'] = $r->sales_email;
+            $this->pdf->setHdrData($hdr_data);
             
-            $this->pdf->Cell(1.5, $item_h, number_format($v['item_qty'], 0), '', 0, 'R');
-            $this->pdf->Cell(2, $item_h, number_format($v['item_price'], 0), '', 0, 'R');
-            $this->pdf->Cell(2.5, $item_h, number_format($bruto, 0), '', 0, 'R');
-            $this->pdf->Cell(2, $item_h, number_format($disc, 0), '', 0, 'R');
-            $this->pdf->Cell(2.5, $item_h, number_format($netto, 0), '', 0, 'R');
-            $this->pdf->Cell(0.3, $item_h, '', '', 0, 'R');
-            $this->pdf->Ln($item_h);
+            $title = 'INVOICE';
+            $this->pdf->SetTextColor(0,0,0);
+            $this->my_header_a5($this, 
+                    $title, 
+                    '');
 
-            $total += $v['item_subtotal'];
-            $totals['disc'] += $disc;
-            $totals['bruto'] += $bruto;
-            $totals['netto'] += $netto;
-        }
-        // $total = round($total);
 
-        $r->sales_total = round($r->sales_total);
-        $this->pdf->SetY($base_after_item+0.1);
-        $this->pdf->SetX(10.1);
-        $this->pdf->Cell(2.9, 0.5, '', '', 0, 'L');
-        $this->pdf->SetStyle('B', true);
-        $this->pdf->Cell(2.5, 0.5, number_format($totals['bruto']), '', 0, 'R');
-        $this->pdf->Cell(2, 0.5, number_format($totals['disc']), '', 0, 'R');
-        $this->pdf->Cell(2.5, 0.5, number_format($totals['netto']), '', 0, 'R');
+            $fy = $this->pdf->GetY()+$adjustment;
+            $this->pdf->Ln(-0.2+$adjustment);
+            $this->pdf->Cell(11.6, 2.3, '', 'LBR', 0, 'L');
+            $this->pdf->Cell(8, 2.3, '', 'LBR', 0, 'L');
 
-        $discrp = $r->sales_discrp;
-        if ($discrp == 0 && $r->sales_disc > 0)
-            $discrp = $r->sales_subtotal * $r->sales_disc / 100;
+            $total_n = 7;
+            if ($r->sales_disc == 0 && $r->sales_discrp == 0) $total_n--;
+            if ($r->sales_shipping == 0) $total_n--;
+            if ($r->sales_dp == 0) $total_n--;
 
-        if ($discrp > 0)
-        {
+            $base_after_item = 5.1 + (sizeof($data)*0.5) + 0.4+$adjustment;
+            $ack_h = 1.2;
+            $total_h = ($total_n*0.5)+0.2;
+
+            $this->pdf->SetY($base_after_item);
+            $this->pdf->Cell(12.6, $total_h+$ack_h, '', 'LBTR', 0, 'L');
+            $this->pdf->Cell(7, $total_h+$ack_h, '', 'TBR', 0, 'L');
+            $this->pdf->SetY($base_after_item+$total_h);
+            $this->pdf->Cell(9.1, 0.5, '', '', 0, 'L');
+
+            $customer = "<b>{$r->customer_name}</b>";
+            if ($r->customer_pic != "") $customer .= " (PIC : <b>{$r->customer_pic}</b>)";
+
+            $this->pdf->SetY($fy);
+            $this->pdf->SetFont('Arial','', 9);
+            $rm = $this->pdf->rMargin;
+            
+            $this->pdf->Cell(3, 0.5, "No Transaksi");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, $r->sales_number, "", 0, "L");
             $this->pdf->Ln(0.5);
-            $this->pdf->SetX(10.1);
-            $this->pdf->SetFont('Arial','');
-            $this->pdf->Cell(2.9, 0.5, 'Potongan', '', 0, 'L');
-            $this->pdf->Cell(3.5, 0.5, $r->sales_disc > 0 ? '('.number_format($r->sales_disc) .'%)':'', '', 0, 'R');
-            $this->pdf->Cell(3.5, 0.5, "(".number_format($discrp).")", '', 0, 'R');
-
-            $total = $total - $discrp;
+            $this->pdf->Cell(3, 0.5, "Tanggal");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, date('d/m/Y', strtotime($r->sales_date)), "", 0, "L");
             $this->pdf->Ln(0.5);
-            $this->pdf->SetX(10.1);
-            $this->pdf->Cell(2.9, 0.5, 'Total', '', 0, 'L');
+            $this->pdf->Cell(3, 0.5, "Nama");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, $r->customer_name, "", 0, "L");
+            $this->pdf->Ln(0.5);
+            $this->pdf->Cell(3, 0.5, "Alamat");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, $r->customer_address, "", 0, "L");
+            $this->pdf->Ln(0.5);
+
+            $this->pdf->SetY($fy);
+            $this->pdf->SetX(12.6);
+            $this->pdf->Cell(3, 0.5, "Pembayaran");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, $r->term_name, "", 0, "R");
+            $this->pdf->Ln(0.5);
+            $this->pdf->SetX(12.6);
+            $this->pdf->Cell(3, 0.5, "Lama Kredit");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, $r->term_duration, "", 0, "R");
+            $this->pdf->Ln(0.5);
+            $this->pdf->SetX(12.6);
+            $this->pdf->Cell(3, 0.5, "Jatuh Tempo");
+            $this->pdf->Cell(0.5, 0.5, ":");
+            $this->pdf->Cell(3.9, 0.5, date('d F Y', strtotime($r->sales_due_date)), "", 0, "R");
+
+            // FOOTER
+            $this->pdf->SetY($base_after_item+0.1);
+
+            $this->pdf->SetStyle('B', false);
+            $this->pdf->Cell(3.5, 0.5, 'Dibuat,', '', 0, 'C');
+            $this->pdf->Cell(3.5, 0.5, 'Mengetahui,', '', 0, 'C');
+            $this->pdf->Cell(3.5, 0.5, 'Penerima,', '', 0, 'C');
+            $this->pdf->Ln(2.5);
             $this->pdf->SetStyle('B', true);
-            $this->pdf->Cell(7, 0.5, number_format($total), '', 0, 'R');
-        }
-
-        if ($r->sales_ppn > 0)
-        {
-            $this->pdf->Ln(0.5);
-            $this->pdf->SetX(10.1);
-            $this->pdf->SetFont('Arial','');
-            $this->pdf->Cell(2.9, 0.5, 'PPN', '', 0, 'L');
-            $this->pdf->Cell(7, 0.5, number_format($r->sales_ppn), '', 0, 'R');
-
-            // $total = $total + $r->sales_ppn;
-            // $total = round($total);
+            $this->pdf->Cell(3.5, 0.5, "( ........................... )", '', 0, 'C');
+            $this->pdf->Cell(3.5, 0.5, "( ........................... )", '', 0, 'C');
+            $this->pdf->Cell(3.5, 0.5, "( ........................... )", '', 0, 'C');
             
-            // $this->pdf->Ln(0.5);
-            // $this->pdf->SetX(10.1);
-            // $this->pdf->Cell(2.9, 0.5, 'Total', '', 0, 'L');
-            // $this->pdf->SetStyle('B', true);
-            // $this->pdf->Cell(7, 0.5, number_format($total, 2), '', 0, 'R');
-        }
+            // DATA
+            $this->pdf->SetY(4.4+$adjustment);
+            $this->pdf->Cell(1.5, 0.7, 'NO.', 'LTB', 0, 'C');
+            $this->pdf->Cell(1.5, 0.7, 'KODE', 'TB', 0, 'L');
+            $this->pdf->Cell(5.8, 0.7, 'NAMA ITEM', 'TB', 0, 'L');
+            
+            $this->pdf->Cell(1.5, 0.7, 'QTY', 'TB', 0, 'R');
+            $this->pdf->Cell(2, 0.7, 'HARGA', 'TB', 0, 'R');
+            $this->pdf->Cell(2.5, 0.7, 'BRUTO', 'TB', 0, 'R');
+            $this->pdf->Cell(2, 0.7, 'POT.', 'TB', 0, 'R');
+            $this->pdf->Cell(2.5, 0.7, 'NETTO', 'TB', 0, 'R');
+            $this->pdf->Cell(0.3, 0.7, '', 'TBR', 0, 'R');
+            $this->pdf->Ln(0.7);
 
-        if ($r->sales_shipping > 0)
-        {
-            $this->pdf->Ln(0.5);
+            $total = 0;
+            $this->pdf->SetStyle('B', false);
+            $item_h = 0.5;
+            $this->pdf->Ln(0.2);
+
+            $totals = ['disc'=>0, 'bruto'=>0, 'netto'=>0];
+            foreach ($data as $k => $v)
+            {
+                $bruto = $v['item_price']*$v['item_qty'];
+                $disc = $v['item_disc']*$bruto/100;
+                $netto = $v['item_subtotal'];
+
+                $this->pdf->Cell(1.5, $item_h, $k+1, '', 0, 'C');
+                $this->pdf->Cell(1.5, $item_h, $v['item_code'], '', 0, 'L');
+                $this->pdf->Cell(5.8, $item_h, $v['item_name'], '', 0, 'L');
+                
+                $this->pdf->Cell(1.5, $item_h, number_format($v['item_qty'], 0), '', 0, 'R');
+                $this->pdf->Cell(2, $item_h, number_format($v['item_price'], 0), '', 0, 'R');
+                $this->pdf->Cell(2.5, $item_h, number_format($bruto, 0), '', 0, 'R');
+                $this->pdf->Cell(2, $item_h, number_format($disc, 0), '', 0, 'R');
+                $this->pdf->Cell(2.5, $item_h, number_format($netto, 0), '', 0, 'R');
+                $this->pdf->Cell(0.3, $item_h, '', '', 0, 'R');
+                $this->pdf->Ln($item_h);
+
+                $total += $v['item_subtotal'];
+                $totals['disc'] += $disc;
+                $totals['bruto'] += $bruto;
+                $totals['netto'] += $netto;
+            }
+            // $total = round($total);
+
+            $r->sales_total = round($r->sales_total);
+            $this->pdf->SetY($base_after_item+0.1);
             $this->pdf->SetX(10.1);
-            $this->pdf->SetFont('Arial','');
-            $this->pdf->Cell(2.9, 0.5, 'Biaya Pengiriman', '', 0, 'L');
-            $this->pdf->Cell(3.5, 0.5, '', '', 0, 'R');
-            $this->pdf->Cell(3.5, 0.5, number_format($r->sales_shipping), '', 0, 'R');
-        }
+            $this->pdf->Cell(2.9, 0.5, '', '', 0, 'L');
+            $this->pdf->SetStyle('B', true);
+            $this->pdf->Cell(2.5, 0.5, number_format($totals['bruto']), '', 0, 'R');
+            $this->pdf->Cell(2, 0.5, number_format($totals['disc']), '', 0, 'R');
+            $this->pdf->Cell(2.5, 0.5, number_format($totals['netto']), '', 0, 'R');
 
-        if ($r->sales_dp > 0)
-        {
-            $this->pdf->Ln(0.5);
-            $this->pdf->SetX(10.1);
-            $this->pdf->SetFont('Arial','');
-            $this->pdf->Cell(6.4, 0.5, 'Uang Muka', '', 0, 'L');
-            $this->pdf->Cell(3.5, 0.5, " (".number_format($r->sales_dp).")", '', 0, 'R');
-        }
+            $discrp = $r->sales_discrp;
+            if ($discrp == 0 && $r->sales_disc > 0)
+                $discrp = $r->sales_subtotal * $r->sales_disc / 100;
 
-        $this->pdf->Ln(0.7);
-        $this->pdf->SetX(13.6);
-        $this->pdf->SetStyle('B', true);
-        $this->pdf->Cell(2.9, 0.5, 'Grand Total', '', 0, 'L');
+            if ($discrp > 0)
+            {
+                $this->pdf->Ln(0.5);
+                $this->pdf->SetX(10.1);
+                $this->pdf->SetFont('Arial','');
+                $this->pdf->Cell(2.9, 0.5, 'Potongan', '', 0, 'L');
+                $this->pdf->Cell(3.5, 0.5, $r->sales_disc > 0 ? '('.number_format($r->sales_disc) .'%)':'', '', 0, 'R');
+                $this->pdf->Cell(3.5, 0.5, "(".number_format($discrp).")", '', 0, 'R');
+
+                $total = $total - $discrp;
+                $this->pdf->Ln(0.5);
+                $this->pdf->SetX(10.1);
+                $this->pdf->Cell(2.9, 0.5, 'Total', '', 0, 'L');
+                $this->pdf->SetStyle('B', true);
+                $this->pdf->Cell(7, 0.5, number_format($total), '', 0, 'R');
+            }
+
+            if ($r->sales_ppn > 0)
+            {
+                $this->pdf->Ln(0.5);
+                $this->pdf->SetX(10.1);
+                $this->pdf->SetFont('Arial','');
+                $this->pdf->Cell(2.9, 0.5, 'PPN', '', 0, 'L');
+                $this->pdf->Cell(7, 0.5, number_format($r->sales_ppn), '', 0, 'R');
+            }
+
+            if ($r->sales_shipping > 0)
+            {
+                $this->pdf->Ln(0.5);
+                $this->pdf->SetX(10.1);
+                $this->pdf->SetFont('Arial','');
+                $this->pdf->Cell(2.9, 0.5, 'Biaya Pengiriman', '', 0, 'L');
+                $this->pdf->Cell(3.5, 0.5, '', '', 0, 'R');
+                $this->pdf->Cell(3.5, 0.5, number_format($r->sales_shipping), '', 0, 'R');
+            }
+
+            if ($r->sales_dp > 0)
+            {
+                $this->pdf->Ln(0.5);
+                $this->pdf->SetX(10.1);
+                $this->pdf->SetFont('Arial','');
+                $this->pdf->Cell(6.4, 0.5, 'Uang Muka', '', 0, 'L');
+                $this->pdf->Cell(3.5, 0.5, " (".number_format($r->sales_dp).")", '', 0, 'R');
+            }
+
+            $this->pdf->Ln(0.7);
+            $this->pdf->SetX(13.6);
+            $this->pdf->SetStyle('B', true);
+            $this->pdf->Cell(2.9, 0.5, 'Grand Total', '', 0, 'L');
+            
+            $this->pdf->Cell(3.5, 0.5, number_format($total - $r->sales_dp + $r->sales_shipping + $r->sales_ppn), '', 0, 'R');
+
+            $this->pdf->Ln(1);
+            $this->pdf->SetX(13.6);
+            $this->pdf->SetStyle('B', false);
+            $this->pdf->SetStyle('I', true);
+            $this->pdf->MultiCell(6.8, 0.5, 'Terbilang : '.ucwords($r->terbilang) . ' Rupiah', '', 'L');
+            $this->pdf->SetStyle('I', false);
+        }
         
-        $this->pdf->Cell(3.5, 0.5, number_format($total - $r->sales_dp + $r->sales_shipping + $r->sales_ppn), '', 0, 'R');
-
-        $this->pdf->Ln(1);
-        $this->pdf->SetX(13.6);
-        $this->pdf->SetStyle('B', false);
-        $this->pdf->SetStyle('I', true);
-        $this->pdf->MultiCell(6.8, 0.5, 'Terbilang : '.ucwords($r->terbilang) . ' Rupiah', '', 'L');
 
         $this->pdf->Output('Invoice_' . explode("/", $r->sales_number)[0] . '_' . $r->customer_name . '.pdf', 'I');
     }
