@@ -29,7 +29,14 @@ class One_iv_006 extends RPT_Controller
 
         $this->pdf->rptclass = $this;
         $this->pdf->setRptTitle('Laporan Persediaan');
-        $this->pdf->setRptSubtitle('-');
+
+        $c_name = 'Semua Kategori';
+        if (isset($this->sys_input['category_id'])) {
+            $this->load->model('master/m_category');
+            $ctg = $this->m_category->get($this->sys_input['category_id']);
+            $c_name = "Kategori : " . $ctg->M_CategoryName;
+        }
+        $this->pdf->setRptSubtitle($c_name);
         $this->pdf->header_func = "my_header_recapt";
         $this->pdf->footer_func = "my_footer";
 
