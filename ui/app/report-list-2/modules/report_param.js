@@ -33,6 +33,7 @@ export default {
             'iv-001': false,
             'iv-003': false,
             'iv-004': false,
+            'iv-006': false,
             'fin-001': false,
             'fin-002': false,
             'fin-003': false,

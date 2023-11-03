@@ -45,6 +45,7 @@
         <report-param-iv-001 v-if="dialog['iv-001']"></report-param-iv-001>
         <report-param-iv-003 v-if="dialog['iv-003']"></report-param-iv-003>
         <report-param-iv-004 v-if="dialog['iv-004']"></report-param-iv-004>
+        <report-param-iv-006 v-if="dialog['iv-006']"></report-param-iv-006>
         <report-param-fin-001 v-if="dialog['fin-001']"></report-param-fin-001>
         <report-param-fin-002 v-if="dialog['fin-002']"></report-param-fin-002>
         <report-param-fin-003 v-if="dialog['fin-003']"></report-param-fin-003>
@@ -91,6 +92,7 @@ module.exports = {
         "report-param-iv-001" : httpVueLoader("./report-param-iv-001.vue"+t),
         "report-param-iv-003" : httpVueLoader("./report-param-iv-003.vue"+t),
         "report-param-iv-004" : httpVueLoader("./report-param-iv-004.vue"+t),
+        "report-param-iv-006" : httpVueLoader("./report-param-iv-006.vue"+t),
         "report-param-fin-001" : httpVueLoader("./report-param-fin-001.vue"+t),
         "report-param-fin-002" : httpVueLoader("./report-param-fin-002.vue"+t),
         "report-param-fin-003" : httpVueLoader("./report-param-fin-003-2.vue"+t),
