@@ -148,7 +148,7 @@ class R_reportinventory extends MY_Model
         $category = isset($d['category_id'])?$d['category_id']:0;
         $sdate = isset($d['sdate'])?date("Y-m-d", strtotime($d['sdate'])):'2023-01-01';
         $edate = isset($d['edate'])?date("Y-m-d", strtotime($d['edate'])):date("Y-m-d");
-        $limit = isset($d['limit']) ? $d['limit'] : 10;
+        $limit = isset($d['limit']) ? $d['limit'] : 999999;
         $offset = ($d['page'] - 1) * $limit;
         
         $lx = ['records'=>[], 'total'=>0, 'total_page'=>1];
@@ -162,10 +162,10 @@ class R_reportinventory extends MY_Model
             LEFT JOIN (
                 SELECT Log_StockM_ItemID log_item_id, SUM(Log_StockBeforeQty) log_b4_qty,
                     SUM(Log_StockQty) log_qty, SUM(Log_StockAfterQty) log_a4_qty
-                FROM one_account_aw_log.log_stock 
+                FROM xsales_log.log_stock 
                 WHERE Log_StockIndex IN (
                     SELECT MAX(Log_StockIndex) idx
-                    FROM one_account_aw_log.log_stock
+                    FROM xsales_log.log_stock
                     WHERE Log_StockIsActive = 'Y'
                     AND Log_StockDate <= ?
                     GROUP BY Log_StockM_ItemID, Log_StockM_WarehouseID)
@@ -193,10 +193,10 @@ class R_reportinventory extends MY_Model
             LEFT JOIN (
                 SELECT Log_StockM_ItemID log_item_id, SUM(Log_StockBeforeQty) log_b4_qty,
                     SUM(Log_StockQty) log_qty, SUM(Log_StockAfterQty) log_a4_qty
-                FROM one_account_aw_log.log_stock 
+                FROM xsales_log.log_stock 
                 WHERE Log_StockIndex IN (
                     SELECT MAX(Log_StockIndex) idx
-                    FROM one_account_aw_log.log_stock
+                    FROM xsales_log.log_stock
                     WHERE Log_StockIsActive = 'Y'
                     AND Log_StockDate <= ?
                     GROUP BY Log_StockM_ItemID, Log_StockM_WarehouseID)

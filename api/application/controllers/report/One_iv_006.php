@@ -24,16 +24,94 @@ class One_iv_006 extends RPT_Controller
     }
 
     function index() {
-        // $this->pdf = new PDF("P","cm",array(21,29.7));
-        // $this->pdf->SetAutoPageBreak(true,1);
+        $this->pdf = new PDF("P","cm",array(21,29.7));
+        $this->pdf->SetAutoPageBreak(true,1);
 
-        // $this->pdf->rptclass = $this;
-        // $this->pdf->setRptTitle('Laporan Pergerakan Barang per Gudang');
-        // $this->pdf->setRptSubtitle('Periode '.date('d M Y', strtotime($this->sys_input['sdate'])).' s/d '.date('d M Y', strtotime($this->sys_input['edate'])).' ');
-        // $this->pdf->header_func = "my_header_recapt";
-        // $this->pdf->footer_func = "my_footer";
+        $this->pdf->rptclass = $this;
+        $this->pdf->setRptTitle('Laporan Persediaan');
+        $this->pdf->setRptSubtitle('-');
+        $this->pdf->header_func = "my_header_recapt";
+        $this->pdf->footer_func = "my_footer";
+
+        $this->pdf->SetFont('Arial','', 11);
+
+        // Get data
+        $prm = [
+            'search'=>'%', 
+            'page'=>1,
+            'category_id'=>isset($this->sys_input['category_id'])?$this->sys_input['category_id']:0,
+            'warehouse_id'=>0
+        ];
+        $r = $this->r_reportinventory->iv_006($prm);
+
+        $grand_total = 0;
+        $disc_total = 0;
+        $bruto_total = 0;
+        $sub_total = 0;
+        $sub_total_ppn = 0;
+        $staff_id = 0;
+        
+        if ($r)
+        {
+
+            $d = $r['records'];
+            
+            // $data = isset($r[1])?$r[1]:[];
+            // $r = $r[0][0];
+            $this->pdf->SetMargins(0.7, 0.5, 0.5);
+            $this->pdf->AddPage('P', 'A4');
+            $width = $this->pdf->w - $this->pdf->lMargin - $this->pdf->rMargin;
+
+            $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+
+            $this->pdf->SetFont('Arial','', 9);
+
+            $wQty = $this->wQty;
+            $wItemName = $this->pdf->w - $this->pdf->lMargin - $this->pdf->rMargin;
+
+            foreach ($d as $k => $v)
+            {
+                $ylimit = $this->pdf->h - 2.9;
+                if ($this->pdf->GetY() > $ylimit)
+                {
+                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+                    $this->pdf->AddPage('P', 'A4');
+                    $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+                }
+
+                $this->pdf->Cell(1, 0.7, $k+1, 'LBR', 0, 'C', 0);
+                $this->pdf->Cell(3, 0.7, $v['item_code'], 'LBR', 0, 'L', 0);
+                $this->pdf->Cell($width-9, 0.7, $v['item_name'], 'LBR', 0, 'L', 0);
+                // $this->pdf->Cell($width-8.5, 0.7, $v['customer_name'], 'LBR', 0, 'L', 0);
+                // $this->pdf->Cell(3, 0.7, number_format($v['item_bruto']), 'BR', 0, 'R', 0);
+                // $this->pdf->Cell(2.5, 0.7, number_format($v['item_disc'] + $v['item_disctotal']), 'BR', 0, 'R', 0);
+                $this->pdf->Cell(3, 0.7, number_format($v['log_a4_qty']), 'BR', 0, 'R', 0);
+                $this->pdf->Cell(2, 0.7, $v['unit_name'], 'LBR', 0, 'L', 0);
+                
+
+                $this->pdf->Ln(0.7);
+
+                $sub_total += $v['log_a4_qty'];
+                $sub_total_ppn += 0;
+                $disc_total += 0;
+                $bruto_total += 0;
+            }
+
+            // $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+            // $this->pdf->Ln(0.2);
+            // $this->pdf->SetFont('Arial','B', 9);
+            // $this->pdf->Cell($wItemName+3, 0.7, 'TOTAL', 'BLTR', 0, 'C', 0);
+            // $this->pdf->Cell($wQty, 0.7, '', 'BTR', 0, 'R', 0);
+            // $this->pdf->Cell(2, 0.7, '', 'BTR', 0, 'C', 0);
+            // $this->pdf->Cell($wQty, 0.7, '', 'BTR', 0, 'R', 0);
+            // $this->pdf->Cell($wQty+1, 0.7, number_format($grand_total, 2), 'BTR', 0, 'R', 0);
+
+           
+            
+        }
+
        
-        // $this->pdf->Output();
+        $this->pdf->Output();
     }
 
     function search()
@@ -174,6 +252,39 @@ class One_iv_006 extends RPT_Controller
           $cell_to->setXfIndex($cell_from->getXfIndex()); // black magic here
           $cell_to->setValue($cell_from->getValue());
         }
+    }
+
+    function tableHeader($me, $d)
+    {
+        $wItemName = $me->w - $me->lMargin - $me->rMargin - 9;
+        $this->pdf->SetFont('Arial','', 9);
+        
+        if ($me->PageNo()>1) {
+            $me->SetFillColor(0,0,0);
+            $me->SetTextColor(0,0,0);
+            $me->Cell($me->w - $me->lMargin - $me->rMargin - 8, 1, "", '', 0, 'L', 0);
+            $me->Cell(5, 1, "SubTotal : " , '', 0, 'R', 0);
+            // $me->Cell(3, 0.7, number_format($d['bruto_total']) , 'LBR', 0, 'R', 0);
+            // $me->Cell(2.5, 0.7, number_format($d['disc_total']) , 'LBR', 0, 'R', 0);
+            $me->Cell(3, 0.7, number_format($d['sub_total']) , '', 0, 'R', 0);
+            $me->Ln(0.8);
+        }
+        
+
+        $me->SetFillColor(0,0,0);
+        $me->SetTextColor(255,255,255);
+        $me->Cell(1, 1, 'NO' , 'LTBR', 0, 'C', 1);
+        $me->Cell(3, 1, 'KODE' , 'LTBR', 0, 'C', 1);
+        $me->Cell($wItemName, 1, 'NAMA BARANG' , 'LTBR', 0, 'C', 1);
+        // $me->Cell(3, 1, 'BRUTO' , 'LTBR', 0, 'C', 1);
+        // $me->Cell(2, 1, 'POTONGAN' , 'LTBR', 0, 'C', 1);
+        $me->Cell(3, 1, 'QTY' , 'LTBR', 0, 'C', 1);
+        $me->Cell(2, 1, 'UNIT' , 'LTBR', 0, 'C', 1);
+
+        // $me->Cell(4, 0.7, 'TOTAL' , 'TBR', 0, 'C',1);
+        $me->SetFillColor(255,255,255);
+        $me->SetTextColor(0,0,0);
+        $me->Ln(1);
     }
 }
 ?>
