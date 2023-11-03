@@ -38,6 +38,15 @@ class M_category extends MY_Model
         return $l;
     }
 
+    function get($id)
+    {
+        $r = $this->db->where($this->table_key, $id)
+                    ->get($this->table_name)
+                    ->row();
+
+        return $r;
+    }
+
     function save ( $d )
     {
         $r = $this->db->set('M_CategoryName', $d['category_name'])
