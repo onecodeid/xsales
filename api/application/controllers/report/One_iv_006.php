@@ -81,7 +81,7 @@ class One_iv_006 extends RPT_Controller
                 $ylimit = $this->pdf->h - 2.9;
                 if ($this->pdf->GetY() > $ylimit)
                 {
-                    $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
+                    // $this->tableFooter($this->pdf, ['sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
                     $this->pdf->AddPage('P', 'A4');
                     $this->tableHeader($this->pdf, ['staff_name' => '', 'sub_total' => $sub_total, 'bruto_total' => $bruto_total, 'disc_total' => $disc_total]);
                 }
