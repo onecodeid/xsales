@@ -41,8 +41,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="success" @click="dialog=!dialog" flat>Tutup</v-btn>
-                <v-btn color="success" @click="generate"
-                    :disabled="!selected_category">Tampilkan</v-btn>
+                <v-btn color="success" @click="generate">Tampilkan</v-btn>
             </v-card-actions>
         </v-card>
         <!-- <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print> -->
@@ -138,6 +137,7 @@ module.exports = {
         this.$store.dispatch('report_param/search_warehouse')
 
         this.$store.dispatch('iv006/search_category').then((x) => {
+            this.generate()
             // this.selected_warehouse = x[0]
             // this.search()
         })
