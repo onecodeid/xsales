@@ -176,7 +176,7 @@ class R_reportinventory extends MY_Model
             AND (M_ItemName LIKE ? OR M_ItemCode LIKE ?)
             AND ((M_ItemM_CategoryID = ? AND ? > 0) OR ? = 0)
             AND log_a4_qty > 0
-            ORDER BY M_ItemName ASC
+            ORDER BY M_ItemCode ASC
             LIMIT {$limit} OFFSET {$offset}";
         
         $r = $this->db->query(
