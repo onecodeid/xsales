@@ -66,7 +66,7 @@ module.exports = {
         },
 
         params () {
-            return ['category_id='+this.selected_category.category_id].join('&')
+            return ['category_id='+(this.selected_category?this.selected_category.category_id:0)].join('&')
         },
 
         selected_report () {
