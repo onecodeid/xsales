@@ -36,9 +36,10 @@ class One_iv_006_1 extends RPT_Controller
         $this->pdf->setRptTitle('Laporan Persediaan');
 
         $c_name = 'Semua Kategori';
-        if (isset($this->sys_input['category_id'])) {
+        $ctg = isset($this->sys_input['category_id']) ? isset($this->sys_input['category_id']) : 0;
+        if ($ctg != 0) {
             $this->load->model('master/m_category');
-            $ctg = $this->m_category->get($this->sys_input['category_id']);
+            $ctg = $this->m_category->get($ctg);
             $c_name = "Kategori : " . $ctg->M_CategoryName;
         }
         $this->pdf->setRptSubtitle($c_name);
