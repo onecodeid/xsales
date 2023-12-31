@@ -117,7 +117,7 @@ export default {
             let hdata = {
                 date: context.state.retur_date,
                 customer: context.state.selected_customer.customer_id,
-                invoice: context.rootState.invoice.selected_invoice.invoice_id,
+                invoice: context.rootState.invoice.selected_invoice.sales_id,
                 warehouse: context.state.selected_warehouse.warehouse_id,
                 note: context.state.retur_note
             }
@@ -134,14 +134,15 @@ export default {
                     item: item.item_id,
                     qty: item.retur_qty,
                     note: item.retur_note,
-                    price: item.hpp
+                    price: item.price,
+                    disc: item.disc
                 })
 
-                subtotal += parseFloat(item.hpp_non_ppn * item.retur_qty)
-                ppn_amount += parseFloat((item.hpp - item.hpp_non_ppn) * item.retur_qty)
-                total += parseFloat(item.hpp * item.retur_qty)
-                ppn = item.ppn
-                ppn_value = item.ppn_value
+                subtotal += parseFloat(item.price * item.retur_qty * (100-item.disc) / 100)
+                ppn_amount += 0
+                total += subtotal
+                ppn = "N"
+                ppn_value = 0
             }
 
             hdata.subtotal = subtotal
@@ -235,6 +236,7 @@ export default {
                 prm: prm,
                 callback: function(d) {
                     context.commit("set_object", ["warehouses", d.records])
+                    context.commit("set_object", ["selected_warehouse", d.records[0]])
                 }
             }, { root: true })
         },

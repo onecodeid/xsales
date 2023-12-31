@@ -7,6 +7,7 @@
 // import receive from "./modules/receive.js";
 import retur from "./modules/retur.js?t=1243";
 import invoice from "../sales-invoice/modules/invoice.js?t=asd"
+import sales from "../sales-order/modules/sales.js?t=asd"
 import memo from "../finance-memo/modules/memo.js?t=123"
 import memoNew from "../finance-memo/modules/memo_new.js?t=123"
 // import tag from "../common/modules/tag.js";
@@ -39,6 +40,7 @@ export const store = new Vuex.Store({
         // receive: receive,
         retur: retur,
         invoice: invoice,
+        sales: sales,
         memo: memo,
         memoNew: memoNew,
         // tag: tag,

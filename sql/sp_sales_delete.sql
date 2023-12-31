@@ -32,6 +32,13 @@ IF used > 0 THEN
 ELSE
     UPDATE l_sales SET L_SalesIsActive = "N" WHERE L_SalesID = salesid;
     UPDATE l_salesdetail SET L_SalesDetailIsActive = "N" WHERE L_SalesDetailL_SalesID = salesid;
+    UPDATE f_spay SET F_SpayIsActive = "Y" WHERE F_SpayL_SalesID = salesid;
+
+    UPDATE l_sales
+    LEFT JOIN (
+        SELECT F_SpayL_SalesID sales_id, SUM(F_SpayAmount) pay_amount
+        FROM f_spay WHERE F_SpayIsActive = "Y" GROUP BY F_SpayL_SalesID) x ON L_SalesID = sales_id
+    SET L_SalesPaid = IFNULL(pay_amount, 0);
 
     SET offerid = (SELECT L_SalesL_OfferID FROM l_sales WHERE L_SalesID = salesid);
     UPDATE l_offer SET L_OfferUsed = "N" WHERE L_OfferID = offerid;

@@ -15,8 +15,10 @@
                             <v-flex xs12>{{ props.item.qty }} {{ props.item.unit_name }}</v-flex>
                         </v-layout>
                     </td>
-                    <td class="text-xs-right pa-2" @click="select(props.item)"><span class="caption">Rp</span> {{ one_money(props.item.hpp) }}<br>
-                        <span class="caption red--text" v-show="props.item.ppn_value>0"><i>termasuk ppn {{props.item.ppn_value}}%</i></span></td>
+                    <td class="text-xs-right pa-2" @click="select(props.item)">
+                        <span class="caption">Rp</span> {{ one_money(props.item.price) }}<br>
+                        <span class="caption red--text" v-show="props.item.disc>0"><i>diskon {{props.item.disc}}%</i></span>
+                    </td>
                     <td class="text-xs-left pa-2" @click="select(props.item)">
                         <v-text-field
                             solo
@@ -27,7 +29,8 @@
                             reverse
                         ></v-text-field>
                     </td>
-                    <td class="text-xs-right pa-2" @click="select(props.item)"><span class="caption">Rp</span> {{ one_money(props.item.hpp * props.item.retur_qty) }}</td>
+                    <td class="text-xs-right pa-2" @click="select(props.item)">
+                        <span class="caption">Rp</span> {{ one_money(props.item.price * props.item.retur_qty * (100-props.item.disc) / 100) }}</td>
                     <td class="text-xs-left pa-2" @click="select(props.item)">
                         <v-text-field
                             solo

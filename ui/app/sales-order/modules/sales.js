@@ -11,6 +11,7 @@ export default {
         search_error_message: '',
         search: '',
         url: URL,
+        retur: false,
 
         saless: [],
         total_sales: 0,
@@ -22,6 +23,7 @@ export default {
         e_date: current_date(),
 
         selected_staff: null,
+        selected_customer: null,
 
         user: one_user(),
         to_edit: false,
@@ -91,7 +93,9 @@ export default {
                 page: context.state.current_page,
                 sdate: context.state.s_date,
                 edate: context.state.e_date,
-                staff: context.state.selected_staff ? context.state.selected_staff.staff_id : 0
+                customer_id: context.state.selected_customer ? context.state.selected_customer.customer_id : 0,
+                staff: context.state.selected_staff ? context.state.selected_staff.staff_id : 0,
+                retur: context.state.retur ? 'Y' : 'N'
             }
 
             let x = context.dispatch("system/postme", {
