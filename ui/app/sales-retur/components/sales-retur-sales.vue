@@ -38,7 +38,7 @@
                             <span class="cyan--text" v-show="props.item.sales_memo!=''"><i>memo : {{ props.item.sales_memo}}</i></span>
                         </td> 
                         <td class="text-xs-right pa-2" :class="bg_proforma(props.item)" @click="select(props.item)">
-                            <span class="grey--text caption">Rp</span> <b>{{ one_money(Math.round(props.item.sales_grand_total)) }}</b>
+                            <span class="grey--text caption">Rp</span> <b>{{ one_money(Math.round(props.item.sales_grandtotal)) }}</b>
                         </td>
                         <td class="text-xs-right pa-2" :class="bg_proforma(props.item)" @click="select(props.item)">
                             <span class="grey--text caption">Rp</span> <b class="red--text">{{ one_money(Math.round(props.item.sales_retur)) }}</b>
