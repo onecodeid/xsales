@@ -104,7 +104,7 @@ IF pid = 0 THEN
     SELECT pdate, pnumber, pvendor, ptotal, pdisc, pdiscrp, pshipping, pdp, pppn, pnote, pmemo, pstaff, pterm, uid;
 
     SET pid = (SELECT LAST_INSERT_ID());
-    CALL sp_log_activity("CREATE", "PURCHASE.ORDER", pid, uid);
+--    CALL sp_log_activity("CREATE", "PURCHASE.ORDER", pid, uid);
 ELSE
 
     UPDATE p_purchase
@@ -119,7 +119,7 @@ ELSE
 
     SET pnumber = (SELECT P_PurchaseNumber FROM p_purchase WHERE P_PurchaseID = pid);
     SET pdpid = (SELECT P_PurchaseF_BillDpID FROM p_purchase WHERE P_PurchaseID = pid);
-    CALL sp_log_activity("MODIFY", "PURCHASE.ORDER", pid, uid);
+--    CALL sp_log_activity("MODIFY", "PURCHASE.ORDER", pid, uid);
 END IF;
 
 
@@ -158,8 +158,6 @@ END IF;
 
 UPDATE p_purchase SET P_PurchaseF_BillDPID = pdpid WHERE P_PurchaseID = pid;
 
-
-
 SET l = JSON_LENGTH(jdata);
 WHILE n < l DO
     SET tmp = JSON_EXTRACT(jdata, CONCAT('$[', n, ']'));
@@ -185,7 +183,7 @@ WHILE n < l DO
         SET d_total = d_subtotal;
     END IF;
 
-    SET d_id = (SELECT P_PurchaseDetailID FROM p_purchasedetail WHERE P_PurchaseDetailIsActive = "O" AND P_PurchaseDetailA_ItemID = d_item AND P_PurchaseDetailP_PurchaseID = pid);
+    SET d_id = (SELECT P_PurchaseDetailID FROM p_purchasedetail WHERE P_PurchaseDetailIsActive = "O" AND P_PurchaseDetailA_ItemID = d_item AND P_PurchaseDetailP_PurchaseID = pid LIMIT 1);
 
     IF d_id IS NULL THEN
         INSERT INTO p_purchasedetail(
@@ -242,6 +240,18 @@ WHILE n < l DO
 END WHILE;
 
 -- HAPUS STOK PENERIMAAN
+-- UPDATE i_stock
+-- JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
+--    AND P_PurchaseDetailP_PurchaseID = pid
+--    AND P_PurchaseDetailIsActive = "O"
+-- SET I_StockQty = I_StockQty - P_PurchaseDetailQty,
+--    I_StockLastTransCode = "PURCHASE.DELETE",
+--    I_StockLastTransRefID = P_PurchaseDetailID,
+--    I_StockLastTransQty = (0-P_PurchaseDetailQty)
+-- WHERE I_StockM_WarehouseID = warehouse_id
+--    AND I_StockIsActive = "Y";
+
+-- STOK
 UPDATE i_stock
 JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
     AND P_PurchaseDetailP_PurchaseID = pid
@@ -249,7 +259,8 @@ JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
 SET I_StockQty = I_StockQty - P_PurchaseDetailQty,
     I_StockLastTransCode = "PURCHASE.DELETE",
     I_StockLastTransRefID = P_PurchaseDetailID,
-    I_StockLastTransQty = (0-P_PurchaseDetailQty)
+    I_StockLastTransQty = (0 - P_PurchaseDetailQty),
+I_StockLastTransDate = concat(pdate, " 00:00:00")
 WHERE I_StockM_WarehouseID = warehouse_id
     AND I_StockIsActive = "Y";
 
@@ -278,7 +289,8 @@ JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
 SET I_StockQty = I_StockQty + P_PurchaseDetailQty,
     I_StockLastTransCode = "PURCHASE.RECEIVE",
     I_StockLastTransRefID = P_PurchaseDetailID,
-    I_StockLastTransQty = P_PurchaseDetailQty
+    I_StockLastTransQty = P_PurchaseDetailQty,
+I_StockLastTransDate = concat(pdate, " 00:00:00")
 WHERE I_StockM_WarehouseID = warehouse_id
     AND I_StockIsActive = "Y";
 

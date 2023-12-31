@@ -105,7 +105,7 @@
                     <v-text-field
                         label="Invoice"
                         :value="!!selected_invoice?
-                            selected_invoice.invoice_number : ''"
+                            selected_invoice.sales_number : ''"
                         readonly
                         hide-details
                     >
@@ -116,17 +116,9 @@
 
                     <v-layout row wrap v-if="!!selected_invoice" class="mt-1">
                         <v-flex xs12>
-                            <label><i>Tgl Invoice / DO : <b>{{selected_invoice.invoice_date}} / {{selected_invoice.details[0].delivery.delivery_date}}</b></i></label>  
+                            <label><i>Tgl Invoice : <b>{{selected_invoice.sales_date}}</b></i></label>  
                         </v-flex>
-                        <v-flex xs12>
-                            <label><i>Nomor DO : {{selected_invoice.details[0].delivery.delivery_number}}</i></label> 
-                        </v-flex>
-                        <v-flex xs12>
-                            <label><i>Tanggal Pengiriman : {{selected_invoice.details[0].delivery.delivery_date}}</i></label> 
-                        </v-flex>
-                        <v-flex xs12>
-                            <label><i>Sales : {{selected_invoice.sales.staff_short}}</i></label> 
-                        </v-flex>
+                        
                     </v-layout>
                     
 
@@ -134,13 +126,9 @@
                 </v-flex>
 
                 <v-flex xs5>
-                    <v-layout row wrap>
+                    <!-- <v-layout row wrap>
                         <v-flex xs5 pr-3>
-                            <v-text-field
-                                label="Asal Gudang"
-                                :value="!!selected_invoice?selected_invoice.details[0].delivery.warehouse_shortname:''"
-                                readonly
-                            ></v-text-field>
+                            &nbsp;
                         </v-flex>
                         <v-flex xs7>
                             <v-select
@@ -152,7 +140,7 @@
                                 label="Diterima di Gudang"
                             ></v-select>
                         </v-flex>
-                    </v-layout>
+                    </v-layout> -->
                     
 
                     <v-text-field
@@ -191,7 +179,7 @@ module.exports = {
     components : {
         'common-datepicker' : httpVueLoader('../../common/components/common-datepicker.vue'),
         'common-tag' : httpVueLoader('../../common/components/common-tag.vue?t='+rnd),
-        'sales-retur-invoice' : httpVueLoader('./sales-retur-invoice.vue?t='+rnd),
+        'sales-retur-invoice' : httpVueLoader('./sales-retur-sales.vue?t='+rnd),
         'sales-retur-new-detail' : httpVueLoader('./sales-retur-new-detail.vue?t='+rnd)
     },
 
@@ -228,11 +216,17 @@ module.exports = {
             get () { return this.$store.state.retur.selected_customer },
             set (v) { 
                 this.setObject("selected_customer", v)
-                this.$store.commit('invoice/set_object', ['selected_customer', v])
+                // this.$store.commit('invoice/set_object', ['selected_customer', v])
+                this.$store.commit('sales/set_object', ['selected_customer', v])
 
-                this.$store.commit('invoice/set_object', ['s_date', "2022-01-01"])
-                this.$store.commit('invoice/set_object', ['retur', true])
-                this.$store.dispatch('invoice/search')
+                // this.$store.commit('invoice/set_object', ['s_date', "2022-01-01"])
+                this.$store.commit('sales/set_object', ['s_date', "2022-01-01"])
+
+                // this.$store.commit('invoice/set_object', ['retur', true])
+                this.$store.commit('sales/set_object', ['retur', true])
+
+                // this.$store.dispatch('invoice/search')
+                this.$store.dispatch('sales/search')
 
                 if (!this.edit)
                     this.setObject("dialog_invoice", true)
@@ -443,6 +437,7 @@ module.exports = {
     },
 
     watch : {
+        
         // amount (v) {
         //     let re = /[^0-9]/gi;
         //     console.log(re)

@@ -11,12 +11,17 @@ class Sales extends MY_Controller
 
     function search()
     {
-        $r = $this->l_sales->search(['search'=>'%'.$this->sys_input['search'].'%', 
-            'page'=>$this->sys_input['page'],
-            'sdate'=>$this->sys_input['sdate'],
-            'edate'=>$this->sys_input['edate'],
-            'staff_id'=>isset($this->sys_input['staff'])?$this->sys_input['staff']:0,
-            'customer_id'=>isset($this->sys_input['customer'])?$this->sys_input['customer']:0]);
+        $prm = ['search'=>'%'.$this->sys_input['search'].'%', 
+                'page'=>$this->sys_input['page'],
+                'sdate'=>$this->sys_input['sdate'],
+                'edate'=>$this->sys_input['edate'],
+                'customer_id'=>isset($this->sys_input['customer_id'])?$this->sys_input['customer_id']:0,
+                'staff_id'=>isset($this->sys_input['staff'])?$this->sys_input['staff']:0,
+                'customer_id'=>isset($this->sys_input['customer'])?$this->sys_input['customer']:0];
+        
+        if (isset($this->sys_input['retur'])) $prm['retur'] = $this->sys_input['retur'];
+
+        $r = $this->l_sales->search($prm);
         $this->sys_ok($r);
     }
 

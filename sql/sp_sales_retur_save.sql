@@ -1,7 +1,11 @@
+DROP PROCEDURE `sp_sales_retur_save`;
+DELIMITER ;;
+CREATE PROCEDURE `sp_sales_retur_save` (IN `returid` int, IN `hdata` text, IN `jdata` text, IN `uid` int)
 BEGIN
 
 DECLARE retur_date DATE;
 DECLARE retur_number VARCHAR(25);
+DECLARE retur_total DOUBLE DEFAULT 0;
 DECLARE customer_id INTEGER;
 DECLARE invoice_id INTEGER;
 DECLARE retur_note TEXT;
@@ -25,15 +29,16 @@ DECLARE d_qty DOUBLE;
 DECLARE d_note VARCHAR(255);
 DECLARE d_price DOUBLE;
 DECLARE d_hpp DOUBLE;
+DECLARE d_disc DOUBLE;
 
 DECLARE old_qty DOUBLE;
 DECLARE log_id INTEGER;
 
--- MEMO
+
 DECLARE memo_id INTEGER DEFAULT 0;
 DECLARE memo_number VARCHAR(25);
 
--- ACCOUNTS
+
 DECLARE total_hpp DOUBLE DEFAULT 0;
 DECLARE account_stock_id INTEGER;
 DECLARE account_hpp_id INTEGER;
@@ -75,16 +80,12 @@ SET ppn_amount = JSON_UNQUOTE(JSON_EXTRACT(hdata, '$.ppn_amount'));
 SET total = JSON_UNQUOTE(JSON_EXTRACT(hdata, '$.total'));
 SET subtotal_before_ppn = JSON_UNQUOTE(JSON_EXTRACT(hdata, '$.subtotal'));
 
--- ACCOUNT
-SET account_stock_id = (SELECT fn_master_get_account_id("ACC.STOCK"));
-SET account_hpp_id = (SELECT fn_master_get_account_id("ACC.PURCHASE"));
-SET account_retur_id = (SELECT fn_master_get_account_id("ACC.SALES.RETUR"));
-SET account_ppn_id = (SELECT fn_master_get_account_id("ACC.TAX.PPN"));
-SET account_debt_id = (SELECT fn_master_get_account_id("ACC.DEBT"));
 
---     L_ReturPPN	char(1) [N]	
--- L_ReturSubTotalBeforePPN	double [0]	
--- L_ReturPPNAmount
+-- SET account_stock_id = (SELECT fn_master_get_account_id("ACC.STOCK"));
+-- SET account_hpp_id = (SELECT fn_master_get_account_id("ACC.PURCHASE"));
+-- SET account_retur_id = (SELECT fn_master_get_account_id("ACC.SALES.RETUR"));
+-- SET account_ppn_id = (SELECT fn_master_get_account_id("ACC.TAX.PPN"));
+-- SET account_debt_id = (SELECT fn_master_get_account_id("ACC.DEBT"));
 
 IF returid = 0 THEN
     SET retur_number = (SELECT fn_numbering('INVR'));
@@ -92,7 +93,7 @@ IF returid = 0 THEN
         L_ReturDate,
         L_ReturNumber,
         L_ReturM_CustomerID,
-        L_ReturL_InvoiceID,
+        L_ReturL_SalesID,
         L_ReturM_WarehouseID,
         L_ReturPPN,
         L_ReturSubTotalBeforePPN,
@@ -115,8 +116,8 @@ ELSE
     WHERE L_ReturID = returid;
 
     SET retur_number = (SELECT L_ReturNumber FROM l_retur WHERE L_ReturID = returid);
-    SET memo_id = (SELECT L_ReturF_MemoID FROM l_retur WHERE L_ReturID = returid);
-    SET retur_journal_id = (SELECT L_ReturT_JournalID FROM l_retur WHERE L_ReturID = returid);
+    -- SET memo_id = (SELECT L_ReturF_MemoID FROM l_retur WHERE L_ReturID = returid);
+    -- SET retur_journal_id = (SELECT L_ReturT_JournalID FROM l_retur WHERE L_ReturID = returid);
 END IF;
 
 SET l = JSON_LENGTH(jdata);
@@ -128,28 +129,27 @@ WHILE n < l DO
     SET d_qty = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.qty'));
     SET d_note = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.note'));
     SET d_price = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.price'));
+    SET d_disc = JSON_UNQUOTE(JSON_EXTRACT(tmp, '$.disc'));
 
     IF d_qty > 0 THEN
 
         SET d_id = (SELECT L_ReturDetailID
                     FROM l_returdetail
-                    WHERE L_ReturDetailL_InvoiceDetailID = d_invoice AND L_ReturDetailIsActive = "Y" AND L_ReturDetailL_ReturID = returid);
+                    WHERE L_ReturDetailL_SalesDetailID = d_invoice AND L_ReturDetailIsActive = "Y" AND L_ReturDetailL_ReturID = returid);
         IF d_id IS NULL THEN
             INSERT INTO l_returdetail(
                 L_ReturDetailL_ReturID,
-                L_ReturDetailL_InvoiceDetailID,
+                L_ReturDetailL_SalesDetailID,
                 L_ReturDetailM_ItemID,
                 L_ReturDetailPrice,
                 L_ReturDetailQty,
                 L_ReturDetailTotal,
                 L_ReturDetailNote
             )   
-            SELECT returid, d_invoice, d_item, d_price, d_qty, d_qty * d_price, d_note;
+            SELECT returid, d_invoice, d_item, d_price, d_qty, (d_qty * d_price * (100-d_disc) / 100), d_note;
 
             SET d_id = (SELECT LAST_INSERT_ID());
-            -- SET total = total + (d_price * d_qty);
-
-            -- UPDATE STOCK
+            
             UPDATE i_stock
             SET I_StockQty = I_StockQty + d_qty,
                 I_StockLastTransCode = "SALES.RETUR",
@@ -159,24 +159,21 @@ WHILE n < l DO
                 I_StockLastTransCreated = now()
             WHERE I_StockM_ItemID = d_item AND I_StockM_WarehouseID = warehouse_id AND I_StockIsActive = "Y";
 
-            -- GET AND SET LOG ID
-            SET log_id = (SELECT MAX(Log_StockID) FROM one_account_aw_log.log_stock
+            SET log_id = (SELECT MAX(Log_StockID) FROM xsales_log.log_stock
                             WHERE Log_StockCode	= "SALES.RETUR" AND Log_StockRefID = d_id AND Log_StockIsActive = "Y");
             UPDATE l_returdetail SET L_ReturDetailLogID = log_id WHERE L_ReturDetailID = d_id;
 
-            -- UPDATE INVOICE DETAIL
-            UPDATE l_invoicedetail SET L_InvoiceDetailReturQty = L_InvoiceDetailReturQty + d_qty,
-                L_InvoiceDetailReturNominal = L_InvoiceDetailReturNominal + (d_qty * d_price)
-            WHERE L_InvoiceDetailID = d_invoice;
+            UPDATE l_salesdetail SET L_SalesDetailReturQty = L_SalesDetailReturQty + d_qty,
+                L_SalesDetailReturNominal = L_SalesDetailReturNominal + (d_qty * d_price * (100-d_disc) / 100)
+            WHERE L_SalesDetailID = d_invoice;
         
+            SET retur_total = retur_total + (d_qty * d_price * (100-d_disc) / 100);
         ELSE
             UPDATE l_returdetail
             SET L_ReturDetailQty = d_qty,
-                L_ReturDetailTotal = d_qty * d_price,
+                L_ReturDetailTotal = (d_qty * d_price * (100-d_disc) / 100),
                 L_ReturDetailNote = d_note
             WHERE L_ReturDetailID = d_id;
-
-            -- SET total = total + (d_price * d_qty);
 
             SELECT L_ReturDetailQty, L_ReturDetailLogID INTO old_qty, log_id
             FROM l_returdetail
@@ -191,105 +188,98 @@ WHILE n < l DO
                 I_StockLastTransCreated = now()
             WHERE I_StockM_ItemID = d_item AND I_StockM_WarehouseID = warehouse_id AND I_StockIsActive = "Y";
 
-            -- UPDATE LOG
-            UPDATE one_account_aw_log.log_stock
+            UPDATE xsales_log.log_stock
             SET Log_StockQty = d_qty
             WHERE Log_StockID = log_id;
 
-            CALL one_account_aw_log.sp_log_stock_adjust(d_item, warehouse_id, retur_date);
+            CALL xsales_log.sp_log_stock_adjust(d_item, warehouse_id, retur_date);
+            
+            UPDATE l_salesdetail SET L_SalesDetailReturQty = L_SalesDetailReturQty + d_qty - old_qty,
+                L_SalesDetailReturNominal = L_SalesDetailReturNominal + ((d_qty - old_qty) * d_price * (100-d_disc) / 100)
+            WHERE L_SalesDetailID = d_invoice;
 
-            -- UPDATE INVOICE DETAIL
-            UPDATE l_invoicedetail SET L_InvoiceDetailReturQty = L_InvoiceDetailReturQty + d_qty - old_qty,
-                L_InvoiceDetailReturNominal = L_InvoiceDetailReturNominal + ((d_qty - old_qty) * d_price)
-            WHERE L_InvoiceDetailID = d_invoice;
-
+            SET retur_total = retur_total + ((d_qty) * d_price * (100-d_disc) / 100);
         END IF;
 
-        SET d_hpp = (SELECT L_SalesDetailHPP FROM l_invoicedetail 
-                    JOIN l_deliverydetail ON L_InvoiceDetailA_ItemID = L_DeliveryDetailA_ItemID
-                        AND L_InvoiceDetailL_DeliveryID = L_DeliveryDetailL_DeliveryID
-                        AND L_DeliveryDetailIsActive = "Y"
-                    JOIN l_salesdetail ON L_DeliveryDetailL_SalesDetailID = L_SalesDetailID
-                    WHERE L_InvoiceDetailID = d_invoice);
-        IF d_hpp Is NULL THEN SET d_hpp = 0; END IF;
-        SET total_hpp = total_hpp + (d_hpp * d_qty);
+        -- SET d_hpp = (SELECT L_SalesDetailHPP FROM l_invoicedetail 
+        --             JOIN l_deliverydetail ON L_InvoiceDetailA_ItemID = L_DeliveryDetailA_ItemID
+        --                 AND L_InvoiceDetailL_DeliveryID = L_DeliveryDetailL_DeliveryID
+        --                 AND L_DeliveryDetailIsActive = "Y"
+        --             JOIN l_salesdetail ON L_DeliveryDetailL_SalesDetailID = L_SalesDetailID
+        --             WHERE L_InvoiceDetailID = d_invoice);
+        -- IF d_hpp Is NULL THEN SET d_hpp = 0; END IF;
+        -- SET total_hpp = total_hpp + (d_hpp * d_qty);
     END IF;
 
     SET n = n + 1;
-
-    -- PPN
-    -- SELECT L_InvoiceDetailPPN, L_InvoiceDetailIncludePPN INTO ppn, ppn_inc
-    -- FROM l_invoicedetail WHERE L_InvoiceDetailID = d_invoice;
 END WHILE;
 
--- PPN
--- SELECT L_InvoicePPNValue INTO ppn_val 
--- FROM l_invoice WHERE L_InvoiceID = invoice_id;
+UPDATE l_sales SET L_SalesRetur = retur_total WHERE L_SalesID = invoice_id;
+UPDATE l_sales
+    SET L_SalesGrandTotal = L_SalesTotal + L_SalesShipping - L_SalesDP - L_SalesRetur
+    WHERE L_SalesID = invoice_id;
 
--- SET TOTAL
--- UPDATE l_retur SET L_ReturTotal = total WHERE L_ReturID = returid;
+-- IF memo_id = 0 THEN
+--     SET memo_number = (SELECT fn_numbering("FMEMO"));
 
--- MEMO
-IF memo_id = 0 THEN
-    SET memo_number = (SELECT fn_numbering("FMEMO"));
+--     INSERT INTO f_memo(
+--         F_MemoDate,
+--         F_MemoNumber,	
+--         F_MemoM_CustomerID,	
+--         F_MemoL_InvoiceID,	
+--         F_MemoAmount,	
+--         F_MemoNote,
+--         F_MemoTags
+--     )
+--     SELECT retur_date, memo_number, customer_id, invoice_id, total, CONCAT("Invoice #", L_InvoiceNumber, ", Retur #", retur_number), "[]"
+--     FROM l_invoice WHERE L_InvoiceID = invoice_id;
 
-    INSERT INTO f_memo(
-        F_MemoDate,
-        F_MemoNumber,	
-        F_MemoM_CustomerID,	
-        F_MemoL_InvoiceID,	
-        F_MemoAmount,	
-        F_MemoNote,
-        F_MemoTags
-    )
-    SELECT retur_date, memo_number, customer_id, invoice_id, total, CONCAT("Invoice #", L_InvoiceNumber, ", Retur #", retur_number), "[]"
-    FROM l_invoice WHERE L_InvoiceID = invoice_id;
-
-    SET memo_id = (SELECT LAST_INSERT_ID());
+--     SET memo_id = (SELECT LAST_INSERT_ID());
     
-    UPDATE l_retur
-    SET L_ReturF_MemoID = memo_id
-    WHERE L_ReturID = returid;
-ELSE
-    UPDATE f_memo
-    JOIN l_invoice ON L_InvoiceID = invoice_id
-    SET F_MemoAmount = total,
-        F_MemoNote = CONCAT("Invoice #", L_InvoiceNumber, ", Retur #", retur_number)
-    WHERE F_MemoID = memo_id;
+--     UPDATE l_retur
+--     SET L_ReturF_MemoID = memo_id
+--     WHERE L_ReturID = returid;
+-- ELSE
+--     UPDATE f_memo
+--     JOIN l_invoice ON L_InvoiceID = invoice_id
+--     SET F_MemoAmount = total,
+--         F_MemoNote = CONCAT("Invoice #", L_InvoiceNumber, ", Retur #", retur_number)
+--     WHERE F_MemoID = memo_id;
 
-    SELECT IFNULL(F_MemoNumber, ''), F_MemoT_JournalID INTO memo_number, journal_id FROM f_memo WHERE F_MemoID = memo_id;
-END IF;
+--     SELECT IFNULL(F_MemoNumber, ''), F_MemoT_JournalID INTO memo_number, journal_id FROM f_memo WHERE F_MemoID = memo_id;
+-- END IF;
 
--- ACCOUNT SECTION
-IF ppn_amount <> 0 THEN
-    SET adata = JSON_ARRAY(JSON_OBJECT("account", account_retur_id, "debit", subtotal_before_ppn, "credit", 0),
-			JSON_OBJECT("account", account_ppn_id, "debit", ppn_amount, "credit", 0),
-            JSON_OBJECT("account", account_debt_id, "debit", 0, "credit", total ));
-ELSE
-    SET adata = JSON_ARRAY(JSON_OBJECT("account", account_retur_id, "debit", total, "credit", 0),
-            JSON_OBJECT("account", account_debt_id, "debit", 0, "credit", total ));
-END IF;
 
-CALL sp_journal_save_notrans_noreturn(journal_id, retur_date, memo_number, retur_note, adata, "J.17", account_retur_id );
+-- IF ppn_amount <> 0 THEN
+--     SET adata = JSON_ARRAY(JSON_OBJECT("account", account_retur_id, "debit", subtotal_before_ppn, "credit", 0),
+-- 			JSON_OBJECT("account", account_ppn_id, "debit", ppn_amount, "credit", 0),
+--             JSON_OBJECT("account", account_debt_id, "debit", 0, "credit", total ));
+-- ELSE
+--     SET adata = JSON_ARRAY(JSON_OBJECT("account", account_retur_id, "debit", total, "credit", 0),
+--             JSON_OBJECT("account", account_debt_id, "debit", 0, "credit", total ));
+-- END IF;
 
-IF journal_id = 0 THEN
-	SET journal_id = (SELECT MAX(T_JournalID) FROM t_journal WHERE T_JournalReceipt = memo_number AND T_JournalIsActive = "Y" ANd T_JournalType = "J.17");
-    UPDATE f_memo SET F_MemoT_JournalID = journal_id WHERE F_MemoID = memo_id;
-	-- UPDATE l_retur SET L_ReturT_JournalID = journal_id WHERE L_ReturID = returid;
-END IF;
+-- CALL sp_journal_save_notrans_noreturn(journal_id, retur_date, memo_number, retur_note, adata, "J.17", account_retur_id );
 
--- ACCOUNT RETUR
-SET adata = JSON_ARRAY(JSON_OBJECT("account", account_stock_id, "debit", total_hpp, "credit", 0),
-            JSON_OBJECT("account", account_hpp_id, "debit", 0, "credit", total_hpp ));
-CALL sp_journal_save_notrans_noreturn(retur_journal_id, retur_date, retur_number, retur_note, adata, "J.22", account_stock_id );
-IF retur_journal_id = 0 THEN
-	SET retur_journal_id = (SELECT MAX(T_JournalID) FROM t_journal WHERE T_JournalReceipt = retur_number AND T_JournalIsActive = "Y" ANd T_JournalType = "J.22");
-	UPDATE l_retur SET L_ReturT_JournalID = retur_journal_id WHERE L_ReturID = returid;
-END IF;
+-- IF journal_id = 0 THEN
+-- 	SET journal_id = (SELECT MAX(T_JournalID) FROM t_journal WHERE T_JournalReceipt = memo_number AND T_JournalIsActive = "Y" ANd T_JournalType = "J.17");
+--     UPDATE f_memo SET F_MemoT_JournalID = journal_id WHERE F_MemoID = memo_id;
+	
+-- END IF;
+
+
+-- SET adata = JSON_ARRAY(JSON_OBJECT("account", account_stock_id, "debit", total_hpp, "credit", 0),
+--             JSON_OBJECT("account", account_hpp_id, "debit", 0, "credit", total_hpp ));
+-- CALL sp_journal_save_notrans_noreturn(retur_journal_id, retur_date, retur_number, retur_note, adata, "J.22", account_stock_id );
+-- IF retur_journal_id = 0 THEN
+-- 	SET retur_journal_id = (SELECT MAX(T_JournalID) FROM t_journal WHERE T_JournalReceipt = retur_number AND T_JournalIsActive = "Y" ANd T_JournalType = "J.22");
+-- 	UPDATE l_retur SET L_ReturT_JournalID = retur_journal_id WHERE L_ReturID = returid;
+-- END IF;
 
 SELECT "OK" as status, JSON_OBJECT("retur_id", returid, "retur_number", retur_number) as data;
 
 
 COMMIT;
 
-END
+END;;
+DELIMITER ;

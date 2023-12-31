@@ -43,7 +43,9 @@ class L_Sales extends MY_Model
                     IF(F_SpayID IS NULL, '',
                         GROUP_CONCAT(DISTINCT
                         JSON_OBJECT('pay_id', F_SPayID, 'pay_date', F_SPayDate, 'pay_number', F_SPayNumber,
-                        'pay_note', F_SPayNote, 'pay_amount', F_SpayAmount, 'pay_type', F_SpayM_PaymentTypeID))), ']') payments
+                        'pay_note', F_SPayNote, 'pay_amount', F_SpayAmount, 'pay_type', F_SpayM_PaymentTypeID))), ']') payments,
+
+                IFNULL(sum(L_SalesDetailReturQty*L_SalesDetailReturNominal), 0) retur_total
 
                 FROM `{$this->table_name}`
                 JOIN m_customer ON L_SalesM_CustomerID = M_CustomerID
@@ -52,6 +54,7 @@ class L_Sales extends MY_Model
                 LEFT JOIN s_staff ON L_SalesS_StaffID = S_StaffID
                 LEFT JOIN m_affiliate ON L_SalesM_AffiliateID = M_AffiliateID
                 LEFT JOIN l_offer ON L_SalesL_OfferID = L_OfferID
+               
                 LEFT JOIN f_spay ON L_SalesID = F_SpayL_SalesID AND F_SpayIsActive = 'Y'
                 WHERE (`L_SalesNumber` LIKE ? OR `M_CustomerName` LIKE ? OR L_SalesM_CustomerName LIKE ?)
                 AND `L_SalesIsActive` = 'Y'
