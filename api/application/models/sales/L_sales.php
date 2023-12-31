@@ -24,7 +24,7 @@ class L_Sales extends MY_Model
         $r = $dbiv->query(
                 "SELECT L_SalesID sales_id, L_SalesNumber sales_number, DATE_FORMAT(L_SalesDate, '%d-%m-%Y') sales_date, L_SalesTotal sales_total,
                 L_SalesPaid sales_paid, L_SalesUnpaid sales_unpaid, L_SalesShipping sales_shipping, L_SalesDP sales_dp, L_SalesGrandTotal sales_grandtotal,
-                L_SalesDiscount sales_disc, L_SalesDiscountRp sales_discrp,
+                L_SalesDiscount sales_disc, L_SalesDiscountRp sales_discrp, L_SalesRetur sales_retur,
                 L_SalesDone sales_done, L_SalesProforma sales_proforma, L_SalesProformaNumber proforma_number, L_SalesProformaDueDate proforma_duedate,
                 L_SalesNote sales_note, L_SalesMemo sales_memo, L_SalesM_CustomerName sales_customer_name, 
                 M_CustomerCode customer_code, M_CustomerName customer_name, IFNULL(L_SalesRef, '') sales_ref,
