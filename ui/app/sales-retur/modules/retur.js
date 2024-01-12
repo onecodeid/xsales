@@ -1,7 +1,7 @@
 // 1 => LOADING
 // 2 => DONE
 // 3 => ERROR
-import { one_token, URL, current_date } from "../../assets/js/global.js"
+import { one_token, URL, current_date, lastmonth_date } from "../../assets/js/global.js"
 
 export default {
     namespaced: true,
@@ -44,7 +44,7 @@ export default {
         memo_used: 0,
         memo_refunded: 0,
 
-        s_date: current_date(),
+        s_date: lastmonth_date(),
         e_date: current_date(),
         current_page: 1,
         total_retur_page: 1,
