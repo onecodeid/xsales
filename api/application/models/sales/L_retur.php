@@ -36,7 +36,7 @@ class L_retur extends MY_Model
 
         $r = $this->db->query(
                 "SELECT L_ReturID retur_id, L_ReturNumber retur_number, DATE_FORMAT(L_ReturDate, '%d-%m-%Y') retur_date, L_ReturTotal retur_total,
-                L_ReturNote retur_note, L_ReturPPN retur_ppn, `fn_conf`('PPN') ppn,
+                L_ReturNote retur_note, L_ReturPPN retur_ppn, `fn_conf`('PPN') ppn, L_ReturM_ItemID retur_item,
                 M_CustomerID customer_id, M_CustomerName customer_name,
                 L_SalesID invoice_id, L_SalesNumber invoice_number, DATE_FORMAT(L_SalesDate, '%d-%m-%Y') invoice_date,
                 M_WarehouseID warehouse_id, M_WarehouseName warehouse_name, F_MemoID memo_id, F_MemoNumber memo_number,
@@ -107,7 +107,7 @@ class L_retur extends MY_Model
     {
         $r = $this->db->query(
             "SELECT L_ReturID retur_id, L_ReturNumber retur_number, DATE_FORMAT(L_ReturDate, '%d-%m-%Y') retur_date, L_ReturTotal retur_total,
-            L_ReturNote retur_note,
+            L_ReturNote retur_note, L_ReturM_ItemID retur_item,
             M_CustomerID customer_id, M_CustomerName customer_name,
             L_SalesID sales_id, L_SalesNumber sales_number, DATE_FORMAT(L_SalesDate, '%d-%m-%Y') invoice_date,
             M_WarehouseID warehouse_id, M_WarehouseName warehouse_name, IFNULL(F_MemoID, 0) memo_id, IFNULL(F_MemoUsed, 0) memo_used, IFNULL(F_MemoRefunded, 0) memo_refunded,

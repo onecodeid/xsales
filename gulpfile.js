@@ -3,14 +3,14 @@ const browserSync = require('browser-sync').create();
 const minify = require('gulp-minify');
 
 function scripts () {
-  // return gulp.src('_modules/misc/*.js')
-  //     .pipe(minify({
-  //         ext: {
-  //             min: '.min.js'
-  //         },
-  //         ignoreFiles: ['-min.js']
-  //     }))
-  //     .pipe(gulp.dest('_modules/_min'))
+  return gulp.src('_modules/misc/*.js')
+      .pipe(minify({
+          ext: {
+              min: '.min.js'
+          },
+          ignoreFiles: ['-min.js']
+      }))
+      .pipe(gulp.dest('_modules/_min'))
 }
 gulp.task('min-js', function() {
   // return gulp.src('_modules/master/*.js')
@@ -33,12 +33,15 @@ function serve() {
 //   });
 
   browserSync.init({
-    proxy: 'localhost/hris/' // Update with your CodeIgniter app's local URL
+    proxy: 'localhost/xsales/' // Update with your CodeIgniter app's local URL
   });
 
-  // gulp.watch('_modules/misc/*.js', scripts); 
+  gulp.watch('_modules/misc/*.js', scripts); 
   // Watch for changes in Vue app files and reload the browser
-  gulp.watch('**/*').on('change', browserSync.reload);
+  gulp.watch('**/*.js').on('change', browserSync.reload);
+  gulp.watch('**/*.vue').on('change', browserSync.reload);
+  gulp.watch('**/*.html').on('change', browserSync.reload);
+  gulp.watch('**/*.css').on('change', browserSync.reload);
   
 }
 

@@ -96,7 +96,7 @@ methods : {
    components: {
         "common-navbar" : httpVueLoader("../../common/components/common-navbar.vue?t=123"),
         "common-toolbar" : httpVueLoader("../../common/components/common-toolbar.vue"),
-        "sales-retur-new" : httpVueLoader("../components/sales-retur-new.vue<?php echo $ts ?>")
+        "sales-retur-new" : httpVueLoader("../components/sales-retur-new-x.vue<?php echo $ts ?>")
       }
     })
     </script>

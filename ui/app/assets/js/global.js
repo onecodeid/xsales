@@ -1,7 +1,7 @@
 var URLx
 var HOSTx
 if (window.location.hostname == "localhost")
-    HOSTx = "http://localhost/xsales/"
+    HOSTx = "http://localhost:3000/xsales/"
     // URLx = "http://localhost/erpadywater/api/"
 else
     HOSTx = "https://" + window.location.hostname + "/"

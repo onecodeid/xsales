@@ -139,7 +139,7 @@ module.exports = {
         },
 
         saless () {
-            return this.$store.state.sales.saless
+            return this.$store.state.retur.invoices
         },
 
         customerName () {
@@ -196,11 +196,30 @@ module.exports = {
 //   "detail_id": 568
 // }
         select (x) {
+            this.$store.commit('retur/set_object', ['selectedInvoice', x])
+            let details = [], item = {}
+
+            for (let d of x.details) {
+                item.detail_id = d.id
+                // item.item_id = d.item.item_id
+                // item.item_name = d.item.item_name
+                item.qty = d.qty
+                item.price = d.price
+                item.disc = d.disc
+                item.delivery_id = 0
+                item.delivery_number = ''
+                item.delivery_date = ''
+                item.retur_qty = 0
+                item.note = ''
+                details.push(JSON.parse(JSON.stringify(item)))
+            }
+            this.$store.commit("retur/set_object", ["details", details])
+
             this.$store.commit('invoice/set_object', ['selected_invoice', x])
 
             let items = []
-            let item = {}
-            for (let d of x.details) {
+            // let item = {}
+            for (let d of JSON.parse(x.details)) {
                 item.detail_id = d.id
                 item.item_id = d.item.item_id
                 item.item_name = d.item.item_name
@@ -224,7 +243,7 @@ module.exports = {
                 // }
             }
 
-            this.$store.commit('retur/set_object', ['items', items])
+            this.$store.commit('retur/set_object', ['details', items])
             this.$store.commit('retur/set_object', ['dialog_invoice', false])
         },
 
