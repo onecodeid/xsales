@@ -49,6 +49,17 @@ class Sales extends MY_Controller
         $this->sys_ok($r);
     }
 
+    function search_available_by_item()
+    {
+        $prm = ['search'=>'%'.$this->sys_input['search'].'%', 
+                'page'=>$this->sys_input['page'],
+                'item_id'=>$this->sys_input['item_id'],
+                'customer_id'=>isset($this->sys_input['customer_id'])?$this->sys_input['customer_id']:0];
+
+        $r = $this->l_sales->search_available_by_item($prm);
+        $this->sys_ok($r);
+    }
+
     function save()
     {
         if (isset($this->sys_input['sales_id']))

@@ -36,32 +36,33 @@ class L_retur extends MY_Model
 
         $r = $this->db->query(
                 "SELECT L_ReturID retur_id, L_ReturNumber retur_number, DATE_FORMAT(L_ReturDate, '%d-%m-%Y') retur_date, L_ReturTotal retur_total,
-                L_ReturNote retur_note, L_ReturPPN retur_ppn, `fn_conf`('PPN') ppn,
+                L_ReturNote retur_note, L_ReturPPN retur_ppn, `fn_conf`('PPN') ppn, L_ReturM_ItemID retur_item, ib.M_ItemName item_name, ib.M_ItemCode item_code,
                 M_CustomerID customer_id, M_CustomerName customer_name,
                 L_SalesID invoice_id, L_SalesNumber invoice_number, DATE_FORMAT(L_SalesDate, '%d-%m-%Y') invoice_date,
                 M_WarehouseID warehouse_id, M_WarehouseName warehouse_name, F_MemoID memo_id, F_MemoNumber memo_number,
 
                 CONCAT('[', GROUP_CONCAT(
                     JSON_OBJECT('detail_id', L_ReturDetailID, 'item_id', L_ReturDetailM_ItemID, 'retur_qty', L_ReturDetailQty,
-                    'qty', L_SalesDetailQty, 'item_name', M_ItemName, 'hpp', L_ReturDetailPrice, 
+                    'qty', L_SalesDetailQty, 'item_name', ia.M_ItemName, 'hpp', L_ReturDetailPrice, 
                     'hpp_non_ppn', IF(L_ReturPPN = 'Y', ((L_ReturDetailPrice - `fn_conf`('PPN')) / (100+`fn_conf`('PPN'))), L_ReturDetailPrice), 
                     'retur_note', IFNULL(L_ReturDetailNote, ''),
-                    'unit_name', IFNULL(M_UnitName, ''), 'pack_name', IFNULL(M_PackName, ''), 'view_pack', M_ItemViewInPack)
+                    'unit_name', IFNULL(M_UnitName, ''), 'pack_name', IFNULL(M_PackName, ''), 'view_pack', ia.M_ItemViewInPack)
                     ), ']') items
 
                 FROM `{$this->table_name}`
                 JOIN l_sales ON L_ReturL_SalesID = L_SalesID
                 JOIN m_customer ON L_ReturM_CustomerID = M_CustomerID
                 JOIN m_warehouse ON L_ReturM_WarehouseID = M_WarehouseID
+                JOIN m_item ib ON L_ReturM_ItemID = ib.M_ItemID
                 left JOIN f_memo ON L_ReturF_MemoID = F_MemoID
                 
                 LEFT JOIN l_returdetail ON L_ReturDetailL_ReturID = L_ReturID AND L_ReturDetailIsActive = 'Y'
-                LEFT JOIN m_item ON L_ReturDetailM_ItemID = M_ItemID
+                LEFT JOIN m_item ia ON L_ReturDetailM_ItemID = ia.M_ItemID
                 LEFT JOIN l_salesdetail ON L_SalesDetailL_SalesID = L_SalesID
                     AND L_SalesDetailIsActive = 'Y'
-                    AND L_SalesDetailA_ItemID = M_ItemID
-                LEFT JOIN m_unit ON M_ItemM_UnitID = M_UnitID
-                LEFT JOIN m_pack ON M_ItemM_PackID = M_PackID
+                    AND L_SalesDetailA_ItemID = ia.M_ItemID
+                LEFT JOIN m_unit ON ia.M_ItemM_UnitID = M_UnitID
+                LEFT JOIN m_pack ON ia.M_ItemM_PackID = M_PackID
                 WHERE `L_ReturNumber` LIKE ?
                 AND `L_ReturIsActive` = 'Y'
                 AND ((L_ReturM_CustomerID = ? AND ? > 0) OR ? = 0)
@@ -107,7 +108,7 @@ class L_retur extends MY_Model
     {
         $r = $this->db->query(
             "SELECT L_ReturID retur_id, L_ReturNumber retur_number, DATE_FORMAT(L_ReturDate, '%d-%m-%Y') retur_date, L_ReturTotal retur_total,
-            L_ReturNote retur_note,
+            L_ReturNote retur_note, L_ReturM_ItemID retur_item,
             M_CustomerID customer_id, M_CustomerName customer_name,
             L_SalesID sales_id, L_SalesNumber sales_number, DATE_FORMAT(L_SalesDate, '%d-%m-%Y') invoice_date,
             M_WarehouseID warehouse_id, M_WarehouseName warehouse_name, IFNULL(F_MemoID, 0) memo_id, IFNULL(F_MemoUsed, 0) memo_used, IFNULL(F_MemoRefunded, 0) memo_refunded,

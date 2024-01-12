@@ -1,7 +1,7 @@
 // 1 => LOADING
 // 2 => DONE
 // 3 => ERROR
-import { one_token, URL, current_date } from "../../assets/js/global.js"
+import { one_token, URL, current_date, lastmonth_date } from "../../assets/js/global.js"
 
 export default {
     namespaced: true,
@@ -31,7 +31,9 @@ export default {
         retur_number: '',
         retur_date: current_date(),
         retur_note: '',
+
         items: [],
+        selectedItem: null,
 
         // Listing
         returs: [],
@@ -42,10 +44,15 @@ export default {
         memo_used: 0,
         memo_refunded: 0,
 
-        s_date: current_date(),
+        s_date: lastmonth_date(),
         e_date: current_date(),
         current_page: 1,
         total_retur_page: 1,
+
+        invoices: [],
+        selectedInvoice: null,
+
+        details: []
     },
     mutations: {
         set_common(state, v) {
@@ -128,7 +135,7 @@ export default {
                 ppn_amount = 0,
                 ppn_value = 0,
                 total = 0
-            for (let item of context.state.items) {
+            for (let item of context.state.details) {
                 items.push({
                     invoice: item.detail_id,
                     item: item.item_id,
@@ -194,11 +201,13 @@ export default {
                 prm: prm,
                 callback: function(d) {
                     context.commit("set_object", ['customers', d.records])
-                    if (!!context.state.selected_customer) {
-                        for (let c of d.records)
-                            if (c.customer_id == context.state.selected_customer.customer_id)
-                                context.commit('set_selected_customer', c)
-                    }
+                    // if (!!context.state.selected_customer) {
+                    //     for (let c of d.records)
+                    //         if (c.customer_id == context.state.selected_customer.customer_id)
+                    //             context.commit('set_selected_customer', c)
+                    // }
+
+                    return d
                 }
             }, { root: true })
 
@@ -241,54 +250,38 @@ export default {
             }, { root: true })
         },
 
-        // async search_tax(context) {
-        //     let prm = {
-        //         search: context.state.search,
-        //         page: 1
-        //     }
+        async search_item(context) {
+            let prm = {
+                search: context.state.search,
+                page: 1
+            }
 
-        //     context.dispatch("system/postme", {
-        //         url: "master/tax/search",
-        //         prm: prm,
-        //         callback: function(d) {
-        //             context.commit("set_object", ["taxes", d.records])
-        //         }
-        //     }, { root: true })
-        // },
+            return context.dispatch("system/postme", {
+                url: "master/item/search_dd",
+                prm: prm,
+                callback: function(d) {
+                    context.commit("set_object", ["items", d.records])
+                    return d.records
+                }
+            }, { root: true })
+        },
 
-        // async search_tag(context) {
-        //     let prm = {
-        //         search: '',
-        //         page: 1
-        //     }
+        async searchInvoiceByItem(context) {
+            let prm = {
+                token: one_token(),
+                search: context.state.search,
+                page: context.state.current_page,
+                customer_id: context.state.selected_customer ? context.state.selected_customer.customer_id : 0,
+                item_id: context.state.selectedItem.item_id
+            }
 
-        //     context.dispatch("system/postme", {
-        //         url: "master/tag/search",
-        //         prm: prm,
-        //         callback: function(d) {
-        //             context.commit("set_object", ['tags', d.records])
-
-        //             let tags = []
-        //             for (let r of d.records) tags.push(r.tag_name)
-        //             context.commit("set_object", ['tagnames', tags])
-        //         }
-        //     }, { root: true })
-        // },
-        // async search(context) {
-        //     context.commit("update_search_status", 1)
-
-        //     let prm = {}
-        //     prm.token = one_token()
-        //     prm.date = context.state.edate
-
-        //     context.dispatch("system/postme", {
-        //         url: "analytic/sales/mtd_projo",
-        //         prm: prm,
-        //         callback: function(d) {
-        //             context.commit("set_sales", d.records)
-        //             context.commit("set_total_sales", d.total)
-        //         }
-        //     }, { root: true })
-        // }
+            context.dispatch("system/postme", {
+                url: "sales/sales/search_available_by_item",
+                prm: prm,
+                callback: function(d) {
+                    context.commit("set_object", ["invoices", d.records])
+                }
+            }, { root: true })
+        }
     }
 }

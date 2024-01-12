@@ -68,11 +68,13 @@
                         <!-- <span class="grey white--text pa-2 py-3 d-block">RETUR</span> -->
                     <!-- </td> -->
                     <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.retur_date }}</td>
-                    <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.retur_number }}</td>
+                    <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.invoice_number }}</td>
                     <td class="text-xs-left pa-2" @click="select(props.item)">
                         {{ props.item.customer_name }}
                     </td> 
-                    <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.invoice_number }}</td>
+                    <td class="text-xs-left pa-2" @click="select(props.item)">
+                        <div>{{ props.item.item_code }}</div>
+                        <div class="caption primary--text">{{ props.item.item_name }}</div></td>
                     
                     <td class="text-xs-left pa-2" @click="select(props.item)">
                         {{ props.item.retur_note }}
@@ -181,7 +183,7 @@ module.exports = {
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
                 {
-                    text: "NOMOR",
+                    text: "NOMOR INVOICE",
                     align: "left",
                     sortable: false,
                     width: "10%",
@@ -195,7 +197,7 @@ module.exports = {
                     class: "pa-2 zalfa-bg-purple lighten-3 white--text"
                 },
                 {
-                    text: "NOMOR INVOICE",
+                    text: "NAMA ITEM",
                     align: "left",
                     sortable: false,
                     width: "15%",

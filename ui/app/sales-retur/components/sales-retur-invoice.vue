@@ -139,7 +139,7 @@ module.exports = {
         },
 
         invoices () {
-            return this.$store.state.invoice.invoices
+            return this.$store.state.retur.invoices
         },
 
         customerName () {
@@ -168,10 +168,28 @@ module.exports = {
         },
 
         select (x) {
+            alert('a')
+            this.$store.commit('retur/set_object', ['selectedInvoice', x])
+alert('b')
+            let details = [], item = {}
+            for (let d of x.details) {
+                console.log(d)
+                for (let i of d.items) {
+                    item = JSON.parse(JSON.stringify(i))
+                    item.delivery_id = d.delivery.delivery_id
+                    item.delivery_number = d.delivery_number
+                    item.delivery_date = d.delivery_date
+                    item.retur_qty = 0
+                    item.note = ''
+                    details.push(JSON.parse(JSON.stringify(item)))
+                }
+            }
+            console.log(details)
+
             this.$store.commit('invoice/set_object', ['selected_invoice', x])
 
             let items = []
-            let item = {}
+            // let item = {}
             for (let d of x.details) {
                 for (let i of d.items) {
                     item = JSON.parse(JSON.stringify(i))

@@ -9,7 +9,14 @@
                 class="elevation-1">
                 <template slot="items" slot-scope="props">
                     
-                    <td class="text-xs-left pa-2" @click="select(props.item)">{{ props.item.item_name }}</td>
+                    <td class="text-xs-left pa-2" @click="select(props.item)">
+                        
+                        
+                        <div class="font-weight-bold">{{ props.item.item_name }}</div>
+                        <div>NO : {{ selected_invoice?selected_invoice.sales_number:'' }}</div>
+                        <div>TANGGAL : {{ selected_invoice?selected_invoice.invoice_date:'' }}</div>
+                        
+                    </td>
                     <td class="text-xs-right pa-2" @click="select(props.item)">
                         <v-layout row wrap>
                             <v-flex xs12>{{ props.item.qty }} {{ props.item.unit_name }}</v-flex>
@@ -141,7 +148,11 @@ module.exports = {
 
     computed : {
         items () {
-            return this.$store.state.retur.items
+            return this.$store.state.retur.details
+        },
+
+        invoices () {
+            return this.$store.state.retur.invoices
         },
 
         total () {
@@ -178,6 +189,11 @@ module.exports = {
 
         memo_refunded () {
             return this.$store.state.retur.memo_refunded
+        },
+
+        selected_invoice () {
+            if (Object.keys(this.$store.state.invoice.selected_invoice).length === 0) return null
+            return this.$store.state.invoice.selected_invoice
         }
        
     },
@@ -196,7 +212,7 @@ module.exports = {
             d[idx][side] = amount
             // this.retotal(idx)
 
-            this.$store.commit('retur/set_object', ['items', d])
+            this.$store.commit('retur/set_object', ['details', d])
         }
     },
 
