@@ -102,15 +102,16 @@
                         :items="items"
                         v-model="selectedItem"
                         return-object
-                        item-text="item_name"
+                        item-text="item_code_name"
                         item-value="item_id"
                         label="Nama Item"
                         :loading="items.length<1"
                         v-show="!selectedItem"
                     >
+                        
                     </v-autocomplete>
 
-                    <v-text-field :value="selectedItem.item_name" readonly v-if="!!selectedItem" :clearable="!edit" @click:clear="selectedItem=null" label="Nama Item"></v-text-field>
+                    <v-text-field :value="selectedItem.item_code_name" readonly v-if="!!selectedItem" :clearable="!edit" @click:clear="selectedItem=null" label="Nama Item"></v-text-field>
 
                     <!-- <v-text-field
                         label="Invoice"
