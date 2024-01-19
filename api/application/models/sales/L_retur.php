@@ -165,6 +165,14 @@ class L_retur extends MY_Model
         
         return $r['records'];
     }
+
+    function delete ($id, $uid = 0)
+    {
+        $r = $this->db->query("CALL sp_sales_retur_delete(?,?)", [$id, $uid])->row();
+        $this->clean_mysqli_connection($this->db->conn_id);
+
+        return $r;
+    }
 }
 
 ?>

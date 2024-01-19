@@ -51,6 +51,20 @@ class Retur extends MY_Controller
         $r = $this->l_retur->search_autocomplete($x);
         $this->sys_ok($r);
     }
+
+    function del()
+    {
+        if (isset($this->sys_input['id']))
+        {
+            $r = $this->l_retur->delete( $this->sys_input['id'] );
+            if ($r->status == "OK")
+                $this->sys_ok($r->data);
+            else
+                $this->sys_error($r->message);
+        }
+        else
+            $this->sys_error("Something wrong");
+    }
 }
 
 ?>

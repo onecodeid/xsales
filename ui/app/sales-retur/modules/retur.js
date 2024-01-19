@@ -282,6 +282,23 @@ export default {
                     context.commit("set_object", ["invoices", d.records])
                 }
             }, { root: true })
+        },
+
+
+        async del(context) {
+            let prm = {
+                id: context.state.selected_retur.retur_id,
+                page: 1
+            }
+
+            context.dispatch("system/postme", {
+                url: "sales/retur/del",
+                prm: prm,
+                callback: function(d) {
+                    console.log(d)
+                    context.dispatch("search")
+                }
+            }, { root: true })
         }
     }
 }
