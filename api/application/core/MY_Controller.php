@@ -179,14 +179,14 @@ class RPT_Controller extends MY_Controller
         $row_small = 0.5;
         $me->pdf->SetY($gy);
         $me->pdf->Cell(3, $row_first, '', 'B', 0, 'R');
-        $me->pdf->Cell($width-7, $row_first, '', 'RB', 0, 'R');
-        $me->pdf->Cell(4, $row_first, '', 'B', 0, 'R');
+        $me->pdf->Cell($width-8, $row_first, '', 'RB', 0, 'R');
+        $me->pdf->Cell(5, $row_first, '', 'B', 0, 'R');
         $me->pdf->SetY($gy+$row_first);
 
         $me->pdf->SetY($gy);
         $me->pdf->SetFont('Arial', '', 18);
-        $me->pdf->Cell($width-4, 0.5, '', '', 0, 'R');
-        $me->pdf->MultiCell(4, 0.7, $title, '', 'C');
+        $me->pdf->Cell($width-5, 0.5, '', '', 0, 'R');
+        $me->pdf->MultiCell(5, 0.7, $title, '', 'C');
 
         $me->pdf->SetFont('Arial', 'B', 14);
         $me->pdf->SetY($gy);

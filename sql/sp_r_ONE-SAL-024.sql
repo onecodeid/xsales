@@ -1,14 +1,16 @@
-DROP PROCEDURE `sp_r_ONE-SAL-023`;
+DROP PROCEDURE `sp_r_ONE-SAL-024`;
 DELIMITER ;;
-CREATE PROCEDURE `sp_r_ONE-SAL-023` (IN `salesid` int, IN `uid` int)
+CREATE PROCEDURE `sp_r_ONE-SAL-024` (IN `returid` int, IN `uid` int)
 BEGIN 
 
 DECLARE ppn CHAR(1) DEFAULT "N";
 DECLARE ppnc INTEGER;
 DECLARE banks VARCHAR(500);
 DECLARE confs VARCHAR(2000);
+DECLARE salesid INTEGER;
 
 SET confs = (SELECT fn_conf("invoice"));
+SET salesid = (SELECT L_ReturL_SalesID FROM l_retur WHERE L_ReturID = returid);
 
 SET ppnc = 0;
 SET banks = (SELECT CONCAT("[", GROUP_CONCAT(JSON_OBJECT("bank_id", M_BankID, "bank_name", M_BankName, 
@@ -64,6 +66,9 @@ IFNULL(M_CustomerPhones, "[]") customer_phones,
 FROM l_sales
 JOIN l_salesdetail ON L_SalesDetailL_SalesID = L_SalesID
     AND L_SalesDetailIsActive = "Y"
+
+JOIN l_returdetail ON L_ReturDetailL_ReturID = returid AND L_ReturDetailIsActive = "Y"
+    AND L_ReturDetailL_SalesDetailID = L_SalesDetailID
 
 JOIN m_item ON L_SalesDetailA_ItemID = M_ItemID
 LEFT JOIN m_unit ON M_ItemM_UnitID = M_UnitID

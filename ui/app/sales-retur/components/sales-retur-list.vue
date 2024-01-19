@@ -90,8 +90,10 @@
                         <v-btn color="grey" small class="ma-0" block dark v-show="props.item.retur_lunas=='N'&&props.item.retur_paid==0">Belum Dibayar</v-btn>
                     </td> -->
                     <td class="text-xs-center pa-0" @click="select(props.item)">
-                        <v-btn color="cyan" class="btn-icon ma-0 mr-1" small @click="memo(props.item)" title="Memo kredit" dark><v-icon>list</v-icon></v-btn>
+                        <v-btn color="orange" class="btn-icon ma-0 mr-1" small @click="print_retur(props.item)" title="Memo kredit" dark><v-icon>print</v-icon></v-btn>
                         <v-btn color="primary" class="btn-icon ma-0" small @click="edit(props.item)" title="Ubah retur"><v-icon>create</v-icon></v-btn>
+                        <v-btn color="red" 
+                                    class="btn-icon ma-0" small @click="del(props.item)" dark title="Hapus retur"><v-icon>delete</v-icon></v-btn>
                         <!-- <div class="row">
                             <div class="col-12">
                                 <v-btn color="orange" class="btn-icon ma-0" small @click="print_retur(props.item)" dark title="Cetak retur"><v-icon>print</v-icon></v-btn>
@@ -131,15 +133,14 @@
                 :key="index"
                 @click="item.menuAction(item.title)"
             >
-
                 <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
             </v-list>
         </v-menu>
 
-        <!-- <common-dialog-delete :data="retur_id" @confirm_del="confirm_del" v-if="dialog_delete"></common-dialog-delete>
-        <common-dialog-confirm :data="retur_id" @confirm="confirm_post" v-if="dialog_confirm" :text="text_post"></common-dialog-confirm>
-        <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print> -->
+        <common-dialog-delete :data="0" @confirm_del="confirm_del" v-if="dialog_delete"></common-dialog-delete>
+        <!-- <common-dialog-confirm :data="retur_id" @confirm="confirm_post" v-if="dialog_confirm" :text="text_post"></common-dialog-confirm> -->
+        <common-dialog-print :report_url="report_url" v-if="dialog_report"></common-dialog-print>
         <finance-memo-new-dialog></finance-memo-new-dialog>
     </v-card>
 </template>
@@ -247,9 +248,9 @@ module.exports = {
             return this.$store.state.retur.returs
         },
 
-        // dialog_delete () {
-        //     return this.$store.state.dialog_delete
-        // },
+        dialog_delete () {
+            return this.$store.state.dialog_delete
+        },
 
         // dialog_confirm () {
         //     return this.$store.state.dialog_confirm
@@ -287,10 +288,10 @@ module.exports = {
             return "DAFTAR RETUR"
         },
 
-        // dialog_report : {
-        //     get () { return this.$store.state.dialog_print },
-        //     set (v) { this.$store.commit('set_dialog_print', v) }
-        // }
+        dialog_report : {
+            get () { return this.$store.state.dialog_print },
+            set (v) { this.$store.commit('set_dialog_print', v) }
+        }
     },
 
     methods : {
@@ -488,7 +489,7 @@ module.exports = {
         print_retur (x) {
             this.select(x)
             let so = x
-            this.report_url = this.$store.state.retur.URL+"report/one_sales_002?id="+so.retur_id
+            this.report_url = this.$store.state.retur.URL+"report/one_sales_024?id="+so.retur_id
             this.$store.commit('set_dialog_print', true)
         },
 

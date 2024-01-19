@@ -333,7 +333,7 @@ IF d_ppn <> "Y" THEN
 
 UPDATE l_sales
 SET L_SalesPPN = L_SalesTotal * (xppn), 
-    L_SalesGrandTotal = (L_SalesTotal * (1 + xppn)) + pshipping - pdp - L_SalesRetur
+    L_SalesGrandTotal = (L_SalesTotal * (1 + xppn)) + pshipping - pdp
 WHERE L_SalesID = pid;
 
 

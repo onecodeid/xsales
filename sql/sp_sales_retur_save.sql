@@ -217,9 +217,10 @@ END WHILE;
 UPDATE l_retur SET L_ReturM_ItemID = d_item WHERE L_ReturID = returid;
 
 UPDATE l_sales SET L_SalesRetur = retur_total WHERE L_SalesID = invoice_id;
-UPDATE l_sales
-    SET L_SalesGrandTotal = L_SalesTotal + L_SalesShipping - L_SalesDP - L_SalesRetur
-    WHERE L_SalesID = invoice_id;
+
+-- UPDATE l_sales
+--     SET L_SalesGrandTotal = L_SalesTotal + L_SalesShipping - L_SalesDP - L_SalesRetur
+--     WHERE L_SalesID = invoice_id;
 
 -- IF memo_id = 0 THEN
 --     SET memo_number = (SELECT fn_numbering("FMEMO"));
