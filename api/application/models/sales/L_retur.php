@@ -133,9 +133,10 @@ class L_retur extends MY_Model
             LEFT JOIN l_returdetail ON L_ReturDetailL_ReturID = L_ReturID AND L_ReturDetailIsActive = 'Y'
             LEFT JOIN f_memo ON L_ReturF_MemoID = F_MemoID
             LEFT JOIN m_item ON L_ReturDetailM_ItemID = M_ItemID
-            LEFT JOIN l_salesdetail ON L_SalesDetailL_SalesID = L_SalesID
-                    AND L_SalesDetailIsActive = 'Y'
-                    AND L_SalesDetailA_ItemID = M_ItemID
+            LEFT JOIN l_salesdetail ON L_ReturDetailL_SalesDetailID = L_SalesDetailID
+            --        ON L_SalesDetailL_SalesID = L_SalesID
+            --        AND L_SalesDetailIsActive = 'Y'
+            --        AND L_SalesDetailA_ItemID = M_ItemID
             LEFT JOIN m_unit ON M_ItemM_UnitID = M_UnitID
             LEFT JOIN m_pack ON M_ItemM_PackID = M_PackID
             WHERE `L_ReturID` = ?
