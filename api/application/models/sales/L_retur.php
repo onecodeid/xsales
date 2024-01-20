@@ -115,7 +115,7 @@ class L_retur extends MY_Model
 
             CONCAT('[', GROUP_CONCAT(
                     JSON_OBJECT('retur_id', L_ReturDetailID, 'detail_id', L_SalesDetailID, 'item_id', L_ReturDetailM_ItemID, 'retur_qty', L_ReturDetailQty,
-                    'qty', L_SalesDetailQty, 'item_name', M_ItemName, 'hpp', L_ReturDetailPrice, 'price', L_ReturDetailPrice, 'disc', 0,
+                    'qty', L_SalesDetailQty, 'item_name', M_ItemName, 'hpp', L_ReturDetailPrice, 'price', L_ReturDetailPrice, 'disc', L_ReturDetailDisc,
                     'hpp_non_ppn', IF(L_ReturPPN = 'Y', (L_ReturDetailPrice / (100+`fn_conf`('PPN'))), L_ReturDetailPrice),
                     'ppn_value', IF(L_ReturPPN = 'Y', ((L_ReturDetailPrice - `fn_conf`('PPN')) / (100+`fn_conf`('PPN'))), 0),
                     'retur_note', IFNULL(L_ReturDetailNote, ''), 'ppn', L_ReturPPN,
