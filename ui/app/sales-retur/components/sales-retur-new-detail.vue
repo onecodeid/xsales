@@ -158,7 +158,7 @@ module.exports = {
         total () {
             let total = 0
             for (let item of this.items)
-                total += item.retur_qty * item.hpp
+                total += item.retur_qty * item.hpp * (100 - item.disc) / 100
 
             return total
         },
