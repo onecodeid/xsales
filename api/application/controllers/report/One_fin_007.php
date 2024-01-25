@@ -56,11 +56,12 @@ class One_fin_007 extends RPT_Controller
                     $this->pdf->Cell(1, 0.7, $l+1, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2, 0.7, $w->invoice_date, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2.5, 0.7, $w->invoice_number, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell($width-(15.5), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2.5, 0.7, $w->term_name, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
-                    $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
-                    $this->pdf->Cell(2.5, 0.7, number_format($w->invoice_unpaid), 'LBR', 0, 'R', 0);
+                    $this->pdf->Cell($width-(17.7), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
+                    $this->pdf->Cell(2, 0.7, $w->term_name, 'LBR', 0, 'L', 0);
+                    $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
+                    $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_retur), 'LBR', 0, 'R', 0);
+                    $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
+                    $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_unpaid), 'LBR', 0, 'R', 0);
                     $this->pdf->Ln(0.7);
 
                     $total['bill'] += $w->invoice_grandtotal;

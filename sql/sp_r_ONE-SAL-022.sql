@@ -1,4 +1,3 @@
-
 DROP PROCEDURE `sp_r_ONE-SAL-022`;
 DELIMITER ;;
 CREATE PROCEDURE `sp_r_ONE-SAL-022` (IN `sdate` date, IN `edate` date, IN `customerid` INT)
