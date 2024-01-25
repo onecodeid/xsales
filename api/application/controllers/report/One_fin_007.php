@@ -181,10 +181,11 @@ class One_fin_007 extends RPT_Controller
         $me->pdf->Cell(1, 0.7, "NO" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2, 0.7, "TANGGAL" , 'TBLR', 0, 'C', 1);
         // $me->pdf->Cell($w - 21.5, 0.7, "NOMOR INVOICE" , 'TLBR', 0, 'C', 1);
-        $me->pdf->Cell(2, 0.7, "NOMOR" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell(2.5, 0.7, "NOMOR" , 'TBLR', 0, 'C', 1);
         $me->pdf->Cell($w-16.3, 0.7, "CATATAN" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell(2.2, 0.7, "TERM" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell(2, 0.7, "TERM" , 'TBLR', 0, 'C', 1);
         $me->pdf->Cell(2.2, 0.7, "TAGIHAN" , 'TLBR', 0, 'C', 1);
+        $me->pdf->Cell(2.2, 0.7, "RETUR" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.2, 0.7, "DIBAYAR" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.2, 0.7, "SISA PIUTANG" , 'TLBR', 0, 'C', 1);
         $me->pdf->Ln(0.8);
