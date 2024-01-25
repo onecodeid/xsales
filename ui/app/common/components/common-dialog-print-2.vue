@@ -19,8 +19,8 @@
 
             <v-card-text class="grow pa-1" grow style="flex:1">
                 <!-- <object  style="overflow: hidden;" width="100%" :height="xheight" :data="xurl"></object> -->
-                <object :data="init_report_url" type="application/pdf" width="100%" height="100%" v-if="$vuetify.breakpoint.lgAndUp"></object>
-                <iframe :src="'https://docs.google.com/gview?embedded=true&url='+encodeURIComponent(init_report_url)" frameborder="0" v-if="$vuetify.breakpoint.mdAndDown" width="100%" height="100%"></iframe>
+                <object :data="init_report_url" type="application/pdf" width="100%" height="100%" v-if="$vuetify.breakpoint.xsAndUp"></object>
+                <!-- <iframe :src="'https://docs.google.com/gview?embedded=true&url='+encodeURIComponent(init_report_url)" frameborder="0" v-if="$vuetify.breakpoint.mdAndDown" width="100%" height="100%"></iframe> -->
                 <!-- <object :data="'report-content.php?url=https://www.africau.edu/images/default/sample.pdf'" width="100%" height="100%" v-if="$vuetify.breakpoint.lgAndUp"></object> -->
             </v-card-text>
 
