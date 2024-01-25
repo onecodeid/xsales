@@ -126,11 +126,11 @@ class One_fin_007 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 7.5, 1, "TOTAL" , '', 0, 'L', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 6.6, 1, "TOTAL" , '', 0, 'L', 0);
         // $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
-        $me->Cell(2.5, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
-        $me->Cell(2.5, 0.7, number_format($d['paid']) , 'LBR', 0, 'R', 0);
-        $me->Cell(2.5, 0.7, number_format($d['unpaid']) , 'BR', 0, 'R', 0);
+        $me->Cell(2.2, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
+        $me->Cell(2.2, 0.7, number_format($d['paid']) , 'LBR', 0, 'R', 0);
+        $me->Cell(2.2, 0.7, number_format($d['unpaid']) , 'BR', 0, 'R', 0);
         // $me->Ln(1);
 
         // $me->SetFillColor(0,0,0);
