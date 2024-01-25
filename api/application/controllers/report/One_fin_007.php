@@ -127,7 +127,7 @@ class One_fin_007 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 6.6, 1, "TOTAL" , '', 0, 'L', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 8.8, 1, "TOTAL" , '', 0, 'L', 0);
         // $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
         $me->Cell(2.2, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['retur']) , 'LBR', 0, 'R', 0);
