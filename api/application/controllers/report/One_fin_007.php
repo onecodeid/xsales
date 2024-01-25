@@ -20,7 +20,7 @@ class One_fin_007 extends RPT_Controller
 
     function index() {
 
-        $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0];
+        $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0, 'retur'=>0];
         $prm = [];
         $r = $this->r_reportfinance->fin_007($this->sys_input);
         
@@ -67,6 +67,7 @@ class One_fin_007 extends RPT_Controller
                     $total['bill'] += $w->invoice_grandtotal;
                     $total['paid'] += $w->invoice_paid;
                     $total['unpaid'] += $w->invoice_unpaid;
+                    $total['retur'] += $w->invoice_retur;
                 }
 
                 $this->tableFooter($this->pdf, $total);
@@ -129,6 +130,7 @@ class One_fin_007 extends RPT_Controller
         $me->Cell($me->w - $me->lMargin - $me->rMargin - 6.6, 1, "TOTAL" , '', 0, 'L', 0);
         // $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
         $me->Cell(2.2, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
+        $me->Cell(2.2, 0.7, number_format($d['retur']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['paid']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['unpaid']) , 'BR', 0, 'R', 0);
         // $me->Ln(1);
