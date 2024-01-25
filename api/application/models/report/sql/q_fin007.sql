@@ -3,7 +3,7 @@ select customer_id, customer_name, sum(invoice_grandtotal) total_grandtotal, sum
     CONCAT("[", GROUP_CONCAT(JSON_OBJECT("invoice_id", invoice_id, "invoice_date", invoice_date, 
         "invoice_duedate", invoice_duedate, "invoice_number", invoice_number, "invoice_grandtotal", invoice_grandtotal,
         "invoice_retur", invoice_retur,
-        "invoice_paid", invoice_paid, "invoice_unpaid", invoice_unpaid, "invoice_note", invoice_note, "payments", payments,
+        "invoice_paid", invoice_paid, "invoice_unpaid", invoice_unpaid - invoice_retur, "invoice_note", invoice_note, "payments", payments,
         "term_id", term_id, "term_name", term_name, "term_duration", term_duration,
         "sales_name", sales_name)), "]") invoices
 
