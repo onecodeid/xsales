@@ -56,7 +56,7 @@ class One_fin_007 extends RPT_Controller
                     $this->pdf->Cell(1, 0.7, $l+1, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2, 0.7, $w->invoice_date, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2.5, 0.7, $w->invoice_number, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell($width-(17.7), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
+                    $this->pdf->Cell($width-(16.3), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2, 0.7, $w->term_name, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_retur), 'LBR', 0, 'R', 0);
@@ -181,12 +181,12 @@ class One_fin_007 extends RPT_Controller
         $me->pdf->Cell(1, 0.7, "NO" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2, 0.7, "TANGGAL" , 'TBLR', 0, 'C', 1);
         // $me->pdf->Cell($w - 21.5, 0.7, "NOMOR INVOICE" , 'TLBR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "NOMOR" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell($w-15.5, 0.7, "CATATAN" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "TERM" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "TAGIHAN" , 'TLBR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "DIBAYAR" , 'TLBR', 0, 'C', 1);
-        $me->pdf->Cell(2.5, 0.7, "SISA PIUTANG" , 'TLBR', 0, 'C', 1);
+        $me->pdf->Cell(2, 0.7, "NOMOR" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell($w-16.3, 0.7, "CATATAN" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell(2.2, 0.7, "TERM" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell(2.2, 0.7, "TAGIHAN" , 'TLBR', 0, 'C', 1);
+        $me->pdf->Cell(2.2, 0.7, "DIBAYAR" , 'TLBR', 0, 'C', 1);
+        $me->pdf->Cell(2.2, 0.7, "SISA PIUTANG" , 'TLBR', 0, 'C', 1);
         $me->pdf->Ln(0.8);
 
         // $me->pdf->Cell($w - 20.5, 0.7, "" , '', 0, 'C', 0);
