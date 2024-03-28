@@ -1,0 +1,7 @@
+
+POST http://localhost:3000/xsales/api/selected/data/save_data
+Content-Type: application/json
+
+{
+    "selectedData": [1,4,5]
+}
