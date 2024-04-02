@@ -6,7 +6,7 @@
 // Actions
 // import item_new from "./modules/item_new.js";
 import system from "../assets/js/system.js";
-import qris from "./modules/qris.js"
+import erase from "./modules/erase.js"
 export const store = new Vuex.Store({
     state : {
         dialog_delete: false
@@ -29,6 +29,6 @@ export const store = new Vuex.Store({
     modules : {
         // item_new: item_new,
          system: system,
-         qris: qris
+         erase: erase
     }
 });

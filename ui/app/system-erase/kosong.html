@@ -128,47 +128,47 @@
   module.exports = {
     computed: {
       selectedData : {
-        get () { return this.$store.state.qris.selectedData },
-        set (v) { this.$store.commit('qris/update_selected_data', v) }
+        get () { return this.$store.state.erase.selectedData },
+        set (v) { this.$store.commit('erase/update_selected_data', v) }
       },
       confirmation : {
-        get () { return this.$store.state.qris.confirmation },
-        set (v) {this.$store.commit("qris/set_confirmation", v)}
+        get () { return this.$store.state.erase.confirmation },
+        set (v) {this.$store.commit("erase/set_confirmation", v)}
       },
       provinces () {
-              return this.$store.state.qris.provinces
+              return this.$store.state.erase.provinces
           },
       user_fullname : {
-              get () { return this.$store.state.qris.user_fullname },
-              set (v) { this.$store.commit('qris/update_selected_data', ['user_fullname', v]) }
+              get () { return this.$store.state.erase.user_fullname },
+              set (v) { this.$store.commit('erase/update_selected_data', ['user_fullname', v]) }
           },
       respon () {
-        return this.$store.state.qris.respon;
+        return this.$store.state.erase.respon;
       },
       provinces () {
-              return this.$store.state.qris.provinces
+              return this.$store.state.erase.provinces
           },
   selected_province : {
-              get () { return this.$store.state.qris.selected_province },
+              get () { return this.$store.state.erase.selected_province },
               set (v) { 
-                  this.$store.commit('qris/set_selected_province', v)
-                  this.$store.dispatch('qris/search_city', {})
+                  this.$store.commit('erase/set_selected_province', v)
+                  this.$store.dispatch('erase/search_city', {})
               }
           },
           snackbar : {
-              get () { return this.$store.state.qris.snackbar },
-              set (v) { this.$store.commit('qris/set_common', ['snackbar', v]) }
+              get () { return this.$store.state.erase.snackbar },
+              set (v) { this.$store.commit('erase/set_common', ['snackbar', v]) }
           },
   
           snackbar_text () {
-              return this.$store.state.qris.snackbar_text
+              return this.$store.state.erase.snackbar_text
           },
   },
   methods: {
       proceed() {
         if (this.confirmation === 'OK') {
-            this.$store.dispatch("qris/save_selected");
-            this.$store.dispatch('qris/selected');
+            this.$store.dispatch("erase/save_selected");
+            this.$store.dispatch('erase/selected');
   
         } else {
           alert('Konfirmasi tidak valid!');
@@ -177,14 +177,14 @@
   },
   
     mounted () {
-      this.$store.dispatch('qris/search').then(() => {
+      this.$store.dispatch('erase/search').then(() => {
           console.log("Search dispatched!");
           console.log("State after dispatch search :", this.$store.state);
           
       }).catch(error => {
           console.error("Error dispatching search:", error);
       });
-      this.$store.dispatch('qris/selected').then(() => {
+      this.$store.dispatch('erase/selected').then(() => {
           console.log("Search dispatched!");
           console.log("State after dispatch selected:", this.$store.state);
           

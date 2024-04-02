@@ -27,6 +27,15 @@ class System extends MY_Controller
         $r = $this->s_system->save($this->sys_input);
         $this->sys_ok($r);
     }
+
+    function data_erase()
+    {
+        $r = $this->s_system->data_erase($this->sys_input['selected_tables'], $this->sys_user['user_id']);
+        if ($r->status=="OK")
+            $this->sys_ok($r->data);
+        else
+            $this->sys_error($r->message);
+    }
 }
 
 ?>

@@ -33,5 +33,16 @@ class S_system extends MY_Model
                         ->update($this->table_name);
         return $r;
     }
+
+    function data_erase($d, $uid)
+    {
+        $tables = [];
+        foreach ($d as $k => $v) $tables[$v] = 1;
+        $r = $this->db->query("CALL sp_system_data_erase(?,?)", [json_encode($tables), $uid])->row();
+        $this->clean_mysqli_connection($this->db->conn_id);
+
+        // $r->data = $this->db->last_query();
+        return $r;
+    }
 }
 ?>

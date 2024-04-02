@@ -1,7 +1,7 @@
 // 1 => LOADING
 // 2 => DONE
 // 3 => ERROR
-import * as api from "./api_qris.js"
+import * as api from "./api_erase.js"
 import { one_token } from "../../assets/js/global.js"
 
 export default {
@@ -101,6 +101,21 @@ export default {
                 console.log(e)
             }
     },
+
+    async save(context) {
+        let prm = {
+            selected_tables: context.state.selectedData
+        }
+
+        return context.dispatch("system/postme", {
+            url: "systm/system/data_erase",
+            prm: prm,
+            callback: function(d) {
+                return d
+            }
+        }, { root: true })
+    },
+
 
     async save_selected(context) {
         context.commit("update_search_status", 1)

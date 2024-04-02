@@ -22,7 +22,7 @@
                 <v-container pt-1 pl-1 pr-1 fluid>
                     <v-layout row>
                         <v-flex xs12>
-                            <system-qris></system-qris> 
+                            <system-erase></system-erase> 
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -98,7 +98,7 @@ import { store } from './store.js<?php echo $ts ?>';
              "common-navbar" : httpVueLoader("../common/components/common-navbar.vue?r=1"),
              "common-toolbar" : httpVueLoader("../common/components/common-toolbar.vue"),
                 "master-item-list": httpVueLoader("./components/master-item-list.vue"),
-            "system-qris": httpVueLoader("./components/system-qris.vue")
+            "system-erase": httpVueLoader("./components/system-erase.vue")
             }
         });
     </script>
