@@ -56,7 +56,7 @@ class M_item extends MY_Model
                 AND M_ItemIsActive = 'Y'
                 AND ((M_ItemIsAssembly = ? AND ? <> '') OR ? = '')
                 GROUP BY M_ItemID
-                ORDER BY M_ItemCode
+                ORDER BY M_ItemCodeAlphabet, M_ItemCodeNumeric
                 LIMIT {$limit} OFFSET {$offset}", [$d['item_name'], $d['item_name'], 
                     $assembly, $assembly, $assembly]);
         if ($r)
