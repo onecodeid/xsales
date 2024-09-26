@@ -40,4 +40,5 @@ SELECT "OK" as status, JSON_OBJECT("pay_id", pay_id, "sales_id", sales_id) as da
 
 COMMIT;
 
-END
+END;;
+DELIMITER ;

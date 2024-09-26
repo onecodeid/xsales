@@ -8,7 +8,7 @@ join m_unit on m_itemm_unitid = m_unitid
 join m_category ON M_ItemM_CategoryID = M_CategoryID
 JOIN (
     SELECT Log_StockM_ItemID log_item_id, Log_StockM_WarehouseID log_warehouse_id, SUM(Log_StockAfterQty) log_after_qty
-    FROM one_account_aw_log.log_stock
+    FROM xsales_log.log_stock
     WHERE Log_StockIndex IN (
         SELECT MAX(Log_StockIndex)
         FROM one_account_aw_log.log_stock

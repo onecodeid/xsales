@@ -1,3 +1,6 @@
+DROP PROCEDURE `sp_sales_delete`;
+DELIMITER ;;
+CREATE PROCEDURE `sp_sales_delete` (IN `salesid` int, IN `uid` int)
 BEGIN
 
 DECLARE used INTEGER;
@@ -32,7 +35,7 @@ IF used > 0 THEN
 ELSE
     UPDATE l_sales SET L_SalesIsActive = "N" WHERE L_SalesID = salesid;
     UPDATE l_salesdetail SET L_SalesDetailIsActive = "N" WHERE L_SalesDetailL_SalesID = salesid;
-    UPDATE f_spay SET F_SpayIsActive = "Y" WHERE F_SpayL_SalesID = salesid;
+    UPDATE f_spay SET F_SpayIsActive = "N" WHERE F_SpayL_SalesID = salesid;
 
     UPDATE l_sales
     LEFT JOIN (
@@ -47,4 +50,5 @@ ELSE
     COMMIT;
 END IF;
 
-END
+END;;
+DELIMITER ;

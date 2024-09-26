@@ -1,3 +1,6 @@
+DROP PROCEDURE `sp_system_data_erase`;
+DELIMITER ;;
+CREATE PROCEDURE `sp_system_data_erase` (IN `w` text, IN `uid` int)
 BEGIN
 
 DECLARE t_sales INTEGER;
@@ -92,6 +95,8 @@ IF (t_stock = 1) THEN
     JOIN m_item ON M_ItemIsActive = "Y"
     WHERE M_WarehouseIsActive = "Y";
 
+TRUNCATE table xsales_log.log_stock;
+
     INSERT INTO s_erase(S_EraseTable) VALUES("stock");
 END IF;
 
@@ -108,4 +113,5 @@ END IF;
 SELECT "OK" as status, w as data;
 COMMIT;
 
-END
+END;;
+DELIMITER ;

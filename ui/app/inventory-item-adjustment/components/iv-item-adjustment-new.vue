@@ -103,7 +103,6 @@
                                         solo
                                         hide-details
                                         :value="props.item.item_qty"
-                                        type="number"
                                         reverse
                                         @input="change_qty(props.index, $event)"
                                         class="zalfa-input-super-dense"

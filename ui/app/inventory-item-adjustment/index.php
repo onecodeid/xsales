@@ -96,9 +96,9 @@ methods : {
    components: {
         "common-navbar" : httpVueLoader("../common/components/common-navbar.vue?t=123"),
         "common-toolbar" : httpVueLoader("../common/components/common-toolbar.vue"),
-        "iv-item-adjustment-list" : httpVueLoader("./components/iv-item-adjustment-list.vue"),
-        "iv-item-adjustment-new" : httpVueLoader("./components/iv-item-adjustment-new.vue"),
-        "iv-item-adjustment-item-list" : httpVueLoader("./components/iv-item-adjustment-item-list.vue")
+        "iv-item-adjustment-list" : httpVueLoader("./components/iv-item-adjustment-list.vue<?=$ts;?>"),
+        "iv-item-adjustment-new" : httpVueLoader("./components/iv-item-adjustment-new.vue<?=$ts;?>"),
+        "iv-item-adjustment-item-list" : httpVueLoader("./components/iv-item-adjustment-item-list.vue<?=$ts;?>")
       }
     })
     </script>
