@@ -50,7 +50,8 @@ class One_iv_006_1 extends RPT_Controller
 
         // Get data
         $prm = [
-            'search'=>'AO%', 
+            // 'search'=>'AO%', 
+            'search'=>'%', 
             'page'=>1,
             'category_id'=>isset($this->sys_input['category_id'])?$this->sys_input['category_id']:0,
             'warehouse_id'=>0
