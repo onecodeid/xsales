@@ -263,7 +263,7 @@ WHILE n < l DO
         SET I_StockQty = I_StockQty - d_qty,
             I_StockLastTransCode = "SALES.DELIVERY",
             I_StockLastTransRefID = d_id,
-            I_StockLastTransQty = d_qty
+            I_StockLastTransQty = (0 - d_qty)
         WHERE I_StockM_WarehouseID = warehouse_id AND I_StockM_ItemID = d_item
         AND I_StockIsActive = "Y";
     ELSE
@@ -294,7 +294,7 @@ WHILE n < l DO
             SET I_StockQty = I_StockQty - d_qty,
                 I_StockLastTransCode = "SALES.DELIVERY",
                 I_StockLastTransRefID = L_SalesDetailID,
-                I_StockLastTransQty = d_qty
+                I_StockLastTransQty = (0 - d_qty)
             WHERE I_StockM_WarehouseID = warehouse_id
             AND I_StockIsActive = "Y";
             -- END OF UPDATE STOK

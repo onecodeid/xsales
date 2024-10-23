@@ -104,10 +104,15 @@ class I_stock extends MY_Model
                 ];
 
             if ($v == 'PURCHASE.RECEIVE')
+                // $a_query = [
+                //     "P_PurchaseNumber", "P_PurchaseDate",
+                //     "LEFT JOIN {$this->db->database}.p_receivedetail ON Log_StockRefID = P_ReceiveDetailID
+                //     LEFT JOIN {$this->db->database}.p_purchasedetail ON P_ReceiveDetailP_PurchaseDetailID = P_PurchaseDetailID
+                //     LEFT JOIN {$this->db->database}.p_purchase ON P_PurchaseDetailP_PurchaseID = P_PurchaseID"
+                // ];
                 $a_query = [
                     "P_PurchaseNumber", "P_PurchaseDate",
-                    "LEFT JOIN {$this->db->database}.p_receivedetail ON Log_StockRefID = P_ReceiveDetailID
-                    LEFT JOIN {$this->db->database}.p_purchasedetail ON P_ReceiveDetailP_PurchaseDetailID = P_PurchaseDetailID
+                    "LEFT JOIN {$this->db->database}.p_purchasedetail ON Log_StockRefID = P_PurchaseDetailID
                     LEFT JOIN {$this->db->database}.p_purchase ON P_PurchaseDetailP_PurchaseID = P_PurchaseID"
                 ];
 

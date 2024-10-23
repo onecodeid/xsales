@@ -31,7 +31,7 @@ DECLARE l INTEGER DEFAULT 0;
 DECLARE d_item INTEGER;
 DECLARE d_price DOUBLE;
 DECLARE d_qty DOUBLE;
-DECLARE d_oqty DOUBLE;
+DECLARE d_oqty DOUBLE DEFAULT 0;
 DECLARE d_disc DOUBLE;
 DECLARE d_ppn CHAR(1) DEFAULT "N";
 DECLARE d_ppn_amount DOUBLE;
@@ -86,7 +86,7 @@ IF pdp IS NULL THEN SET pdp = 0; END IF;
 
 IF pid = 0 THEN
     
-    -- SET pnumber = (SELECT fn_numbering("PO"));
+    
     INSERT INTO p_purchase(P_PurchaseDate,
         P_PurchaseNumber,
         P_PurchaseM_VendorID,
@@ -104,7 +104,7 @@ IF pid = 0 THEN
     SELECT pdate, pnumber, pvendor, ptotal, pdisc, pdiscrp, pshipping, pdp, pppn, pnote, pmemo, pstaff, pterm, uid;
 
     SET pid = (SELECT LAST_INSERT_ID());
---    CALL sp_log_activity("CREATE", "PURCHASE.ORDER", pid, uid);
+
 ELSE
 
     UPDATE p_purchase
@@ -119,7 +119,7 @@ ELSE
 
     SET pnumber = (SELECT P_PurchaseNumber FROM p_purchase WHERE P_PurchaseID = pid);
     SET pdpid = (SELECT P_PurchaseF_BillDpID FROM p_purchase WHERE P_PurchaseID = pid);
---    CALL sp_log_activity("MODIFY", "PURCHASE.ORDER", pid, uid);
+
 END IF;
 
 
@@ -209,7 +209,12 @@ WHILE n < l DO
             P_PurchaseDetailIsActive = "Y"
             WHERE P_PurchaseDetailID = d_id;
 
-            -- UPDATE STOCK
+        ELSE
+            UPDATE p_purchasedetail
+            SET P_PurchaseDetailIsActive = "Y"
+            WHERE P_PurchaseDetailID = d_id;
+        END IF;
+            
             UPDATE i_stock
             JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
                 AND P_PurchaseDetailID = d_id
@@ -220,13 +225,9 @@ WHILE n < l DO
                 I_StockLastTransQty = (0-d_oqty)
             WHERE I_StockM_WarehouseID = warehouse_id
             AND I_StockIsActive = "Y";
-            -- END OF UPDATE STOK
+            
 
-        ELSE
-            UPDATE p_purchasedetail
-            SET P_PurchaseDetailIsActive = "Y"
-            WHERE P_PurchaseDetailID = d_id;
-        END IF;
+        
     END IF;
 
     IF d_ids = "" THEN SET d_ids = d_id; ELSE SET d_ids = CONCAT(d_ids, ",", d_id); END IF;
@@ -239,19 +240,19 @@ WHILE n < l DO
     CALL sp_master_item_last_purchase_0(d_item);
 END WHILE;
 
--- HAPUS STOK PENERIMAAN
--- UPDATE i_stock
--- JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
---    AND P_PurchaseDetailP_PurchaseID = pid
---    AND P_PurchaseDetailIsActive = "O"
--- SET I_StockQty = I_StockQty - P_PurchaseDetailQty,
---    I_StockLastTransCode = "PURCHASE.DELETE",
---    I_StockLastTransRefID = P_PurchaseDetailID,
---    I_StockLastTransQty = (0-P_PurchaseDetailQty)
--- WHERE I_StockM_WarehouseID = warehouse_id
---    AND I_StockIsActive = "Y";
 
--- STOK
+
+
+
+
+
+
+
+
+
+
+
+
 UPDATE i_stock
 JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
     AND P_PurchaseDetailP_PurchaseID = pid
@@ -281,7 +282,7 @@ SET P_PurchasePPN = P_PurchaseTotal * (xppn),
     P_PurchaseGrandTotal = (P_PurchaseTotal * (1 + xppn)) + pshipping - pdp
 WHERE P_PurchaseID = pid;
     
--- STOK
+
 UPDATE i_stock
 JOIN p_purchasedetail ON P_PurchaseDetailA_ItemID = I_StockM_ItemID
     AND P_PurchaseDetailP_PurchaseID = pid
