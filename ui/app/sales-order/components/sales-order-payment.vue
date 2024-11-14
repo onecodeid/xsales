@@ -21,7 +21,7 @@
                         <v-text-field readonly :value="selected_sales.customer_name+(selected_sales.customer_code=='C.UMUM'?(' - '+selected_sales.sales_customer_name+' / '):' / ')+selected_sales.sales_number" label="Customer / Order"></v-text-field>
                     </v-flex>
                     <v-flex xs4 pl-2>
-                        <v-text-field readonly :value="payment_total" label="Total Tagihan" reverse suffix="Rp"></v-text-field>
+                        <v-text-field readonly :value="one_money(payment_total)" label="Total Tagihan" reverse suffix="Rp"></v-text-field>
                     </v-flex>
                     <v-flex xs4>
                         <common-datepicker
@@ -45,8 +45,9 @@
                     </v-flex>
                     <v-flex xs6 pl-4>
                         <!-- <v-text-field label="Total Tagihan" reverse readonly :value="payment_total" outline></v-text-field> -->
-                        <v-text-field label="Pembayaran Sebelumnya" reverse readonly :value="payment_paid" v-show="payment_paid>0"></v-text-field>
-                        <v-text-field label="Jumlah Pembayaran" reverse v-model="payment_amount" outline></v-text-field>
+                        <v-text-field label="Pembayaran Sebelumnya" reverse readonly :value="one_money(payment_paid)" v-show="payment_paid>0"></v-text-field>
+                        <!-- <v-text-field label="Jumlah Pembayaran" reverse v-model="payment_amount" outline></v-text-field> -->
+                        <v-text-field label="Jumlah Pembayaran" reverse v-model="paymentFormatted" :value="paymentFormatted" @input="updateTotal" outline></v-text-field>
                     </v-flex>
                 </v-layout>
             </v-card-text>
@@ -130,7 +131,14 @@ module.exports = {
             get () { return this.__s.payment_amount },
             set (v) { this.__c("payment_amount", v) }
         },
-
+		paymentFormatted: {
+			get() {
+				return window.numeral(this.payment_amount).format('0,000');
+			},
+			set(value) {
+				this.payment_amount = window.numeral(value).value()
+			},
+		},
         payment_note : {
             get () { return this.__s.payment_note },
             set (v) { this.__c("payment_note", v) }
@@ -144,7 +152,12 @@ module.exports = {
         change_payment_date(x) {
             this.__c('payment_date', x.new_date)
         },
-
+        one_money (x) {
+            return window.one_money(x)
+        },
+        updateTotal(value) {
+			this.payment_amount = window.numeral(value).value();
+		},
         save() {
             this.__d("save").then((d) => {
                 this.dialog = false

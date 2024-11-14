@@ -1,0 +1,36 @@
+    customer: false,
+            item: false,
+            vendor: false,
+            penjualan: false,
+            pembelian: false,
+            pembayaran: false
+        },
+        confirmation: ''
+
+        selectedData: [],
+        confirmation: ''
+        update_selected_data(state, value) {
+            state.selectedData = value;
+        },
+
+        async updateSelectedData(context) {
+            context.commit("update_search_status", 1)
+            try {
+                let prm = {}
+                prm.token = one_token()
+                let resp = await api.search(prm)
+                console.log(resp)
+                if (resp.status != "OK") {
+                    context.commit("update_search_status", 3)
+                    context.commit("update_search_error_message", resp.message)
+                } else {
+                    context.commit("update_search_status", 2)
+                    context.commit("update_search_error_message", "")
+                    console.log("OK")
+                }
+            } catch (e) {
+                context.commit("update_search_status", 3)
+                context.commit("update_search_error_message", e.message)
+                console.log(e)
+            }
+    },
