@@ -47,7 +47,11 @@
                         <!-- <v-text-field label="Total Tagihan" reverse readonly :value="payment_total" outline></v-text-field> -->
                         <v-text-field label="Pembayaran Sebelumnya" reverse readonly :value="one_money(payment_paid)" v-show="payment_paid>0"></v-text-field>
                         <!-- <v-text-field label="Jumlah Pembayaran" reverse v-model="payment_amount" outline></v-text-field> -->
-                        <v-text-field label="Jumlah Pembayaran" reverse v-model="paymentFormatted" :value="paymentFormatted" @input="updateTotal" outline></v-text-field>
+                        <v-text-field 
+                        label="Jumlah Pembayaran" 
+                        reverse    
+                        @input="handleInput"    :mask="one_mask_money(payment_amount)"    :value="payment_amount"   outline></v-text-field>
+        
                     </v-flex>
                 </v-layout>
             </v-card-text>
@@ -92,7 +96,9 @@ module.exports = {
 
     data () {
         return {
-            tempo: true
+            tempo: true,
+            isEditing:false,
+            editingTimeout: null,
          }
     },
 
@@ -155,9 +161,16 @@ module.exports = {
         one_money (x) {
             return window.one_money(x)
         },
-        updateTotal(value) {
-			this.payment_amount = window.numeral(value).value();
-		},
+        one_mask_money (x) {
+            return window.one_mask_money(x)
+        },
+        // updateTotal(value) {
+		// 	this.payment_amount = window.numeral(value).value();
+		// },
+        handleInput(event) {
+          this.payment_amount = event;
+        },
+
         save() {
             this.__d("save").then((d) => {
                 this.dialog = false
