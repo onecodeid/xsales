@@ -57,7 +57,7 @@ class One_fin_007 extends RPT_Controller
                     $this->pdf->Cell(2, 0.7, $w->invoice_date, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2.5, 0.7, $w->invoice_number, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell($width-(16.3), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2.2, 0.7, number_format($w->sales_bruto), 'LBR', 0, 'L', 0);
+                    $this->pdf->Cell(2.2, 0.7, number_format($w->sales_bruto), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2, 0.7, number_format($w->invoice_retur), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
@@ -128,7 +128,7 @@ class One_fin_007 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 6.8, 1, "TOTAL" , '', 0, 'L', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 10.8, 1, "TOTAL" , '', 0, 'L', 0);
         // $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
         $me->Cell(2.2, 0.7, number_format($d['bruto']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
