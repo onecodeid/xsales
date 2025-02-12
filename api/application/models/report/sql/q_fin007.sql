@@ -25,7 +25,7 @@ from (
         select sum(L_SalesDetailQty *	L_SalesDetailPrice) as d_bruto, l_salesdetaill_salesid as d_sales
         from l_salesdetail where l_salesdetailisactive = "Y"
         group by l_salesdetaill_salesid
-    ) on l_salesid = d_sales
+    ) xdetail on l_salesid = d_sales
 
     left join f_spay on f_spayl_salesid = l_salesid and f_spayisactive = "Y"
     where l_salesunpaid > 0
