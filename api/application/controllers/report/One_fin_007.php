@@ -48,7 +48,7 @@ class One_fin_007 extends RPT_Controller
                 $this->pdf->Cell($width, 0.7, $v['customer_name'], 'LBR', 0, 'L', 1);
                 $this->pdf->Ln(0.7);
 
-                $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0, 'retur'=>0];
+                $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0, 'retur'=>0, 'bruto'=>0];
 
                 $invoices = $v['invoices'];
                 foreach ($invoices as $l => $w)
