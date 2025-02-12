@@ -20,7 +20,7 @@ class One_fin_007 extends RPT_Controller
 
     function index() {
 
-        $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0, 'retur'=>0];
+        $total = ['bill'=>0, 'paid'=>0, 'unpaid'=>0, 'retur'=>0, 'bruto'=>0];
         $prm = [];
         $r = $this->r_reportfinance->fin_007($this->sys_input);
         
@@ -57,9 +57,9 @@ class One_fin_007 extends RPT_Controller
                     $this->pdf->Cell(2, 0.7, $w->invoice_date, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2.5, 0.7, $w->invoice_number, 'LBR', 0, 'L', 0);
                     $this->pdf->Cell($width-(16.3), 0.7, $w->invoice_note, 'LBR', 0, 'L', 0);
-                    $this->pdf->Cell(2, 0.7, $w->term_name, 'LBR', 0, 'L', 0);
+                    $this->pdf->Cell(2.2, 0.7, number_format($w->sales_bruto), 'LBR', 0, 'L', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_grandtotal), 'LBR', 0, 'R', 0);
-                    $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_retur), 'LBR', 0, 'R', 0);
+                    $this->pdf->Cell(2, 0.7, number_format($w->invoice_retur), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_paid), 'LBR', 0, 'R', 0);
                     $this->pdf->Cell(2.2, 0.7, number_format($w->invoice_unpaid), 'LBR', 0, 'R', 0);
                     $this->pdf->Ln(0.7);
@@ -68,6 +68,7 @@ class One_fin_007 extends RPT_Controller
                     $total['paid'] += $w->invoice_paid;
                     $total['unpaid'] += $w->invoice_unpaid;
                     $total['retur'] += $w->invoice_retur;
+                    $total['bruto'] += $w->sales_bruto;
                 }
 
                 $this->tableFooter($this->pdf, $total);
@@ -127,10 +128,11 @@ class One_fin_007 extends RPT_Controller
         
         $me->SetFillColor(0,0,0);
         $me->SetTextColor(0,0,0);
-        $me->Cell($me->w - $me->lMargin - $me->rMargin - 8.8, 1, "TOTAL" , '', 0, 'L', 0);
+        $me->Cell($me->w - $me->lMargin - $me->rMargin - 6.8, 1, "TOTAL" , '', 0, 'L', 0);
         // $me->Cell(3, 0.7, "TOTAL" , 'LBR', 0, 'C', 0);
+        $me->Cell(2.2, 0.7, number_format($d['bruto']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['bill']) , 'LBR', 0, 'R', 0);
-        $me->Cell(2.2, 0.7, number_format($d['retur']) , 'LBR', 0, 'R', 0);
+        $me->Cell(2, 0.7, number_format($d['retur']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['paid']) , 'LBR', 0, 'R', 0);
         $me->Cell(2.2, 0.7, number_format($d['unpaid']) , 'BR', 0, 'R', 0);
         // $me->Ln(1);
@@ -185,9 +187,9 @@ class One_fin_007 extends RPT_Controller
         // $me->pdf->Cell($w - 21.5, 0.7, "NOMOR INVOICE" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.5, 0.7, "NOMOR" , 'TBLR', 0, 'C', 1);
         $me->pdf->Cell($w-16.3, 0.7, "CATATAN" , 'TBLR', 0, 'C', 1);
-        $me->pdf->Cell(2, 0.7, "TERM" , 'TBLR', 0, 'C', 1);
+        $me->pdf->Cell(2.2, 0.7, "BRUTO" , 'TBLR', 0, 'C', 1);
         $me->pdf->Cell(2.2, 0.7, "TAGIHAN" , 'TLBR', 0, 'C', 1);
-        $me->pdf->Cell(2.2, 0.7, "RETUR" , 'TLBR', 0, 'C', 1);
+        $me->pdf->Cell(2, 0.7, "RETUR" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.2, 0.7, "DIBAYAR" , 'TLBR', 0, 'C', 1);
         $me->pdf->Cell(2.2, 0.7, "SISA PIUTANG" , 'TLBR', 0, 'C', 1);
         $me->pdf->Ln(0.8);
